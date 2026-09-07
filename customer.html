@@ -69,88 +69,123 @@
         document.getElementById('custNameDisplay').innerText = currentUser.name;
         localStorage.setItem('customer_name', currentUser.name);
 
-        // 1. కస్టమర్ ఆరెంజ్ బటన్ క్లిక్ చేసినప్పుడు ఆర్డర్ ప్లేస్ చేసే ఫంక్షన్
-        function placeCustomerOrder() {
-            let vegName = localStorage.getItem('ordered_vegetable') || 'Fresh Tomatoes';
-            let vegQty = localStorage.getItem('ordered_quantity') || '2';
-            let vegPrice = localStorage.getItem('ordered_price') || '30';
+      // 1. రైతు యాడ్ చేసిన కూరగాయలను కస్టమర్ స్క్రీన్ పై చూపించే ఫంక్షన్
+function displayMarketVegetables() {
+    let vegList = JSON.parse(localStorage.getItem('veg_market_items')) || [];
+    let marketSection = document.getElementById('availableVegetablesSection'); // మీ మార్కెట్ డివ్ ఐడీ
+    
+    if (!marketSection) return;
+    marketSection.innerHTML = ''; // పాత లిస్ట్ క్లియర్ చేయడానికి
 
-            // 🔑 పెండింగ్ వెరిఫికేషన్ కోడ్ జనరేట్ చేయడం
-            let randomNum = Math.floor(1000 + Math.random() * 9000);
-            let pendingCode = `FF-PEND-${randomNum}`;
+    if (vegList.length === 0) {
+        marketSection.innerHTML = `<p style="color: #777; font-style: italic;">ప్రస్తుతానికి మార్కెట్ లో ఎలాంటి కూరగాయలు అందుబాటులో లేవు.</p>`;
+        return;
+    }
 
-            localStorage.setItem('current_order_status', 'Pending');
-            localStorage.setItem('last_generated_code', pendingCode);
+    // రైతు యాడ్ చేసిన ప్రతి కూరగాయను లూప్ చేసి కస్టమర్ కి చూపించడం
+    for (let i = 0; i < vegList.length; i++) {
+        let itemCard = `
+            <div style="background: #fff; padding: 15px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; font-family: Arial, sans-serif;">
+                <div>
+                    <h4 style="margin: 0; color: #2e7d32;">🥦 ${vegList[i].name}</h4>
+                    <p style="margin: 5px 0 0 0; font-size: 14px; color: #555;">
+                        ధర: <strong>₹${vegList[i].price} / KG</strong> | 
+                        అందుబాటులో ఉన్నవి: <strong>${vegList[i].quantity} KG</strong> <br>
+                        రైతు పేరు: <span style="color:#757575;">${vegList[i].farmer}</span>
+                    </p>
+                </div>
+                <!-- 🛒 ఈ బటన్ నొక్కగానే ఆ కూరగాయ కస్టమర్ కార్ట్ లోకి వెళ్తుంది -->
+                <button onclick="placeCustomerOrder('${vegList[i].name}', 1, ${vegList[i].price})" style="background-color: #2e7d32; color: white; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; cursor: pointer;">
+                    Buy Now 🛒
+                </button>
+            </div>
+        `;
+        marketSection.innerHTML += itemCard;
+    }
+}
 
-            alert(`🛒 Order Submitted! Your Pending Tracking Code is: ${pendingCode}\n\nGo to Farmer Dashboard and Accept this order!`);
-            viewCartAndLiveBill();
+// 2. కస్టమర్ 'Buy Now' బటన్ క్లిక్ చేసినప్పుడు ఆర్డర్ ప్లేస్ చేసే ఫంక్షన్
+function placeCustomerOrder(vegName, quantity, price) {
+    let randomNum = Math.floor(1000 + Math.random() * 9000);
+    let pendingCode = `FF-PEND-${randomNum}`;
+
+    localStorage.setItem('current_order_status', 'Pending');
+    localStorage.setItem('last_generated_code', pendingCode);
+    localStorage.setItem('ordered_vegetable', vegName);
+    localStorage.setItem('ordered_quantity', quantity);
+    localStorage.setItem('ordered_price', price);
+
+    alert(`🛒 Order Placed for ${vegName}! Your Pending Tracking Code is: ${pendingCode}\n\nGo to Farmer Dashboard, refresh and Accept this order!`);
+    viewCartAndLiveBill();
+}
+
+// 3. కార్ట్ మరియు లైవ్ బిల్లును స్క్రీన్ పై ట్రాక్ చేసే మాస్టర్ ఫంక్షన్
+function viewCartAndLiveBill() {
+    let status = localStorage.getItem('current_order_status') || 'Empty';
+    let vegName = localStorage.getItem('ordered_vegetable') || 'Fresh Tomatoes';
+    let vegQty = localStorage.getItem('ordered_quantity') || '2';
+    let vegPrice = localStorage.getItem('ordered_price') || '30';
+    let totalAmount = vegQty * vegPrice;
+
+    let cartSection = document.getElementById('cartSection');
+    let billSection = document.getElementById('billSection');
+    let noBillText = document.getElementById('noBillText');
+
+    if (status === 'Empty') {
+        if (cartSection) cartSection.innerHTML = `<p style="color: #999; font-style: italic;">Your Cart is Empty.</p>`;
+    } else {
+        let badgeColor = status === 'Pending' ? '#FF9800' : '#4CAF50';
+        if (cartSection) {
+            cartSection.innerHTML = `
+                <div class="cart-item" style="background: #fafafa; padding: 12px; border-left: 4px solid #ff9800; border-radius: 4px; margin-top: 10px;">
+                    <p style="margin: 5px 0;"><strong>Item:</strong> ${vegName}</p>
+                    <p style="margin: 5px 0;"><strong>Quantity:</strong> ${vegQty} KG</p>
+                    <p style="margin: 5px 0;"><strong>Price:</strong> ₹${vegPrice} / kg</p>
+                    <p style="margin: 5px 0;"><strong>Subtotal:</strong> ₹${totalAmount}.00</p>
+                    <span style="background: ${badgeColor}; color: white; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; text-transform: uppercase;">STATUS: ${status}</span>
+                </div>
+            `;
         }
+    }
 
-        // 2. కార్ట్ మరియు లైవ్ బిల్లును స్క్రీన్ పై ట్రాక్ చేసే మాస్టర్ ఫంక్షన్
-        function viewCartAndLiveBill() {
-            let status = localStorage.getItem('current_order_status') || 'Empty';
-            let vegName = localStorage.getItem('ordered_vegetable') || 'Fresh Tomatoes';
-            let vegQty = localStorage.getItem('ordered_quantity') || '2';
-            let vegPrice = localStorage.getItem('ordered_price') || '30';
-            let totalAmount = vegQty * vegPrice;
+    if (status === 'Accepted' && billSection) {
+        if (noBillText) noBillText.style.display = 'none';
+        let liveCode = localStorage.getItem('last_generated_code') || 'FF-APRV-9988';
+        let acceptTime = localStorage.getItem('order_accepted_time') || 'Just Now';
 
-            let cartSection = document.getElementById('cartSection');
-            let billSection = document.getElementById('billSection');
-            let noBillText = document.getElementById('noBillText');
+        billSection.innerHTML = `
+            <div class="bill-box" style="background: #e8f5e9; padding: 20px; border: 2px dashed #4caf50; border-radius: 8px; margin-top: 20px; font-family: monospace;">
+                <div class="bill-header" style="text-align: center; font-size: 18px; font-weight: bold; color: #2e7d32;">🥦 FreshFarm Invoice</div>
+                <p style="text-align:center; font-weight:bold; color:#4CAF50; margin: 5px 0;">✔ ORDER APPROVED & REGISTERED</p>
+                <p>-----------------------------------</p>
+                <p><strong>Invoice Code:</strong> <span style="color:#2e7d32; font-weight:bold;">${liveCode}</span></p>
+                <p><strong>Product:</strong> ${vegName}</p>
+                <p><strong>Quantity:</strong> ${vegQty} KG @ ₹${vegPrice}/kg</p>
+                <p><strong>Total Bill:</strong> ₹${totalAmount}.00</p>
+                <p><strong>Dispatched Time:</strong> ${acceptTime}</p>
+                <p>-----------------------------------</p>
+                <p style="text-align: center; font-size: 12px; color: #666; margin: 0;">📬 An SMS bill has been sent to your registered mobile number!</p>
+            </div>
+        `;
+        billSection.style.display = 'block';
+    } else {
+        if (billSection) billSection.style.display = 'none';
+        if (noBillText) noBillText.style.display = 'block';
+    }
+}
 
-            // కార్ట్ డిస్‌ప్లే అప్‌డేట్
-            if (status === 'Empty') {
-                cartSection.innerHTML = `<p style="color: #999; font-style: italic;">Your Cart is Empty.</p>`;
-            } else {
-                let badgeColor = status === 'Pending' ? '#FF9800' : '#4CAF50';
-                cartSection.innerHTML = `
-                    <div class="cart-item">
-                        <p style="margin: 5px 0;"><strong>Item:</strong> ${vegName}</p>
-                        <p style="margin: 5px 0;"><strong>Quantity:</strong> ${vegQty} KG</p>
-                        <p style="margin: 5px 0;"><strong>Price:</strong> ₹${vegPrice} / kg</p>
-                        <p style="margin: 5px 0;"><strong>Subtotal:</strong> ₹${totalAmount}.00</p>
-                        <span style="background: ${badgeColor}; color: white; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; text-transform: uppercase;">STATUS: ${status}</span>
-                    </div>
-                `;
-            }
+function logoutUser() {
+    alert("Logging out...");
+    window.location.href = "login.html";
+}
 
-            // ఒకవేళ రైతు ఆర్డర్ యాక్సెప్ట్ చేస్తే లైవ్ బిల్లు చూపిస్తుంది (SMS Approved Bill)
-            if (status === 'Accepted' && billSection) {
-                if (noBillText) noBillText.style.display = 'none';
-                let liveCode = localStorage.getItem('last_generated_code') || 'FF-APRV-9988';
-                let acceptTime = localStorage.getItem('order_accepted_time') || 'Just Now';
-
-                billSection.innerHTML = `
-                    <div class="bill-box">
-                        <div class="bill-header">🥦 FreshFarm Invoice</div>
-                        <p style="text-align:center; font-weight:bold; color:#4CAF50; margin: 5px 0;">✔ ORDER APPROVED & REGISTERED</p>
-                        <p>-----------------------------------</p>
-                        <p><strong>Invoice Code:</strong> <span style="color:#2e7d32; font-weight:bold;">${liveCode}</span></p>
-                        <p><strong>Customer:</strong> ${currentUser.name}</p>
-                        <p><strong>Product:</strong> ${vegName}</p>
-                        <p><strong>Quantity:</strong> ${vegQty} KG @ ₹${vegPrice}/kg</p>
-                        <p><strong>Total Bill:</strong> ₹${totalAmount}.00</p>
-                        <p><strong>Dispatched Time:</strong> ${acceptTime}</p>
-                        <p>-----------------------------------</p>
-                        <p style="text-align: center; font-size: 12px; color: #666; margin: 0;">📬 An SMS bill has been sent to your registered mobile number!</p>
-                    </div>
-                `;
-                billSection.style.display = 'block';
-            } else {
-                if (billSection) billSection.style.display = 'none';
-                if (noBillText) noBillText.style.display = 'block';
-            }
-        }
-
-        // పక్కాగా వర్క్ అయ్యే లాగౌట్ ఫంక్షన్
-        function logoutUser() {
-            alert("Logging out from customer dashboard...");
-            window.location.href = "login.html";
-        }
-
-        // ప్రతి 2 సెకన్లకు కార్ట్ మరియు బిల్లును ఆటోమేటిక్‌గా రీఫ్రెష్ చేస్తుంది
-        setInterval(viewCartAndLiveBill, 2000);
-        window.onload = viewCartAndLiveBill;
+// పేజీ లోడ్ అవ్వగానే మార్కెట్ కూరగాయల లిస్ట్ ని లోడ్ చేయడం
+setInterval(viewCartAndLiveBill, 2000);
+setInterval(displayMarketVegetables, 3000); // 3 సెకన్లకు ఒకసారి మార్కెట్ ని అప్‌డేట్ చేస్తుంది
+window.onload = function() {
+    displayMarketVegetables();
+    viewCartAndLiveBill();
+}
     </script>
 </body>
 </html>
