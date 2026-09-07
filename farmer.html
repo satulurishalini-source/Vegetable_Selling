@@ -250,92 +250,64 @@
             </div>
 
             <!-- Add Vegetable Card -->
-            <div class="dashboard-card">
-                <div class="card-title">
-                    <span>➕</span> Add New Vegetable
-                </div>
-                <form id="addVegForm">
-                    <div class="form-group">
-                        <label for="vegName">Vegetable Name</label>
-                        <input type="text" id="vegName" placeholder="e.g., Tomato" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="price">Price per kg (₹)</label>
-                        <input type="number" id="price" placeholder="30" step="0.01" min="0" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="quantity">Quantity (kg)</label>
-                        <input type="number" id="quantity" placeholder="10" step="0.1" min="0" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">Add Vegetable</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- My Vegetables Card -->
+                    <!-- Transaction History Card -->
         <div class="dashboard-card full-width" style="margin-bottom: 2rem;">
-            <div class="card-title">
-                <span>🌽</span> My Vegetables
-            </div>
-            <div id="myVegetables" class="vegetable-list">
-                <!-- Populated by JavaScript -->
-                <div class="empty-message">Loading...</div>
-            </div>
-        </div>
-
-        <!-- Transaction History Card -->
-        <div class="dashboard-card full-width">
             <div class="card-title">
                 <span>📋</span> Transaction History
             </div>
             <div id="transactionHistory" class="history-list">
                 <!-- Populated by JavaScript -->
-                <div class="empty-message">Loading...</div>
+                <div class="empty-message">No history found.</div>
             </div>
         </div>
-    </div>
 
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2025 FreshFarm. All rights reserved.</p>
+        <!-- 🔔 1. కొత్తగా యాడ్ చేసిన కస్టమర్ ఆర్డర్స్ మేనేజర్ (బటన్ ఇక్కడే ఉంటుంది) -->
+        <div class="dashboard-card full-width">
+            <div class="card-title">
+                <span>🤝</span> Customer Orders Status
+            </div>
+            <div style="padding: 1rem; background: #e8f5e9; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <h3 style="margin: 0; color: #1b5e20;">Manage New Orders</h3>
+                    <p style="margin: 5px 0 0 0; color: #666; font-size: 0.9rem;">కస్టమర్ల నుండి వచ్చిన తాజా ఆర్డర్‌లను ఇక్కడ నుండి యాక్సెప్ట్ చేయండి.</p>
+                </div>
+                <div>
+                    <!-- 🟢 ఇదిగోండి మీరు అడిగిన యాక్సెప్ట్ బటన్ -->
+                    <button class="btn btn-primary" onclick="acceptCustomerOrder()">Accept Order ✅</button>
+                </div>
+            </div>
         </div>
-    </footer>
 
-    <script src="app.js"></script>
+    </div> <!-- dashboard-container closing -->
+
     <script>
-        // Check if user is logged in and is a farmer, otherwise redirect to index
-        window.onload = function() {
-            const user = getCurrentUser();
-            if (!user || user.role !== 'FARMER') {
-                // Not logged in or not a farmer, go to main page
-                window.location.href = 'index.html';
-                return;
-            }
-            loadFarmerDashboard();
-        };
+        // లాగిన్ లో ఉన్న యూజర్ వివరాలను లోడ్ చేయడం
+        let currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Farmer' };
+        document.getElementById('userInfo').innerHTML = `Welcome, <strong>${currentUser.name}</strong> (Farmer)`;
 
-        // Add vegetable form handler
-        document.getElementById('addVegForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const name = document.getElementById('vegName').value;
-            const price = parseFloat(document.getElementById('price').value);
-            const quantity = parseFloat(document.getElementById('quantity').value);
-            addVegetable(name, price, quantity);
-            loadFarmerDashboard(); // Refresh list
-            e.target.reset();
-        });
+        // వాలెట్ బ్యాలెన్స్ లోడ్ చేయడం
+        let users = JSON.parse(localStorage.getItem('veg_market_users')) || [];
+        let activeUser = users.find(u => u.name === currentUser.name && u.role === 'FARMER');
+        if(activeUser) {
+            document.getElementById('balance').innerText = `₹${parseFloat(activeUser.balance).toFixed(2)}`;
+        }
 
-        // Add money function (prompt then refresh)
-        window.addMoney = function() {
-            const amount = prompt('Enter amount to add (₹):');
-            if (amount && !isNaN(amount) && parseFloat(amount) > 0) {
-                addMoneyToWallet(parseFloat(amount));
-                loadFarmerDashboard();
-            }
-        };
+        // 🧠 2. బటన్ నొక్కినప్పుడు రన్ అవ్వాల్సిన యాక్సెప్ట్ లాజిక్
+        function acceptCustomerOrder() {
+            // లోకల్ స్టోరేజ్‌లో ఆర్డర్ స్టేటస్‌ని 'Accepted' గా మార్చడం
+            localStorage.setItem('current_order_status', 'Accepted');
+            
+            // రైతుకు కన్ఫర్మేషన్ మెసేజ్ చూపించడం
+            alert("🎉 Order Accepted Successfully! Notification and Invoice sent to Customer.");
+            
+            // పేజీని రీఫ్రెష్ చేయడం
+            location.reload();
+        }
 
-        // Undo function (already global from app.js)
-        // Logout function (already global from app.js)
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
     </script>
 </body>
 </html>
