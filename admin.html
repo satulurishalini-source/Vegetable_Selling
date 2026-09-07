@@ -3,118 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Veg Market</title>
+    <title>Admin Dashboard - Secure Single Table</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
-        h1, h2 { color: #333; }
-        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-        th { background-color: #4CAF50; color: white; }
-        tr:nth-child(even) { background-color: #f2f2f2; }
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 80vh; }
+        .container { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); margin-bottom: 20px; width: 100%; max-width: 900px; }
+        
+        /* 🔒 Login Form Styling */
+        .login-box { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 320px; text-align: center; }
+        .login-box h2 { margin-bottom: 20px; color: #333; }
+        .login-box input { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; }
+        .login-box button { width: 97%; padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; font-weight: bold; }
+        .login-box button:hover { background-color: #45a049; }
+        .error-msg { color: red; font-size: 14px; margin-top: 10px; display: none; }
+
+        /* 📊 Table Styling */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #2E7D32; color: white; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .logout-btn { background-color: #f44336; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; float: right; font-weight: bold; }
+        
+        /* Roles Style */
+        .badge-farmer { background-color: #E8F5E9; color: #2E7D32; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 13px; }
+        .badge-customer { background-color: #E3F2FD; color: #1565C0; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 13px; }
+
+        #adminContent { display: none; width: 100%; max-width: 950px; }
     </style>
 </head>
 <body>
 
-    <h1>Admin Dashboard 📊</h1>
-
-    <!-- రిజిస్టర్ అయిన అందరి వివరాలు -->
-    <div class="container">
-        <h2>All Registered Users (మొత్తం యూజర్లు - రైతులు & కస్టమర్లు)</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>S.No</th>
-                    <th>Name</th>
-                    <th>Mobile</th>
-                    <th>Role (బాధ్యత)</th>
-                    <th>Wallet Balance</th>
-                </tr>
-            </thead>
-            <tbody id="usersTableBody"></tbody>
-        </table>
+    <!-- 🔒 1. Admin Login Box -->
+    <div class="login-box" id="loginBox">
+        <h2>Admin Login 🔐</h2>
+        <input type="text" id="adminUser" placeholder="Username">
+        <input type="password" id="adminPass" placeholder="Password">
+        <button onclick="checkAdminLogin()">Login</button>
+        <p class="error-msg" id="errorMsg">తప్పుడు యూజర్‌నేమ్ లేదా పాస్‌వర్డ్!</p>
     </div>
 
-    <!-- మార్కెట్ లో ఉన్న కూరగాయల వివరాలు -->
-    <div class="container">
-        <h2>Available Vegetables (మార్కెట్ లో ఉన్న కూరగాయలు)</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>S.No</th>
-                    <th>Vegetable Name</th>
-                    <th>Price per KG</th>
-                    <th>Quantity Available</th>
-                    <th>Farmer Name</th>
-                </tr>
-            </thead>
-            <tbody id="vegTableBody"></tbody>
-        </table>
-    </div>
+    <!-- 📊 2. Master Dashboard (Single Table) -->
+    <div id="adminContent">
+        <button class="logout-btn" onclick="adminLogout()">Logout</button>
+        <h1>Admin Master Dashboard 📊</h1>
 
-    <!-- జరిగిన బిజినెస్/ఆర్డర్ల వివరాలు -->
-    <div class="container">
-        <h2>Recent Transactions / Orders (జరిగిన ఆర్డర్లు)</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>S.No</th>
-                    <th>Type</th>
-                    <th>Buyer Mobile</th>
-                    <th>Seller Mobile</th>
-                    <th>Details</th>
-                    <th>Total Amount</th>
-                </tr>
-            </thead>
-            <tbody id="txTableBody"></tbody>
-        </table>
+        <div class="container">
+            <h2>All Market Transactions & Users (మొత్తం డేటా ఒకే పట్టికలో)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>User Name (పేరు)</th>
+                        <th>Mobile Number</th>
+                        <th>Role (బాధ్యత)</th>
+                        <th>Wallet Balance</th>
+                        <th>Activity Details (కూరగాయలు / ధర వివరాలు)</th>
+                    </tr>
+                </thead>
+                <tbody id="masterTableBody">
+                    <!-- For Loops ద్వారా డేటా మొత్తం ఇక్కడే కలుస్తుంది -->
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <script>
-        // 1. లోకల్ స్టోరేజ్ నుండి మీ ఒరిజినల్ డేటా కీస్ ని తెచ్చుకోవడం
-        let usersList = JSON.parse(localStorage.getItem('veg_market_users')) || [];
-        let vegList = JSON.parse(localStorage.getItem('veg_market_vegetables')) || [];
-        let txList = JSON.parse(localStorage.getItem('veg_market_transactions')) || [];
+        // 🔑 Login Credentials
+        const CORRECT_USER = "admin";
+        const CORRECT_PASS = "admin123";
 
-        // 2. యూజర్ల వివరాల కోసం For Loop
-        let usersTable = document.getElementById('usersTableBody');
-        for (let i = 0; i < usersList.length; i++) {
-            let row = `<tr>
-                <td>${i + 1}</td>
-                <td>${usersList[i].name}</td>
-                <td>${usersList[i].mobile}</td>
-                <td><b>${usersList[i].role}</b></td>
-                <td>支${usersList[i].balance.toFixed(2)}</td>
-            </tr>`;
-            usersTable.innerHTML += row;
+        function checkAdminLogin() {
+            let inputUser = document.getElementById('adminUser').value;
+            let inputPass = document.getElementById('adminPass').value;
+            let errorMsg = document.getElementById('errorMsg');
+
+            if (inputUser === CORRECT_USER && inputPass === CORRECT_PASS) {
+                document.getElementById('loginBox').style.display = 'none';
+                document.getElementById('adminContent').style.display = 'block';
+                document.body.style.justifyContent = 'flex-start';
+                loadSingleTableData();
+            } else {
+                errorMsg.style.display = 'block';
+            }
         }
 
-        // 3. కూరగాయల వివరాల కోసం For Loop
-        let vegTable = document.getElementById('vegTableBody');
-        for (let j = 0; j < vegList.length; j++) {
-            let row = `<tr>
-                <td>${j + 1}</td>
-                <td>${vegList[j].name}</td>
-                <td>支${vegList[j].pricePerKg}</td>
-                <td>${vegList[j].quantityKg} KG</td>
-                <td>${vegList[j].farmerName}</td>
-            </tr>`;
-            vegTable.innerHTML += row;
+        function adminLogout() {
+            document.getElementById('loginBox').style.display = 'block';
+            document.getElementById('adminContent').style.display = 'none';
+            document.body.style.justifyContent = 'center';
+            document.getElementById('adminUser').value = '';
+            document.getElementById('adminPass').value = '';
+            document.getElementById('errorMsg').style.display = 'none';
         }
 
-        // 4. ట్రాన్సాక్షన్స్/ఆర్డర్ల వివరాల కోసం For Loop
-        let txTable = document.getElementById('txTableBody');
-        for (let k = 0; k < txList.length; k++) {
-            let details = txList[k].type === 'BUY' ? `Bought ${txList[k].quantityKg}kg ${txList[k].vegetableName}` : 'Added Money';
-            let row = `<tr>
-                <td>${k + 1}</td>
-                <td>${txList[k].type}</td>
-                <td>${txList[k].senderId}</td>
-                <td>${txList[k].receiverId}</td>
-                <td>${details}</td>
-                <td>支${txList[k].amount.toFixed(2)}</td>
-            </tr>`;
-            txTable.innerHTML += row;
+        // 🔄 లూప్స్ ఉపయోగించి మొత్తం డేటాని ఒకే టేబుల్‌లోకి తీసుకురావడం
+        function loadSingleTableData() {
+            let tableBody = document.getElementById('masterTableBody');
+            tableBody.innerHTML = ''; // పాత డేటా క్లియర్ చేయడానికి
+            let serialNumber = 1;
+
+            // 1. లోకల్ స్టోరేజ్ నుండి యూజర్ల లిస్ట్ లూప్ చేయడం
+            let usersList = JSON.parse(localStorage.getItem('veg_market_users')) || [];
+            for (let i = 0; i < usersList.length; i++) {
+                let roleClass = usersList[i].role === 'FARMER' ? 'badge-farmer' : 'badge-customer';
+                
+                let row = `<tr>
+                    <td>${serialNumber++}</td>
+                    <td><strong>${usersList[i].name || 'N/A'}</strong></td>
+                    <td>${usersList[i].mobile || 'N/A'}</td>
+                    <td><span class="${roleClass}">${usersList[i].role || 'USER'}</span></td>
+                    <td>₹${usersList[i].balance || '0.00'}</td>
+                    <td><em style="color: #666;">Registered profile</em></td>
+                </tr>`;
+                tableBody.innerHTML += row;
+            }
+
+            // 2. లోకల్ స్టోరేజ్ నుండి కూరగాయల అమ్మకాల లిస్ట్ కూడా ఇదే టేబుల్‌లోకి లూప్ చేయడం
+            let vegList = JSON.parse(localStorage.getItem('veg_market_items')) || [];
+            for (let j = 0; j < vegList.length; j++) {
+                let row = `<tr>
+                    <td>${serialNumber++}</td>
+                    <td><strong>${vegList[j].farmer || 'N/A'}</strong></td>
+                    <td>--</td>
+                    <td><span class="badge-farmer">FARMER STOCK</span></td>
+                    <td>--</td>
+                    <td>Added: <strong>${vegList[j].name || 'N/A'}</strong> (${vegList[j].quantity || '0'} KG) @ ₹${vegList[j].price || '0'}/kg</td>
+                </tr>`;
+                tableBody.innerHTML += row;
+            }
         }
     </script>
 </body>
