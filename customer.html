@@ -24,6 +24,9 @@
         .cart-item { background: #fafafa; padding: 12px; border-left: 4px solid #ff9800; border-radius: 4px; margin-top: 10px; }
         .bill-box { background: #e8f5e9; padding: 20px; border: 2px dashed #4caf50; border-radius: 8px; margin-top: 20px; font-family: monospace; font-size: 14px; }
         .bill-header { text-align: center; font-size: 18px; font-weight: bold; color: #2e7d32; margin-bottom: 10px; }
+        
+        .buy-btn { background-color: #2e7d32; color: white; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .buy-btn:hover { background-color: #1b5e20; }
     </style>
 </head>
 <body>
@@ -75,7 +78,7 @@
         document.getElementById('custNameDisplay').innerText = currentUser.name;
         localStorage.setItem('customer_name', currentUser.name);
 
-        // 1. రైతు యాడ్ చేసిన కూరగాయలను కస్టమర్ స్క్రీన్ పై చూపించే ఫంక్షన్
+        // 1. 🌾 రైతు యాడ్ చేసిన కూరగాయలను 'veg_market_items' కీ ద్వారా లాగి చూపించే ఫంక్షన్
         function displayMarketVegetables() {
             let vegList = JSON.parse(localStorage.getItem('veg_market_items')) || [];
             let marketSection = document.getElementById('availableVegetablesSection');
@@ -99,7 +102,7 @@
                                 రైతు పేరు: <span style="color:#757575;">${vegList[i].farmer}</span>
                             </p>
                         </div>
-                        <button onclick="placeCustomerOrder('${vegList[i].name}', 1, ${vegList[i].price})" style="background-color: #2e7d32; color: white; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; cursor: pointer;">
+                        <button class="buy-btn" onclick="placeCustomerOrder('${vegList[i].name}', ${vegList[i].quantity}, ${vegList[i].price})">
                             Buy Now 🛒
                         </button>
                     </div>
@@ -167,4 +170,3 @@
                         <p><strong>Product:</strong> ${vegName}</p>
                         <p><strong>Quantity:</strong> ${vegQty} KG @ ₹${vegPrice}/kg</p>
                         <p><strong>Total Bill:</strong> ₹${totalAmount}.00</p>
-                        <p><strong>Dispatched Time:</strong> ${acceptTime}</p>
