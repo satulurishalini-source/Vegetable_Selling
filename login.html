@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - FreshFarm</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Additional styles specific to login page */
+        .login-container {
+            min-height: calc(100vh - 150px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 20px;
+            background: linear-gradient(135deg, #f1f8e9 0%, #ffffff 100%);
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header h2 {
+            color: #1b5e20;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            color: #666;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #2e7d32;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 1rem;
+            background: #2e7d32;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-login:hover {
+            background: #1b5e20;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .register-link a {
+            color: #2e7d32;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        .back-home {
+            display: inline-block;
+            margin-top: 1rem;
+            color: #666;
+            text-decoration: none;
+            text-align: center;
+            width: 100%;
+        }
+
+        .back-home:hover {
+            color: #2e7d32;
+        }
+
+        .info-note {
+            font-size: 0.9rem;
+            color: #888;
+            text-align: center;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Simple Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="logo-icon">🥦</span>
+                <span class="logo-text"><a href="index.html" style="color: #2e7d32; text-decoration: none;">FreshFarm</a></span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="register.html">Register</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Form -->
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h2>Welcome Back</h2>
+                <p>Sign in to your account</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="mobile">Mobile Number</label>
+                    <input type="number" id="mobile" placeholder="Enter your 10-digit mobile number" required>
+                </div>
+
+                <button type="submit" class="btn-login">Login</button>
+
+                <div class="register-link">
+                    Don't have an account? <a href="register.html">Register here</a>
+                </div>
+
+                <a href="index.html" class="back-home">← Back to Home</a>
+                <div class="info-note">Use your registered mobile number to login</div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 FreshFarm. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+    <script>
+        // Check if user is already logged in - redirect to appropriate dashboard
+        (function() {
+            const user = getCurrentUser();
+            if (user) {
+                // Already logged in, redirect to appropriate dashboard
+                if (user.role === 'FARMER') {
+                    window.location.href = 'farmer.html';
+                } else {
+                    window.location.href = 'customer.html';
+                }
+            }
+        })();
+
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const mobile = document.getElementById('mobile').value.trim();
+
+            // Basic validation
+            if (!mobile) {
+                alert('Please enter your mobile number.');
+                return;
+            }
+            if (!/^\d{10}$/.test(mobile)) {
+                alert('Please enter a valid 10-digit mobile number.');
+                return;
+            }
+
+            if (loginUser(mobile)) {
+                const user = getCurrentUser();
+                if (user.role === 'FARMER') {
+                    window.location.href = 'farmer.html';
+                } else {
+                    window.location.href = 'customer.html';
+                }
+            } else {
+                alert('User not found. Please check your mobile number or register.');
+            }
+        });
+    </script>
+</body>
+</html>

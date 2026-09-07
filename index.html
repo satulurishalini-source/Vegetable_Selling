@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshFarm - Farmer Customer Vegetable Market</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="logo-icon">🥦</span>
+                <span class="logo-text">FreshFarm</span>
+            </div>
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#features">Features</a>
+                <a href="#about">About</a>
+                <a href="login.html" class="nav-btn">Login</a>
+                <a href="register.html" class="nav-btn nav-btn-primary">Register</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">Fresh Vegetables<br>Directly from Farmers</h1>
+                <p class="hero-subtitle">Connect with local farmers, buy fresh produce, and support sustainable agriculture. No middlemen, fair prices for everyone.</p>
+                <div class="hero-buttons">
+                    <a href="register.html?role=FARMER" class="btn btn-large btn-farmer">🌱 I'm a Farmer</a>
+                    <a href="register.html?role=CUSTOMER" class="btn btn-large btn-customer">🛒 I'm a Customer</a>
+                </div>
+                <p class="hero-login">Already have an account? <a href="login.html">Sign in</a></p>
+            </div>
+            <div class="hero-image">
+                <!-- You can replace with an actual image if desired -->
+                <div class="image-placeholder">
+                    <span>🥕 🥦 🌽</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Why Choose FreshFarm?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🌿</div>
+                    <h3>Farm Fresh</h3>
+                    <p>Vegetables harvested just hours ago, delivered straight to your doorstep.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>Fair Prices</h3>
+                    <p>No middlemen – farmers earn more, customers pay less.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Secure Wallet</h3>
+                    <p>Digital wallet with easy add money, transfers, and transaction history.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">↩️</div>
+                    <h3>Undo Support</h3>
+                    <p>Mistake? Undo your last transaction instantly.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="about" class="how-it-works">
+        <div class="container">
+            <h2 class="section-title">How It Works</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h4>Register</h4>
+                    <p>Sign up as a farmer or customer with your mobile number.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h4>Add / Browse</h4>
+                    <p>Farmers list vegetables, customers browse available produce.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h4>Buy & Pay</h4>
+                    <p>Customers buy directly using wallet balance.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h4>Enjoy Fresh!</h4>
+                    <p>Get fresh vegetables and support local farming.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 FreshFarm. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
+
+<script src="app.js"></script>
+<script>
+    // Check login status and update UI accordingly
+    window.onload = function() {
+        const user = getCurrentUser();
+        const navLinks = document.querySelector('.nav-links');
+        
+        if (user) {
+            // User is logged in - update navigation
+            navLinks.innerHTML = `
+                <a href="#home">Home</a>
+                <a href="#features">Features</a>
+                <a href="#about">About</a>
+                <span style="color: #2e7d32; font-weight: 500;">Hello, ${user.name}</span>
+                <a href="${user.role === 'FARMER' ? 'farmer.html' : 'customer.html'}" class="nav-btn">Dashboard</a>
+                <a href="#" onclick="logout()" class="nav-btn" style="color: #d32f2f;">Logout</a>
+            `;
+        }
+        // If not logged in, show default login/register buttons (no change needed)
+    };
+</script>

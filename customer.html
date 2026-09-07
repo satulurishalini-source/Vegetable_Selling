@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard - FreshFarm</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Customer dashboard refinements (including inline quantity) */
+        :root {
+            --primary: #2e7d32;
+            --primary-dark: #1b5e20;
+            --secondary: #ff9800;
+            --secondary-dark: #f57c00;
+            --gray-light: #f5f5f5;
+            --gray-border: #e0e0e0;
+            --text-dark: #333;
+            --text-muted: #666;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --radius: 12px;
+        }
+
+        body {
+            background: #f9f9f9;
+        }
+
+        .navbar {
+            box-shadow: var(--shadow-sm);
+        }
+
+        .dashboard-container {
+            max-width: 1300px;
+            margin: 2rem auto;
+            padding: 0 24px;
+        }
+
+        .dashboard-header {
+            background: white;
+            border-radius: var(--radius);
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .welcome-message {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .welcome-message::before {
+            content: "👤";
+            font-size: 2rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 30px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-warning {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: var(--secondary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: var(--text-dark);
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        /* Wallet card */
+        .wallet-card {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-radius: var(--radius);
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .wallet-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .wallet-icon {
+            font-size: 2.5rem;
+        }
+
+        .wallet-label {
+            font-size: 1rem;
+            color: var(--primary-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .balance-amount {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            line-height: 1.2;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            transition: box-shadow 0.2s;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 2px solid var(--gray-border);
+            padding-bottom: 0.75rem;
+        }
+
+        .card-title span {
+            font-size: 1.6rem;
+        }
+
+        .vegetable-list, .top-users-list, .history-list {
+            max-height: 350px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) var(--gray-light);
+        }
+
+        .vegetable-list::-webkit-scrollbar,
+        .top-users-list::-webkit-scrollbar,
+        .history-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .vegetable-list::-webkit-scrollbar-track {
+            background: var(--gray-light);
+            border-radius: 10px;
+        }
+
+        .vegetable-list::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .vegetable-item {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0.5rem;
+            border-bottom: 1px solid var(--gray-border);
+            gap: 0.5rem;
+        }
+
+        .vegetable-item:last-child {
+            border-bottom: none;
+        }
+
+        .veg-info {
+            flex: 2 1 200px;
+        }
+
+        .veg-name {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 1.1rem;
+        }
+
+        .veg-details {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 0.2rem;
+        }
+
+        .veg-details span {
+            background: var(--gray-light);
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+
+        .buy-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .quantity-input {
+            width: 70px;
+            padding: 0.4rem;
+            border: 1px solid var(--gray-border);
+            border-radius: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .quantity-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .buy-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .buy-btn:hover {
+            background: var(--secondary-dark);
+            transform: scale(1.02);
+        }
+
+        .buy-btn::before {
+            content: "🛒";
+            font-size: 0.9rem;
+        }
+
+        .user-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.7rem 0.5rem;
+            border-bottom: 1px solid var(--gray-border);
+        }
+
+        .user-item:last-child {
+            border-bottom: none;
+        }
+
+        .user-rank {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-right: 0.8rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .user-role {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .user-balance {
+            font-weight: 600;
+            color: var(--primary-dark);
+            background: #e8f5e9;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .history-item {
+            padding: 0.8rem 0.5rem;
+            border-bottom: 1px solid var(--gray-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-desc {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .history-icon {
+            font-size: 1.2rem;
+        }
+
+        .history-text {
+            color: var(--text-dark);
+        }
+
+        .history-time {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 2rem;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                align-items: start;
+            }
+
+            .wallet-card {
+                flex-direction: column;
+                align-items: start;
+            }
+
+            .vegetable-item {
+                flex-direction: column;
+                align-items: start;
+            }
+
+            .buy-controls {
+                align-self: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="logo-icon">🥦</span>
+                <span class="logo-text"><a href="index.html" style="color: #2e7d32; text-decoration: none;">FreshFarm</a></span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="#" onclick="logout()" style="color: #d32f2f;">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <!-- Header with user info and actions -->
+        <div class="dashboard-header">
+            <div class="welcome-message" id="userInfo"></div>
+            <div class="action-buttons">
+                <button class="btn btn-warning" onclick="undo()">↩️ Undo Last</button>
+                <button class="btn btn-secondary" onclick="logout()">🚪 Logout</button>
+            </div>
+        </div>
+
+        <!-- Wallet Card -->
+        <div class="wallet-card">
+            <div class="wallet-info">
+                <span class="wallet-icon">💰</span>
+                <div>
+                    <div class="wallet-label">Your Balance</div>
+                    <span class="balance-amount" id="balance">₹0.00</span>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="addMoney()">➕ Add Money</button>
+        </div>
+
+        <!-- Two-column grid for vegetables and top users -->
+        <div class="dashboard-grid">
+            <!-- Available Vegetables Card -->
+            <div class="card">
+                <div class="card-title">
+                    <span>🥕</span> Available Vegetables
+                </div>
+                <div id="vegetableList" class="vegetable-list">
+                    <!-- Populated by JavaScript -->
+                    <div class="empty-message">Loading...</div>
+                </div>
+            </div>
+
+            <!-- Top Users Card -->
+            <div class="card">
+                <div class="card-title">
+                    <span>🏆</span> Top Users
+                </div>
+                <div id="topUsers" class="top-users-list">
+                    <!-- Populated by JavaScript -->
+                    <div class="empty-message">Loading...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transaction History Card -->
+        <div class="card" style="margin-top: 2rem;">
+            <div class="card-title">
+                <span>📋</span> Transaction History
+            </div>
+            <div id="transactionHistory" class="history-list">
+                <!-- Populated by JavaScript -->
+                <div class="empty-message">Loading...</div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 FreshFarm. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+    <script>
+        // Load dashboard data when page loads
+        window.onload = function() {
+            loadCustomerDashboard();
+        };
+
+        // Add money function (prompt then refresh)
+        window.addMoney = function() {
+            const amount = prompt('Enter amount to add (₹):');
+            if (amount && !isNaN(amount) && parseFloat(amount) > 0) {
+                addMoneyToWallet(parseFloat(amount));
+                loadCustomerDashboard();
+            }
+        };
+
+        // Undo and logout are already global from app.js
+    </script>
+</body>
+</html>
