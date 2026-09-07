@@ -8,7 +8,8 @@
         body { font-family: Arial, sans-serif; margin: 0; background-color: #f4f4f4; }
         .navbar { background-color: #ffffff; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .logo { color: #2e7d32; font-size: 24px; font-weight: bold; }
-        .logout-btn { background-color: #757575; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
+        .logout-btn { background-color: #f44336; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .logout-btn:hover { background-color: #d32f2f; }
         .main-container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
         .welcome-text { color: #2e7d32; font-size: 22px; margin-bottom: 20px; }
         .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
@@ -26,6 +27,7 @@
         .order-alert { background-color: #fff3e0; border: 2px dashed #ff9800; padding: 15px; border-radius: 6px; margin-top: 15px; text-align: center; }
         .btn-accept { background-color: #4caf50; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 15px; margin-top: 10px; }
         .btn-accept:hover { background-color: #45a049; }
+        .btn-refresh { background-color: #ff9800; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -43,7 +45,8 @@
             <!-- 💰 Wallet Balance Card -->
             <div class="card">
                 <h3>💰 Wallet Balance</h3>
-                <h2 style="color: #2e7d32; font-size: 32px; margin: 15px 0;"> canడు ₹60000.00</h2>
+                <h2 style="color: #2e7d32; font-size: 32px; margin: 15px 0;">Wallet ₹60000.00</h2>
+                <button class="btn-refresh" onclick="location.reload()">🔄 Refresh Dashboard</button>
             </div>
 
             <!-- 🥦 Add Vegetables Input Card -->
@@ -99,12 +102,20 @@
             });
 
             localStorage.setItem('veg_market_items', JSON.stringify(vegList));
-            alert(`✅ ${name} Market లోకి విజయవంతంగా యాడ్ అయ్యింది!`);
             
-            // బాక్సులను ఖాళీ చేయడం
+            // 🛒 కస్టమర్ ఆర్డర్ ఫ్లో కోసం డేటాను సెట్ చేయడం
+            localStorage.setItem('ordered_vegetable', name);
+            localStorage.setItem('ordered_quantity', quantity);
+            localStorage.setItem('ordered_price', price);
+            localStorage.setItem('current_order_status', 'Pending');
+
+            alert(`✅ ${name} Market లోకి విజయవంతంగా యాడ్ అయ్యింది! కస్టమర్ ఇప్పుడు ఆర్డర్ చేయవచ్చు.`);
+            
             document.getElementById('vegName').value = '';
             document.getElementById('vegPrice').value = '';
             document.getElementById('vegQuantity').value = '';
+            
+            location.reload();
         }
 
         // 2. కస్టమర్ పెండింగ్ ఆర్డర్లు ఏమైనా ఉన్నాయా అని చెక్ చేసే ఫంక్షన్
@@ -112,46 +123,62 @@
             let status = localStorage.getItem('current_order_status');
             let ordersSection = document.getElementById('ordersSection');
             let pendingCode = localStorage.getItem('last_generated_code') || 'FF-PEND-1234';
+            
+            let vegName = localStorage.getItem('ordered_vegetable') || 'Fresh Vegetables';
+            let vegQty = localStorage.getItem('ordered_quantity') || '1';
+            let vegPrice = localStorage.getItem('ordered_price') || '25';
+            let totalAmount = vegQty * vegPrice;
 
             if (status === 'Pending') {
-                document.getElementById('noOrdersText').style.display = 'none';
+                let noText = document.getElementById('noOrdersText');
+                if (noText) noText.style.display = 'none';
+                
                 ordersSection.innerHTML = `
                     <div class="order-alert">
-                        <p style="font-size: 16px; margin: 5px 0;">🔔 <strong>New Order Notification!</strong></p>
-                        <p>A customer has placed an order. Tracking Code: <strong>${pendingCode}</strong></p>
+                        <p style="font-size: 16px; margin: 5px 0; color: #E65100;">🔔 <strong>New Order Received from Customer!</strong></p>
+                        <p><strong>Item:</strong> ${vegName} (${vegQty} KG) | <strong>Total:</strong> ₹${totalAmount}.00</p>
+                        <p>Tracking Code: <strong style="color:#E65100;">${pendingCode}</strong></p>
                         <button class="btn-accept" onclick="acceptCustomerOrder()">Accept Order & Send SMS ✅</button>
                     </div>
                 `;
             } else if (status === 'Accepted') {
-                ordersSection.innerHTML = `<p style="color: #2e7d32; font-weight: bold;">✅ Last order was accepted successfully. Waiting for new orders...</p>`;
+                ordersSection.innerHTML = `<p style="color: #2e7d32; font-weight: bold;">✅ Last order was accepted successfully. SMS Bill Dispatched! Waiting for new orders...</p>`;
+            } else {
+                ordersSection.innerHTML = `<p style="color: #777; font-style: italic;">No pending orders found from customers.</p>`;
             }
         }
 
-        // 3. రైతు ఆర్డర్ యాక్సెప్ట్ చేసినప్పుడు రన్ అయ్యే ఫంక్షన్
+        // 3. రైతు ఆర్డర్ యాక్సెప్ట్ చేసినప్పుడు రన్ అయ్యే ఫంక్షన్ (SMS Dispatch System)
         function acceptCustomerOrder() {
             localStorage.setItem('current_order_status', 'Accepted');
             
+            // 🕒 లైవ్ టైమ్ స్టాంప్ తీసుకోవడం
             let now = new Date();
             let currentTimeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
             localStorage.setItem('order_accepted_time', currentTimeString);
+
+            // లోకల్ స్టోరేజ్ నుండి కస్టమర్ మొబైల్ నెంబర్ మరియు కూరగాయల వివరాలు
+            let usersList = JSON.parse(localStorage.getItem('veg_market_users')) || [];
+            let customerMobile = "9492465688"; // డిఫాల్ట్ కస్టమర్ మొబైల్ నెంబర్
+            let customerName = "shalini";
+
+            for (let i = 0; i < usersList.length; i++) {
+                if (usersList[i].role === 'CUSTOMER') {
+                    customerName = usersList[i].name || "shalini";
+                    customerMobile = usersList[i].mobile || "9492465688";
+                    break;
+                }
+            }
+
+            let vegName = localStorage.getItem('ordered_vegetable') || 'Fresh Vegetables';
+            let vegQty = localStorage.getItem('ordered_quantity') || '1';
+            let vegPrice = localStorage.getItem('ordered_price') || '25';
+            let totalAmount = vegQty * vegPrice;
 
             let pendingCode = localStorage.getItem('last_generated_code') || 'FF-PEND-1234';
             let approvedCode = pendingCode.replace('PEND', 'APRV');
             localStorage.setItem('last_generated_code', approvedCode);
 
-            let smsMessage = `🥦 FreshFarm Approved Bill\n-------------------\nInvoice Code: ${approvedCode}\nStatus: ACCEPTED & REGISTERED\nTime: ${currentTimeString}\n-------------------\nYour fresh vegetables are ready for delivery! 🌾`;
+            // 📱 అసలైన SMS మొబైల్ బిల్లు టెక్స్ట్
+            let smsMessage = `🥦 FreshFarm Bill\n-------------------\nInvoice Code: ${approvedCode}\nCustomer: ${customerName}\nItem: ${vegName} (${vegQty} KG)\nTotal Bill: ₹${totalAmount}.00\nTime: ${currentTimeString}\n-------------------\nStatus: APPROVED & REGISTERED ✅\nThank you for buying from Farmers!`;
 
-            alert(`📱 SMS DISPATCHED TO CUSTOMER PHONE!\n\n${smsMessage}`);
-            location.reload();
-        }
-
-        function logoutUser() {
-            alert("Logging out...");
-            window.location.href = "login.html";
-        }
-
-        // పేజీ ఓపెన్ అవ్వగానే ఆర్డర్లను చెక్ చేయడం
-        checkPendingOrders();
-    </script>
-</body>
-</html>
