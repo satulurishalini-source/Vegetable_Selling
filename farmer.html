@@ -6,7 +6,6 @@
     <title>Farmer Dashboard - FreshFarm</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Additional dashboard-specific styles */
         .dashboard-container {
             max-width: 1200px;
             margin: 2rem auto;
@@ -25,12 +24,6 @@
         .welcome-message {
             font-size: 1.5rem;
             color: #1b5e20;
-        }
-
-        .welcome-message small {
-            font-size: 1rem;
-            color: #666;
-            font-weight: normal;
         }
 
         .action-buttons {
@@ -65,27 +58,9 @@
             color: white;
         }
 
-        .btn-secondary:hover {
-            background: #616161;
-        }
-
         .btn-warning {
             background: #ff9800;
             color: white;
-        }
-
-        .btn-warning:hover {
-            background: #f57c00;
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid #2e7d32;
-            color: #2e7d32;
-        }
-
-        .btn-outline:hover {
-            background: #e8f5e9;
         }
 
         .dashboard-grid {
@@ -111,10 +86,6 @@
             gap: 0.5rem;
             border-bottom: 2px solid #e0e0e0;
             padding-bottom: 0.75rem;
-        }
-
-        .card-title span {
-            font-size: 1.5rem;
         }
 
         .balance-info {
@@ -150,38 +121,11 @@
             font-size: 1rem;
         }
 
-        .form-group input:focus {
-            outline: none;
-            border-color: #2e7d32;
-        }
-
-        .vegetable-list, .history-list {
+        .history-list {
             max-height: 300px;
             overflow-y: auto;
             border: 1px solid #eee;
             border-radius: 4px;
-        }
-
-        .vegetable-item, .history-item {
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid #f0f0f0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .vegetable-item:last-child, .history-item:last-child {
-            border-bottom: none;
-        }
-
-        .veg-name {
-            font-weight: 600;
-            color: #333;
-        }
-
-        .veg-details {
-            color: #666;
-            font-size: 0.9rem;
         }
 
         .empty-message {
@@ -191,48 +135,27 @@
             font-style: italic;
         }
 
-        .history-item {
-            font-size: 0.9rem;
-        }
-
-        .history-time {
-            color: #888;
-            font-size: 0.8rem;
-        }
-
         .full-width {
             grid-column: 1 / -1;
-        }
-
-        @media (max-width: 768px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo">
-                <span class="logo-icon">🥦</span>
-                <span class="logo-text"><a href="index.html" style="color: #2e7d32; text-decoration: none;">FreshFarm</a></span>
-            </div>
-            <div class="nav-links">
-                <a href="index.html">Home</a>
-                <a href="#" onclick="logout()" style="color: #d32f2f;">Logout</a>
-            </div>
+    <nav class="navbar" style="background: white; padding: 15px 24px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center;">
+        <div class="logo">
+            <span class="logo-icon">🥦</span>
+            <span class="logo-text" style="font-size: 24px; font-weight: bold; color: #2e7d32;">FreshFarm</span>
         </div>
+        <button class="btn btn-secondary" onclick="logout()">Logout</button>
     </nav>
 
     <div class="dashboard-container">
-        <!-- Header with welcome and actions -->
+        <!-- Header -->
         <div class="dashboard-header">
-            <div class="welcome-message" id="userInfo"></div>
+            <div class="welcome-message" id="userInfo">Welcome, Farmer</div>
             <div class="action-buttons">
-                <button class="btn btn-warning" onclick="undo()">↩️ Undo Last</button>
-                <button class="btn btn-secondary" onclick="logout()">Logout</button>
+                <button class="btn btn-warning" onclick="location.reload()">🔄 Refresh Dashboard</button>
             </div>
         </div>
 
@@ -244,63 +167,64 @@
                     <span>💰</span> Wallet Balance
                 </div>
                 <div class="balance-info">
-                    <span class="balance-amount" id="balance">₹0.00</span>
-                    <button class="btn btn-primary" onclick="addMoney()">Add Money</button>
+                    <span class="balance-amount" id="balance">₹60000.00</span>
+                    <button class="btn btn-primary">Add Money</button>
                 </div>
             </div>
 
-            <!-- Add Vegetable Card -->
-                    <!-- Transaction History Card -->
+            <!-- Simulation Info -->
+            <div class="dashboard-card">
+                <div class="card-title">
+                    <span>🌾</span> Farm Summary
+                </div>
+                <p style="color: #666; margin: 0;">రైతుగా మీ పంట వివరాలు మరియు కస్టమర్ ఆర్డర్లను ఇక్కడ నిర్వహించవచ్చు.</p>
+            </div>
+        </div>
+
+        <!-- Transaction History Card -->
         <div class="dashboard-card full-width" style="margin-bottom: 2rem;">
             <div class="card-title">
                 <span>📋</span> Transaction History
             </div>
             <div id="transactionHistory" class="history-list">
-                <!-- Populated by JavaScript -->
                 <div class="empty-message">No history found.</div>
             </div>
         </div>
 
-        <!-- 🔔 1. కొత్తగా యాడ్ చేసిన కస్టమర్ ఆర్డర్స్ మేనేజర్ (బటన్ ఇక్కడే ఉంటుంది) -->
+        <!-- 🔔 కస్టమర్ ఆర్డర్స్ మేనేజర్ (యాక్సెప్ట్ బటన్) -->
         <div class="dashboard-card full-width">
             <div class="card-title">
                 <span>🤝</span> Customer Orders Status
             </div>
-            <div style="padding: 1rem; background: #e8f5e9; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div style="padding: 1.5rem; background: #e8f5e9; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border: 1px solid #c8e6c9;">
                 <div>
-                    <h3 style="margin: 0; color: #1b5e20;">Manage New Orders</h3>
-                    <p style="margin: 5px 0 0 0; color: #666; font-size: 0.9rem;">కస్టమర్ల నుండి వచ్చిన తాజా ఆర్డర్‌లను ఇక్కడ నుండి యాక్సెప్ట్ చేయండి.</p>
+                    <h3 style="margin: 0; color: #1b5e20; font-size: 1.2rem;">New Order Received! 🛍️</h3>
+                    <p style="margin: 5px 0 0 0; color: #555; font-size: 0.95rem;">కస్టమర్ (Shalini) నుండి వచ్చిన ఆర్డర్‌ను యాక్సెప్ట్ చేయడానికి కింద బటన్ నొక్కండి.</p>
                 </div>
                 <div>
-                    <!-- 🟢 ఇదిగోండి మీరు అడిగిన యాక్సెప్ట్ బటన్ -->
-                    <button class="btn btn-primary" onclick="acceptCustomerOrder()">Accept Order ✅</button>
+                    <button class="btn btn-primary" onclick="acceptCustomerOrder()" style="font-size: 1.1rem; padding: 0.8rem 2rem; border-radius: 30px; box-shadow: 0 4px 10px rgba(46,125,50,0.2);">
+                        Accept Order ✅
+                    </button>
                 </div>
             </div>
         </div>
 
-    </div> <!-- dashboard-container closing -->
+    </div>
 
     <script>
-        // లాగిన్ లో ఉన్న యూజర్ వివరాలను లోడ్ చేయడం
-        let currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Farmer' };
+        // లాగిన్ వివరాలు లోడ్ చేయడం
+        let currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'shalini' };
         document.getElementById('userInfo').innerHTML = `Welcome, <strong>${currentUser.name}</strong> (Farmer)`;
 
-        // వాలెట్ బ్యాలెన్స్ లోడ్ చేయడం
-        let users = JSON.parse(localStorage.getItem('veg_market_users')) || [];
-        let activeUser = users.find(u => u.name === currentUser.name && u.role === 'FARMER');
-        if(activeUser) {
-            document.getElementById('balance').innerText = `₹${parseFloat(activeUser.balance).toFixed(2)}`;
-        }
-
-        // 🧠 2. బటన్ నొక్కినప్పుడు రన్ అవ్వాల్సిన యాక్సెప్ట్ లాజిక్
+        // 🧠 బటన్ నొక్కినప్పుడు రన్ అవ్వాల్సిన కరెక్ట్ యాక్సెప్ట్ లాజిక్
         function acceptCustomerOrder() {
-            // లోకల్ స్టోరేజ్‌లో ఆర్డర్ స్టేటస్‌ని 'Accepted' గా మార్చడం
+            // 1. లోకల్ స్టోరేజ్‌లో స్టేటస్‌ని 'Accepted' గా మార్చడం
             localStorage.setItem('current_order_status', 'Accepted');
             
-            // రైతుకు కన్ఫర్మేషన్ మెసేజ్ చూపించడం
-            alert("🎉 Order Accepted Successfully! Notification and Invoice sent to Customer.");
+            // 2. రైతుకు ఒక కన్ఫర్మేషన్ పాప్-అప్ అలర్ట్ మెసేజ్ చూపించడం
+            alert("🔔 Live Notification: Order Accepted Successfully! Bill Invoice generated for Customer.");
             
-            // పేజీని రీఫ్రెష్ చేయడం
+            // 3. పేజీని రీఫ్రెష్ చేయడం
             location.reload();
         }
 
