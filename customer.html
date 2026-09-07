@@ -23,10 +23,18 @@
 
         body {
             background: #f9f9f9;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
         }
 
         .navbar {
             box-shadow: var(--shadow-sm);
+            background: white;
+            padding: 15px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .dashboard-container {
@@ -57,11 +65,6 @@
             gap: 0.5rem;
         }
 
-        .welcome-message::before {
-            content: "👤";
-            font-size: 2rem;
-        }
-
         .action-buttons {
             display: flex;
             gap: 0.75rem;
@@ -86,68 +89,14 @@
             color: white;
         }
 
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-
         .btn-warning {
             background: var(--secondary);
             color: white;
         }
 
-        .btn-warning:hover {
-            background: var(--secondary-dark);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .btn-secondary {
-            background: #e0e0e0;
-            color: var(--text-dark);
-        }
-
-        .btn-secondary:hover {
-            background: #d0d0d0;
-        }
-
-        /* Wallet card */
-        .wallet-card {
-            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-            border-radius: var(--radius);
-            padding: 1.5rem 2rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow-sm);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .wallet-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .wallet-icon {
-            font-size: 2.5rem;
-        }
-
-        .wallet-label {
-            font-size: 1rem;
-            color: var(--primary-dark);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .balance-amount {
-            font-size: 2.2rem;
-            font-weight: 700;
-            color: var(--primary-dark);
-            line-height: 1.2;
+        .btn-danger {
+            background: #d32f2f;
+            color: white;
         }
 
         .dashboard-grid {
@@ -162,11 +111,7 @@
             border-radius: var(--radius);
             padding: 1.5rem;
             box-shadow: var(--shadow-sm);
-            transition: box-shadow 0.2s;
-        }
-
-        .card:hover {
-            box-shadow: var(--shadow-md);
+            margin-bottom: 2rem;
         }
 
         .card-title {
@@ -181,335 +126,95 @@
             padding-bottom: 0.75rem;
         }
 
-        .card-title span {
-            font-size: 1.6rem;
+        /* 📄 Invoice Billing Styling (మీ థీమ్‌కి సరిపోయేలా డిజైన్ చేశాను) */
+        .bill-box { 
+            display: none; 
+            background: #ffffff; 
+            padding: 25px; 
+            border: 2px dashed var(--primary); 
+            border-radius: var(--radius); 
+            max-width: 400px; 
+            margin: 0 auto 2rem auto; 
+            box-shadow: var(--shadow-md); 
         }
-
-        .vegetable-list, .top-users-list, .history-list {
-            max-height: 350px;
-            overflow-y: auto;
-            scrollbar-width: thin;
-            scrollbar-color: var(--primary) var(--gray-light);
-        }
-
-        .vegetable-list::-webkit-scrollbar,
-        .top-users-list::-webkit-scrollbar,
-        .history-list::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .vegetable-list::-webkit-scrollbar-track {
-            background: var(--gray-light);
-            border-radius: 10px;
-        }
-
-        .vegetable-list::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 10px;
-        }
-
-        .vegetable-item {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1rem 0.5rem;
-            border-bottom: 1px solid var(--gray-border);
-            gap: 0.5rem;
-        }
-
-        .vegetable-item:last-child {
-            border-bottom: none;
-        }
-
-        .veg-info {
-            flex: 2 1 200px;
-        }
-
-        .veg-name {
-            font-weight: 600;
-            color: var(--text-dark);
-            font-size: 1.1rem;
-        }
-
-        .veg-details {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-top: 0.2rem;
-        }
-
-        .veg-details span {
-            background: var(--gray-light);
-            padding: 0.2rem 0.5rem;
-            border-radius: 20px;
-            display: inline-block;
-            margin-right: 0.5rem;
-        }
-
-        .buy-controls {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            justify-content: flex-end;
-        }
-
-        .quantity-input {
-            width: 70px;
-            padding: 0.4rem;
-            border: 1px solid var(--gray-border);
-            border-radius: 20px;
-            text-align: center;
-            font-size: 0.9rem;
-        }
-
-        .quantity-input:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        .buy-btn {
-            background: var(--secondary);
-            color: white;
-            border: none;
-            padding: 0.4rem 1rem;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-
-        .buy-btn:hover {
-            background: var(--secondary-dark);
-            transform: scale(1.02);
-        }
-
-        .buy-btn::before {
-            content: "🛒";
-            font-size: 0.9rem;
-        }
-
-        .user-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.7rem 0.5rem;
-            border-bottom: 1px solid var(--gray-border);
-        }
-
-        .user-item:last-child {
-            border-bottom: none;
-        }
-
-        .user-rank {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 28px;
-            height: 28px;
-            background: var(--primary);
-            color: white;
-            border-radius: 50%;
-            font-weight: bold;
-            font-size: 0.9rem;
-            margin-right: 0.8rem;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            flex: 1;
-        }
-
-        .user-details {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .user-name {
-            font-weight: 600;
-            color: var(--text-dark);
-        }
-
-        .user-role {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        .user-balance {
-            font-weight: 600;
-            color: var(--primary-dark);
-            background: #e8f5e9;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-        }
-
-        .history-item {
-            padding: 0.8rem 0.5rem;
-            border-bottom: 1px solid var(--gray-border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .history-item:last-child {
-            border-bottom: none;
-        }
-
-        .history-desc {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .history-icon {
-            font-size: 1.2rem;
-        }
-
-        .history-text {
-            color: var(--text-dark);
-        }
-
-        .history-time {
-            color: var(--text-muted);
-            font-size: 0.8rem;
-        }
-
-        .empty-message {
-            text-align: center;
-            color: var(--text-muted);
-            padding: 2rem;
-            font-style: italic;
-        }
-
-        @media (max-width: 768px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .dashboard-header {
-                flex-direction: column;
-                align-items: start;
-            }
-
-            .wallet-card {
-                flex-direction: column;
-                align-items: start;
-            }
-
-            .vegetable-item {
-                flex-direction: column;
-                align-items: start;
-            }
-
-            .buy-controls {
-                align-self: flex-end;
-            }
-        }
+        .bill-header { text-align: center; color: var(--primary-dark); font-weight: bold; font-size: 22px; margin-bottom: 5px; }
+        .bill-status { text-align: center; font-size: 14px; color: white; background: var(--primary); padding: 6px; border-radius: 20px; margin-bottom: 15px; font-weight: bold; letter-spacing: 0.5px; }
+        .bill-line { display: flex; justify-content: space-between; margin: 10px 0; font-size: 15px; color: var(--text-dark); }
+        .bill-total { display: flex; justify-content: space-between; margin-top: 15px; padding-top: 10px; border-top: 2px dashed var(--gray-border); font-size: 19px; font-weight: bold; color: var(--primary-dark); }
     </style>
 </head>
 <body>
+
     <!-- Navigation -->
     <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo">
-                <span class="logo-icon">🥦</span>
-                <span class="logo-text"><a href="index.html" style="color: #2e7d32; text-decoration: none;">FreshFarm</a></span>
-            </div>
-            <div class="nav-links">
-                <a href="index.html">Home</a>
-                <a href="#" onclick="logout()" style="color: #d32f2f;">Logout</a>
-            </div>
-        </div>
+        <div style="font-size: 24px; font-weight: bold; color: var(--primary); display: flex; align-items: center; gap: 5px;">🥦 FreshFarm</div>
+        <button class="btn btn-danger" onclick="logout()">Logout</button>
     </nav>
 
     <div class="dashboard-container">
-        <!-- Header with user info and actions -->
+        
+        <!-- Header -->
         <div class="dashboard-header">
-            <div class="welcome-message" id="userInfo"></div>
+            <div class="welcome-message" id="userInfo">Welcome, Customer</div>
             <div class="action-buttons">
-                <button class="btn btn-warning" onclick="undo()">↩️ Undo Last</button>
-                <button class="btn btn-secondary" onclick="logout()">🚪 Logout</button>
+                <button class="btn btn-warning" onclick="placeDemoOrder()">🛒 Place Test Order</button>
             </div>
         </div>
 
-        <!-- Wallet Card -->
-        <div class="wallet-card">
-            <div class="wallet-info">
-                <span class="wallet-icon">💰</span>
-                <div>
-                    <div class="wallet-label">Your Balance</div>
-                    <span class="balance-amount" id="balance">₹0.00</span>
-                </div>
-            </div>
-            <button class="btn btn-primary" onclick="addMoney()">➕ Add Money</button>
+        <!-- 📄 1. కస్టమర్ స్క్రీన్ పై ఆటోమేటిక్‌గా కనిపించే లైవ్ బిల్ బాక్స్ -->
+        <div class="bill-box" id="billSection">
+            <div class="bill-header">🥦 FreshFarm Invoice</div>
+            <div class="bill-status">🎉 ORDER ACCEPTED BY FARMER</div>
+            <div class="bill-line"><strong>Customer:</strong> <span id="billCustName">Shalini</span></div>
+            <div class="bill-line"><strong>Item Ordered:</strong> <span>Fresh Tomatoes</span></div>
+            <div class="bill-line"><strong>Quantity:</strong> <span>1 KG</span></div>
+            <div class="bill-line"><strong>Price:</strong> <span>₹25.00 / kg</span></div>
+            <div class="bill-total"><span>Total Paid:</span> <span>₹25.00</span></div>
+            <p style="text-align: center; font-size: 12px; color: var(--text-muted); margin: 15px 0 0 0; font-style: italic;">Thank you for supporting local farmers! 🌾</p>
         </div>
 
-        <!-- Two-column grid for vegetables and top users -->
-        <div class="dashboard-grid">
-            <!-- Available Vegetables Card -->
-            <div class="card">
-                <div class="card-title">
-                    <span>🥕</span> Available Vegetables
-                </div>
-                <div id="vegetableList" class="vegetable-list">
-                    <!-- Populated by JavaScript -->
-                    <div class="empty-message">Loading...</div>
-                </div>
-            </div>
-
-            <!-- Top Users Card -->
-            <div class="card">
-                <div class="card-title">
-                    <span>🏆</span> Top Users
-                </div>
-                <div id="topUsers" class="top-users-list">
-                    <!-- Populated by JavaScript -->
-                    <div class="empty-message">Loading...</div>
-                </div>
-            </div>
+        <!-- Main Card -->
+        <div class="card">
+            <div class="card-title"><span>🛒</span> Available Market Vegetables</div>
+            <p style="color: var(--text-muted);">రైతు అందుబాటులో ఉంచిన తాజా కూరగాయల వివరాలు ఇక్కడ చూడవచ్చు.</p>
+            <p style="font-size: 0.9rem; color: var(--primary); font-weight: bold;">డెమో టెస్టింగ్ కోసం: పైన ఉన్న "Place Test Order" బటన్ నొక్కి రైతు పేజీలో యాక్సెప్ట్ చేయండి.</p>
         </div>
 
-        <!-- Transaction History Card -->
-        <div class="card" style="margin-top: 2rem;">
-            <div class="card-title">
-                <span>📋</span> Transaction History
-            </div>
-            <div id="transactionHistory" class="history-list">
-                <!-- Populated by JavaScript -->
-                <div class="empty-message">Loading...</div>
-            </div>
-        </div>
     </div>
 
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2025 FreshFarm. All rights reserved.</p>
-        </div>
-    </footer>
-
-    <script src="app.js"></script>
     <script>
-        // Load dashboard data when page loads
-        window.onload = function() {
-            loadCustomerDashboard();
-        };
+        // యూజర్ లాగిన్ వివరాలు సెట్ చేయడం
+        let currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Shalini' };
+        document.getElementById('userInfo').innerHTML = `Welcome, <strong>${currentUser.name}</strong> (Customer)`;
+        document.getElementById('billCustName').innerText = currentUser.name;
 
-        // Add money function (prompt then refresh)
-        window.addMoney = function() {
-            const amount = prompt('Enter amount to add (₹):');
-            if (amount && !isNaN(amount) && parseFloat(amount) > 0) {
-                addMoneyToWallet(parseFloat(amount));
-                loadCustomerDashboard();
+        // టెస్ట్ ఆర్డర్ పెట్టే ఫంక్షన్
+        function placeDemoOrder() {
+            localStorage.setItem('current_order_status', 'Pending');
+            alert("🛍️ Order Placed! Now open Farmer Dashboard and click 'Accept Order ✅' button.");
+            location.reload();
+        }
+
+        // 🧠 2. రైతు యాక్సెప్ట్ చేసాడా లేదా అని ప్రతి 2 సెకన్లకు బ్యాక్‌గ్రౌండ్ లో చెక్ చేసే లాజిక్
+        function checkLiveOrderStatus() {
+            let status = localStorage.getItem('current_order_status');
+            
+            if (status === 'Accepted') {
+                // బిల్ బాక్స్ ని స్క్రీన్ పై ఆటోమేటిక్‌గా చూపిస్తుంది
+                document.getElementById('billSection').style.display = 'block';
+            } else {
+                document.getElementById('billSection').style.display = 'none';
             }
-        };
+        }
+        
+        // ప్రతి 2 సెకన్లకు చెక్ రన్ అవుతుంది (Real-time Simulation)
+        setInterval(checkLiveOrderStatus, 2000);
+        checkLiveOrderStatus(); // పేజీ ఓపెన్ అవ్వగానే ఒకసారి రన్ అవ్వడానికి
 
-        // Undo and logout are already global from app.js
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
     </script>
 </body>
 </html>
