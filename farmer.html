@@ -9,30 +9,21 @@
         .navbar { background-color: #ffffff; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .logo { color: #2e7d32; font-size: 24px; font-weight: bold; }
         .logout-btn { background-color: #f44336; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .logout-btn:hover { background-color: #d32f2f; }
         .main-container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
         .welcome-text { color: #2e7d32; font-size: 22px; margin-bottom: 20px; }
         .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
         .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .card h3 { margin-top: 0; color: #333; border-bottom: 2px solid #e0e0e0; padding-bottom: 8px; }
-        
-        /* 🥦 Input Fields Form Styling */
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
         .form-group input { width: 95%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 15px; }
         .btn-submit { background-color: #2e7d32; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; }
-        .btn-submit:hover { background-color: #1b5e20; }
-        
-        /* ⏳ Order Alert Box Styling */
-        .order-alert { background-color: #fff3e0; border: 2px dashed #ff9800; padding: 15px; border-radius: 66px; margin-top: 15px; text-align: center; }
+        .order-alert { background-color: #fff3e0; border: 2px dashed #ff9800; padding: 15px; border-radius: 6px; margin-top: 15px; text-align: center; }
         .btn-accept { background-color: #4caf50; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 15px; margin-top: 10px; }
-        .btn-accept:hover { background-color: #45a049; }
-        .btn-refresh { background-color: #ff9800; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-    <!-- Navbar -->
     <div class="navbar">
         <div class="logo">🥦 FreshFarm</div>
         <button class="logout-btn" onclick="logoutUser()">Logout</button>
@@ -42,77 +33,63 @@
         <div class="welcome-text">Welcome, <span id="farmerNameDisplay">shalini</span> (Farmer)</div>
 
         <div class="grid-container">
-            <!-- 💰 Wallet Balance Card -->
             <div class="card">
                 <h3>💰 Wallet Balance</h3>
-                <h2 style="color: #2e7d32; font-size: 32px; margin: 15px 0;">Wallet ₹60000.00</h2>
-                <button class="btn-refresh" onclick="location.reload()">🔄 Refresh Dashboard</button>
+                <h2 id="farmerWalletBalance" style="color: #2e7d32; font-size: 32px; margin: 15px 0;">₹0.00</h2>
             </div>
 
-            <!-- 🥦 Add Vegetables Input Card -->
             <div class="card">
-                <h3>🌾 Add Crop/Vegetables (పంట వివరాలు ఎంటర్ చేయండి)</h3>
+                <h3>🌾 Add Crop/Vegetables</h3>
                 <div class="form-group">
-                    <label>Vegetable Name (కూరగాయ పేరు):</label>
-                    <input type="text" id="vegName" placeholder="e.g., Tomatoes, Onions">
+                    <label>Vegetable Name:</label>
+                    <input type="text" id="vegName" placeholder="e.g., Tomatoes">
                 </div>
                 <div class="form-group">
-                    <label>Price per KG (ధర ₹):</label>
+                    <label>Price per KG (₹):</label>
                     <input type="number" id="vegPrice" placeholder="e.g., 25">
                 </div>
                 <div class="form-group">
-                    <label>Quantity Available (కేజీలు):</label>
+                    <label>Quantity Available (KG):</label>
                     <input type="number" id="vegQuantity" placeholder="e.g., 10">
                 </div>
-                <button class="btn-submit" onclick="addVegetableStock()">Add Vegetable to Market</button>
+                <button class="btn-submit" onclick="handleFarmerAddVeg()">Add Vegetable to Market</button>
             </div>
         </div>
 
-        <!-- ⏳ Live Customer Orders List Card -->
         <div class="card">
-            <h3>📥 Live Customer Orders (కస్టమర్ నుండి వచ్చిన ఆర్డర్లు)</h3>
+            <h3>📥 Live Customer Orders</h3>
             <div id="ordersSection">
                 <p style="color: #777; font-style: italic;" id="noOrdersText">No pending orders found from customers.</p>
             </div>
         </div>
     </div>
 
+    <script src="app.js"></script>
     <script>
-        let currentUser = JSON.parse(localStorage.getItem('current_user')) || { name: "shalini" };
-        document.getElementById('farmerNameDisplay').innerText = currentUser.name;
+        // మీ app.js కీస్ కి మ్యాచ్ చేయడం
+        let user = getCurrentUser() || { name: "shalini", balance: 60000, mobile: 12345 };
+        document.getElementById('farmerNameDisplay').innerText = user.name;
+        document.getElementById('farmerWalletBalance').innerText = `₹${parseFloat(user.balance).toFixed(2)}`;
 
-        // 1. కూరగాయలను మార్కెట్ లోకి యాడ్ చేసే ఫంక్షన్
-        function addVegetableStock() {
+        function handleFarmerAddVeg() {
             let name = document.getElementById('vegName').value.trim();
             let price = document.getElementById('vegPrice').value.trim();
-            let quantity = document.getElementById('vegQuantity').value.trim();
+            let qty = document.getElementById('vegQuantity').value.trim();
 
-            if (!name || !price || !quantity) {
-                alert("❌ దయచేసి అన్ని బాక్సులను ఫిల్ చేయండి!");
+            if(!name || !price || !qty) {
+                alert("❌ Please fill all fields!");
                 return;
             }
 
-            let vegList = JSON.parse(localStorage.getItem('veg_market_items')) || [];
-            vegList.push({
-                name: name,
-                price: price,
-                quantity: quantity,
-                farmer: currentUser.name
-            });
-
-            // లోకల్ స్టోరేజ్ లో సేవ్ చేయడం (దీనివల్ల కస్టమర్ ఐడీ లోపల ఈ పంట కనిపిస్తుంది)
-            localStorage.setItem('veg_market_items', JSON.stringify(vegList));
-            
-            alert(`✅ ${name} Market లోకి విజయవంతంగా యాడ్ అయ్యింది! కస్టమర్ ఐడీలో ఇది ఇప్పుడు కనిపిస్తుంది.`);
+            // మీ app.js లోని ఒరిజినల్ ఫంక్షన్ కాల్ చేయడం
+            addVegetable(name, price, qty);
             
             document.getElementById('vegName').value = '';
             document.getElementById('vegPrice').value = '';
             document.getElementById('vegQuantity').value = '';
-            
             location.reload();
         }
 
-        // 2. కస్టమర్ పెండింగ్ ఆర్డర్లు చెక్ చేసే ఫంక్షన్
         function checkPendingOrders() {
             let status = localStorage.getItem('current_order_status');
             let ordersSection = document.getElementById('ordersSection');
@@ -124,11 +101,9 @@
             let totalAmount = vegQty * vegPrice;
 
             if (status === 'Pending') {
-                let noText = document.getElementById('noOrdersText');
-                if (noText) noText.style.display = 'none';
-                
+                document.getElementById('noOrdersText').style.display = 'none';
                 ordersSection.innerHTML = `
-                    <div class="order-alert" style="background-color: #fff3e0; border: 2px dashed #ff9800; padding: 15px; border-radius: 6px; text-align: center;">
+                    <div class="order-alert">
                         <p style="font-size: 16px; margin: 5px 0; color: #E65100;">🔔 <strong>New Order Received!</strong></p>
                         <p><strong>Item:</strong> ${vegName} (${vegQty} KG) | <strong>Total:</strong> ₹${totalAmount}.00</p>
                         <p>Tracking Code: <strong>${pendingCode}</strong></p>
@@ -136,38 +111,28 @@
                     </div>
                 `;
             } else if (status === 'Accepted') {
-                ordersSection.innerHTML = `<p style="color: #2e7d32; font-weight: bold;">✅ Last order was accepted successfully. SMS Bill Dispatched!</p>`;
-            } else {
-                ordersSection.innerHTML = `<p style="color: #777; font-style: italic;">No pending orders found from customers.</p>`;
+                ordersSection.innerHTML = `<p style="color: #2e7d32; font-weight: bold;">✅ Last order accepted successfully. SMS Bill Sent!</p>`;
             }
         }
 
-        // 3. రైతు ఆర్డర్ యాక్సెప్ట్ చేసినప్పుడు రన్ అయ్యే ఫంక్షన్ (SMS Dispatch)
         function acceptCustomerOrder() {
             localStorage.setItem('current_order_status', 'Accepted');
-            
             let now = new Date();
             let currentTimeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
             localStorage.setItem('order_accepted_time', currentTimeString);
-
-            let vegName = localStorage.getItem('ordered_vegetable') || 'Fresh Vegetables';
-            let vegQty = localStorage.getItem('ordered_quantity') || '1';
-            let vegPrice = localStorage.getItem('ordered_price') || '25';
-            let totalAmount = vegQty * vegPrice;
 
             let pendingCode = localStorage.getItem('last_generated_code') || 'FF-PEND-1234';
             let approvedCode = pendingCode.replace('PEND', 'APRV');
             localStorage.setItem('last_generated_code', approvedCode);
 
-            let smsMessage = `🥦 FreshFarm Bill\n-------------------\nInvoice Code: ${approvedCode}\nItem: ${vegName} (${vegQty} KG)\nTotal Bill: ₹${totalAmount}.00\nTime: ${currentTimeString}\n-------------------\nStatus: APPROVED & REGISTERED ✅`;
+            let smsMessage = `🥦 FreshFarm Bill\n-------------------\nInvoice Code: ${approvedCode}\nItem: ${localStorage.getItem('ordered_vegetable')}\nTotal Bill: ₹${localStorage.getItem('ordered_quantity') * localStorage.getItem('ordered_price')}.00\nTime: ${currentTimeString}\n-------------------\nStatus: APPROVED ✅`;
 
             alert(`📱 SMS DISPATCHED TO CUSTOMER!\n\n${smsMessage}`);
             location.reload();
         }
 
         function logoutUser() {
-            alert("Logging out...");
-            window.location.href = "login.html";
+            logout(); // app.js లోని ఒరిజినల్ ఫంక్షన్
         }
 
         checkPendingOrders();
