@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Vegetable Selling</title>
+    <title>Admin Dashboard - Veg Market</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
         h1, h2 { color: #333; }
@@ -18,74 +18,103 @@
 
     <h1>Admin Dashboard 📊</h1>
 
-    <!-- ఫార్మర్స్ డేటా టేబుల్ -->
+    <!-- రిజిస్టర్ అయిన అందరి వివరాలు -->
     <div class="container">
-        <h2>Farmers Data (రైతుల వివరాలు)</h2>
+        <h2>All Registered Users (మొత్తం యూజర్లు - రైతులు & కస్టమర్లు)</h2>
         <table>
             <thead>
                 <tr>
                     <th>S.No</th>
                     <th>Name</th>
-                    <th>Vegetable</th>
-                    <th>Quantity (KG)</th>
-                    <th>Price (₹)</th>
+                    <th>Mobile</th>
+                    <th>Role (బాధ్యత)</th>
+                    <th>Wallet Balance</th>
                 </tr>
             </thead>
-            <tbody id="farmerTableBody">
-                <!-- For Loop ద్వారా డేటా ఇక్కడ యాడ్ అవుతుంది -->
-            </tbody>
+            <tbody id="usersTableBody"></tbody>
         </table>
     </div>
 
-    <!-- కస్టమర్స్ డేటా టేబుల్ -->
+    <!-- మార్కెట్ లో ఉన్న కూరగాయల వివరాలు -->
     <div class="container">
-        <h2>Customers Data (కస్టమర్స్ వివరాలు)</h2>
+        <h2>Available Vegetables (మార్కెట్ లో ఉన్న కూరగాయలు)</h2>
         <table>
             <thead>
                 <tr>
                     <th>S.No</th>
-                    <th>Name</th>
-                    <th>Ordered Item</th>
-                    <th>Address</th>
+                    <th>Vegetable Name</th>
+                    <th>Price per KG</th>
+                    <th>Quantity Available</th>
+                    <th>Farmer Name</th>
                 </tr>
             </thead>
-            <tbody id="customerTableBody">
-                <!-- For Loop ద్వారా డేటా ఇక్కడ యాడ్ అవుతుంది -->
-            </tbody>
+            <tbody id="vegTableBody"></tbody>
+        </table>
+    </div>
+
+    <!-- జరిగిన బిజినెస్/ఆర్డర్ల వివరాలు -->
+    <div class="container">
+        <h2>Recent Transactions / Orders (జరిగిన ఆర్డర్లు)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>Type</th>
+                    <th>Buyer Mobile</th>
+                    <th>Seller Mobile</th>
+                    <th>Details</th>
+                    <th>Total Amount</th>
+                </tr>
+            </thead>
+            <tbody id="txTableBody"></tbody>
         </table>
     </div>
 
     <script>
-        // 1. లోకల్ స్టోరేజ్ నుండి ఫార్మర్స్ డేటా తెచ్చుకోవడం
-        // (గమనిక: మీ farmer code లో ఏ పేరుతో సేవ్ చేశారో ఆ కీ ఇక్కడ ఇవ్వాలి, ఉదాహరణకు 'farmers')
-        let farmersList = JSON.parse(localStorage.getItem('farmers')) || [];
-        let farmerTable = document.getElementById('farmerTableBody');
+        // 1. లోకల్ స్టోరేజ్ నుండి మీ ఒరిజినల్ డేటా కీస్ ని తెచ్చుకోవడం
+        let usersList = JSON.parse(localStorage.getItem('veg_market_users')) || [];
+        let vegList = JSON.parse(localStorage.getItem('veg_market_vegetables')) || [];
+        let txList = JSON.parse(localStorage.getItem('veg_market_transactions')) || [];
 
-        // FOR LOOP ఉపయోగించి డేటాని టేబుల్ లో చూపించడం [1]
-        for (let i = 0; i < farmersList.length; i++) {
+        // 2. యూజర్ల వివరాల కోసం For Loop
+        let usersTable = document.getElementById('usersTableBody');
+        for (let i = 0; i < usersList.length; i++) {
             let row = `<tr>
                 <td>${i + 1}</td>
-                <td>${farmersList[i].name || 'N/A'}</td>
-                <td>${farmersList[i].vegetable || 'N/A'}</td>
-                <td>${farmersList[i].quantity || '0'}</td>
-                <td>${farmersList[i].price || '0'}</td>
+                <td>${usersList[i].name}</td>
+                <td>${usersList[i].mobile}</td>
+                <td><b>${usersList[i].role}</b></td>
+                <td>支${usersList[i].balance.toFixed(2)}</td>
             </tr>`;
-            farmerTable.innerHTML += row;
+            usersTable.innerHTML += row;
         }
 
-        // 2. లోకల్ స్టోరేజ్ నుండి కస్టమర్స్ డేటా తెచ్చుకోవడం
-        let customersList = JSON.parse(localStorage.getItem('customers')) || [];
-        let customerTable = document.getElementById('customerTableBody');
-
-        // FOR LOOP ఉపయోగించి కస్టమర్స్ డేటాని టేబుల్ లో చూపించడం [1]
-        for (let j = 0; j < customersList.length; j++) {
+        // 3. కూరగాయల వివరాల కోసం For Loop
+        let vegTable = document.getElementById('vegTableBody');
+        for (let j = 0; j < vegList.length; j++) {
             let row = `<tr>
                 <td>${j + 1}</td>
-                <td>${customersList[j].name || 'N/A'}</td>
-                <td>${customersList[j].item || 'N/A'}</td>
-                <td>${customersList[j].address || 'N/A'}</td>
+                <td>${vegList[j].name}</td>
+                <td>支${vegList[j].pricePerKg}</td>
+                <td>${vegList[j].quantityKg} KG</td>
+                <td>${vegList[j].farmerName}</td>
             </tr>`;
-            customerTable.innerHTML += row;
+            vegTable.innerHTML += row;
+        }
+
+        // 4. ట్రాన్సాక్షన్స్/ఆర్డర్ల వివరాల కోసం For Loop
+        let txTable = document.getElementById('txTableBody');
+        for (let k = 0; k < txList.length; k++) {
+            let details = txList[k].type === 'BUY' ? `Bought ${txList[k].quantityKg}kg ${txList[k].vegetableName}` : 'Added Money';
+            let row = `<tr>
+                <td>${k + 1}</td>
+                <td>${txList[k].type}</td>
+                <td>${txList[k].senderId}</td>
+                <td>${txList[k].receiverId}</td>
+                <td>${details}</td>
+                <td>支${txList[k].amount.toFixed(2)}</td>
+            </tr>`;
+            txTable.innerHTML += row;
         }
     </script>
 </body>
