@@ -4,259 +4,154 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Farmer Dashboard - FreshFarm</title>
-    <link rel="stylesheet" href="styles.css">
     <style>
-        .dashboard-container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 20px;
-        }
-
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .welcome-message {
-            font-size: 1.5rem;
-            color: #1b5e20;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 4px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-primary {
-            background: #2e7d32;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #1b5e20;
-        }
-
-        .btn-secondary {
-            background: #757575;
-            color: white;
-        }
-
-        .btn-warning {
-            background: #ff9800;
-            color: white;
-        }
-
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .dashboard-card {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            padding: 1.5rem;
-        }
-
-        .card-title {
-            font-size: 1.3rem;
-            color: #1b5e20;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            border-bottom: 2px solid #e0e0e0;
-            padding-bottom: 0.75rem;
-        }
-
-        .balance-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .balance-amount {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #2e7d32;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.3rem;
-            font-weight: 500;
-            color: #333;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 1rem;
-        }
-
-        .history-list {
-            max-height: 300px;
-            overflow-y: auto;
-            border: 1px solid #eee;
-            border-radius: 4px;
-        }
-
-        .empty-message {
-            padding: 2rem;
-            text-align: center;
-            color: #999;
-            font-style: italic;
-        }
-
-        .full-width {
-            grid-column: 1 / -1;
-        }
+        body { font-family: Arial, sans-serif; margin: 0; background-color: #f4f4f4; }
+        .navbar { background-color: #ffffff; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .logo { color: #2e7d32; font-size: 24px; font-weight: bold; }
+        .logout-btn { background-color: #757575; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
+        .main-container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
+        .welcome-text { color: #2e7d32; font-size: 22px; margin-bottom: 20px; }
+        .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .card h3 { margin-top: 0; color: #333; border-bottom: 2px solid #e0e0e0; padding-bottom: 8px; }
+        
+        /* 🥦 Input Fields Form Styling */
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
+        .form-group input { width: 95%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 15px; }
+        .btn-submit { background-color: #2e7d32; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; }
+        .btn-submit:hover { background-color: #1b5e20; }
+        
+        /* ⏳ Order Alert Box Styling */
+        .order-alert { background-color: #fff3e0; border: 2px dashed #ff9800; padding: 15px; border-radius: 6px; margin-top: 15px; text-align: center; }
+        .btn-accept { background-color: #4caf50; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 15px; margin-top: 10px; }
+        .btn-accept:hover { background-color: #45a049; }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar" style="background: white; padding: 15px 24px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center;">
-        <div class="logo">
-            <span class="logo-icon">🥦</span>
-            <span class="logo-text" style="font-size: 24px; font-weight: bold; color: #2e7d32;">FreshFarm</span>
-        </div>
-        <button class="btn btn-secondary" onclick="logout()">Logout</button>
-    </nav>
 
-    <div class="dashboard-container">
-        <!-- Header -->
-        <div class="dashboard-header">
-            <div class="welcome-message" id="userInfo">Welcome, Farmer</div>
-            <div class="action-buttons">
-                <button class="btn btn-warning" onclick="location.reload()">🔄 Refresh Dashboard</button>
-            </div>
-        </div>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">🥦 FreshFarm</div>
+        <button class="logout-btn" onclick="logoutUser()">Logout</button>
+    </div>
 
-        <!-- Main grid -->
-        <div class="dashboard-grid">
-            <!-- Wallet Card -->
-            <div class="dashboard-card">
-                <div class="card-title">
-                    <span>💰</span> Wallet Balance
-                </div>
-                <div class="balance-info">
-                    <span class="balance-amount" id="balance">₹60000.00</span>
-                    <button class="btn btn-primary">Add Money</button>
-                </div>
+    <div class="main-container">
+        <div class="welcome-text">Welcome, <span id="farmerNameDisplay">shalini</span> (Farmer)</div>
+
+        <div class="grid-container">
+            <!-- 💰 Wallet Balance Card -->
+            <div class="card">
+                <h3>💰 Wallet Balance</h3>
+                <h2 style="color: #2e7d32; font-size: 32px; margin: 15px 0;"> canడు ₹60000.00</h2>
             </div>
 
-            <!-- Simulation Info -->
-            <div class="dashboard-card">
-                <div class="card-title">
-                    <span>🌾</span> Farm Summary
+            <!-- 🥦 Add Vegetables Input Card -->
+            <div class="card">
+                <h3>🌾 Add Crop/Vegetables (పంట వివరాలు ఎంటర్ చేయండి)</h3>
+                <div class="form-group">
+                    <label>Vegetable Name (కూరగాయ పేరు):</label>
+                    <input type="text" id="vegName" placeholder="e.g., Tomatoes, Onions">
                 </div>
-                <p style="color: #666; margin: 0;">రైతుగా మీ పంట వివరాలు మరియు కస్టమర్ ఆర్డర్లను ఇక్కడ నిర్వహించవచ్చు.</p>
+                <div class="form-group">
+                    <label>Price per KG (ధర ₹):</label>
+                    <input type="number" id="vegPrice" placeholder="e.g., 25">
+                </div>
+                <div class="form-group">
+                    <label>Quantity Available (కేజీలు):</label>
+                    <input type="number" id="vegQuantity" placeholder="e.g., 10">
+                </div>
+                <button class="btn-submit" onclick="addVegetableStock()">Add Vegetable to Market</button>
             </div>
         </div>
 
-        <!-- Transaction History Card -->
-        <div class="dashboard-card full-width" style="margin-bottom: 2rem;">
-            <div class="card-title">
-                <span>📋</span> Transaction History
-            </div>
-            <div id="transactionHistory" class="history-list">
-                <div class="empty-message">No history found.</div>
+        <!-- ⏳ Live Customer Orders List Card -->
+        <div class="card">
+            <h3>📥 Live Customer Orders (కస్టమర్ నుండి వచ్చిన ఆర్డర్లు)</h3>
+            <div id="ordersSection">
+                <p style="color: #777; font-style: italic;" id="noOrdersText">No pending orders found from customers.</p>
             </div>
         </div>
-
-        <!-- 🔔 కస్టమర్ ఆర్డర్స్ మేనేజర్ (యాక్సెప్ట్ బటన్) -->
-        <div class="dashboard-card full-width">
-            <div class="card-title">
-                <span>🤝</span> Customer Orders Status
-            </div>
-            <div style="padding: 1.5rem; background: #e8f5e9; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border: 1px solid #c8e6c9;">
-                <div>
-                    <h3 style="margin: 0; color: #1b5e20; font-size: 1.2rem;">New Order Received! 🛍️</h3>
-                    <p style="margin: 5px 0 0 0; color: #555; font-size: 0.95rem;">కస్టమర్ (Shalini) నుండి వచ్చిన ఆర్డర్‌ను యాక్సెప్ట్ చేయడానికి కింద బటన్ నొక్కండి.</p>
-                </div>
-                <div>
-                    <!-- 🧠 ఇక్కడ మీ పాత యాక్సెప్ట్ బటన్ కొత్త ఫంక్షన్ తో లింక్ చేయబడింది -->
-                    <button class="btn btn-primary" onclick="acceptCustomerOrder()" style="font-size: 1.1rem; padding: 0.8rem 2rem; border-radius: 30px; box-shadow: 0 4px 10px rgba(46,125,50,0.2);">
-                        Accept Order ✅
-                    </button>
-                </div>
-            </div>
-        </div>
-
     </div>
 
     <script>
-        // లాగిన్ వివరాలు లోడ్ చేయడం
-        let currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'shalini' };
-        document.getElementById('userInfo').innerHTML = `Welcome, <strong>${currentUser.name}</strong> (Farmer)`;
+        // లాగిన్ అయిన రైతు పేరు సెట్ చేయడం
+        let currentUser = JSON.parse(localStorage.getItem('current_user')) || { name: "shalini" };
+        document.getElementById('farmerNameDisplay').innerText = currentUser.name;
 
-        // 🧠 రైతు ఆర్డర్ యాక్సెప్ట్ చేసినప్పుడు రన్ అయ్యే కొత్త ఫ్యూచర్-ఫ్లో లాజిక్
-        function acceptCustomerOrder() {
-            let status = localStorage.getItem('current_order_status');
-            
-            if (status !== 'Pending') {
-                alert("❌ No pending orders available to accept! Please place an order from Customer Dashboard first.");
+        // 1. కూరగాయలను లోకల్ స్టోరేజ్ లోకి యాడ్ చేసే ఫంక్షన్
+        function addVegetableStock() {
+            let name = document.getElementById('vegName').value.trim();
+            let price = document.getElementById('vegPrice').value.trim();
+            let quantity = document.getElementById('vegQuantity').value.trim();
+
+            if (!name || !price || !quantity) {
+                alert("❌ దయచేసి అన్ని బాక్సులను ఫిల్ చేయండి!");
                 return;
             }
 
-            // 1. స్టేటస్‌ని 'Accepted' గా మార్చడం
+            let vegList = JSON.parse(localStorage.getItem('veg_market_items')) || [];
+            vegList.push({
+                name: name,
+                price: price,
+                quantity: quantity,
+                farmer: currentUser.name
+            });
+
+            localStorage.setItem('veg_market_items', JSON.stringify(vegList));
+            alert(`✅ ${name} Market లోకి విజయవంతంగా యాడ్ అయ్యింది!`);
+            
+            // బాక్సులను ఖాళీ చేయడం
+            document.getElementById('vegName').value = '';
+            document.getElementById('vegPrice').value = '';
+            document.getElementById('vegQuantity').value = '';
+        }
+
+        // 2. కస్టమర్ పెండింగ్ ఆర్డర్లు ఏమైనా ఉన్నాయా అని చెక్ చేసే ఫంక్షన్
+        function checkPendingOrders() {
+            let status = localStorage.getItem('current_order_status');
+            let ordersSection = document.getElementById('ordersSection');
+            let pendingCode = localStorage.getItem('last_generated_code') || 'FF-PEND-1234';
+
+            if (status === 'Pending') {
+                document.getElementById('noOrdersText').style.display = 'none';
+                ordersSection.innerHTML = `
+                    <div class="order-alert">
+                        <p style="font-size: 16px; margin: 5px 0;">🔔 <strong>New Order Notification!</strong></p>
+                        <p>A customer has placed an order. Tracking Code: <strong>${pendingCode}</strong></p>
+                        <button class="btn-accept" onclick="acceptCustomerOrder()">Accept Order & Send SMS ✅</button>
+                    </div>
+                `;
+            } else if (status === 'Accepted') {
+                ordersSection.innerHTML = `<p style="color: #2e7d32; font-weight: bold;">✅ Last order was accepted successfully. Waiting for new orders...</p>`;
+            }
+        }
+
+        // 3. రైతు ఆర్డర్ యాక్సెప్ట్ చేసినప్పుడు రన్ అయ్యే ఫంక్షన్
+        function acceptCustomerOrder() {
             localStorage.setItem('current_order_status', 'Accepted');
             
-            // 2. 🕒 లైవ్ టైమ్ మరియు తేదీని తీసుకోవడం (Time Stamp)
             let now = new Date();
-            let currentTimeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}); // e.g., "10:50 AM"
+            let currentTimeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
             localStorage.setItem('order_accepted_time', currentTimeString);
 
-            // 3. పాత పెండింగ్ కోడ్‌ని అప్రూవ్డ్ కోడ్‌గా మార్చడం (PEND -> APRV)
             let pendingCode = localStorage.getItem('last_generated_code') || 'FF-PEND-1234';
             let approvedCode = pendingCode.replace('PEND', 'APRV');
             localStorage.setItem('last_generated_code', approvedCode);
 
-            // 📱 4. SMS బిల్లు రూపంలో ఒక రియలిస్టిక్ మొబైల్ అలర్ట్ చూపించడం
-            let vegName = localStorage.getItem('ordered_vegetable') || 'Fresh Tomatoes';
-            let vegQty = localStorage.getItem('ordered_quantity') || '2.0';
-            let vegPrice = localStorage.getItem('ordered_price') || '25';
-            let totalPaid = parseFloat(vegQty) * parseFloat(vegPrice);
+            let smsMessage = `🥦 FreshFarm Approved Bill\n-------------------\nInvoice Code: ${approvedCode}\nStatus: ACCEPTED & REGISTERED\nTime: ${currentTimeString}\n-------------------\nYour fresh vegetables are ready for delivery! 🌾`;
 
-            let smsMessage = `🥦 FreshFarm Approved Bill\n---------------------------\nInvoice Code: ${approvedCode}\nStatus: ACCEPTED & REGISTERED\nTime Revealed: ${currentTimeString}\nFarmer Name: ${currentUser.name}\nItem: ${vegName} (${vegQty} KG)\nTotal Amount: ₹${totalPaid}.00\n---------------------------\nYour fresh vegetables are ready for delivery! 🌾`;
-
-            alert(`📱 SMS DISPATCHED TO CUSTOMER MOBILE!\n\n${smsMessage}`);
-            
-            // 5. పేజీని రీఫ్రెష్ చేయడం
+            alert(`📱 SMS DISPATCHED TO CUSTOMER PHONE!\n\n${smsMessage}`);
             location.reload();
         }
 
-        function logout() {
-            localStorage.removeItem('currentUser');
-            window.location.href = 'login.html';
+        function logoutUser() {
+            alert("Logging out...");
+            window.location.href = "login.html";
         }
+
+        // పేజీ ఓపెన్ అవ్వగానే ఆర్డర్లను చెక్ చేయడం
+        checkPendingOrders();
     </script>
 </body>
 </html>
