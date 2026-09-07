@@ -60,7 +60,7 @@
                     </tr>
                 </thead>
                 <tbody id="masterTableBody">
-                    <!-- For Loops ద్వారా డేటా మొత్తం ఇక్కడే కలుస్తుంది -->
+                    <!-- Data here -->
                 </tbody>
             </table>
         </div>
@@ -72,14 +72,13 @@
         const CORRECT_PASS = "admin123";
 
         function checkAdminLogin() {
-            let inputUser = document.getElementById('adminUser').value;
-            let inputPass = document.getElementById('adminPass').value;
-            let errorMsg = document.getElementById('errorMsg');
+            var inputUser = document.getElementById('adminUser').value.trim();
+            var inputPass = document.getElementById('adminPass').value.trim();
+            var errorMsg = document.getElementById('errorMsg');
 
             if (inputUser === CORRECT_USER && inputPass === CORRECT_PASS) {
                 document.getElementById('loginBox').style.display = 'none';
                 document.getElementById('adminContent').style.display = 'block';
-                document.body.style.justifyContent = 'flex-start';
                 loadSingleTableData();
             } else {
                 errorMsg.style.display = 'block';
@@ -89,7 +88,6 @@
         function adminLogout() {
             document.getElementById('loginBox').style.display = 'block';
             document.getElementById('adminContent').style.display = 'none';
-            document.body.style.justifyContent = 'center';
             document.getElementById('adminUser').value = '';
             document.getElementById('adminPass').value = '';
             document.getElementById('errorMsg').style.display = 'none';
@@ -97,38 +95,38 @@
 
         // 🔄 లూప్స్ ఉపయోగించి మొత్తం డేటాని ఒకే టేబుల్‌లోకి తీసుకురావడం
         function loadSingleTableData() {
-            let tableBody = document.getElementById('masterTableBody');
-            tableBody.innerHTML = ''; // పాత డేటా క్లియర్ చేయడానికి
-            let serialNumber = 1;
+            var tableBody = document.getElementById('masterTableBody');
+            tableBody.innerHTML = ''; 
+            var serialNumber = 1;
 
             // 1. లోకల్ స్టోరేజ్ నుండి యూజర్ల లిస్ట్ లూప్ చేయడం
-            let usersList = JSON.parse(localStorage.getItem('veg_market_users')) || [];
-            for (let i = 0; i < usersList.length; i++) {
-                let roleClass = usersList[i].role === 'FARMER' ? 'badge-farmer' : 'badge-customer';
+            var usersList = JSON.parse(localStorage.getItem('veg_market_users')) || [];
+            for (var i = 0; i < usersList.length; i++) {
+                var roleClass = usersList[i].role === 'FARMER' ? 'badge-farmer' : 'badge-customer';
                 
-                let row = `<tr>
-                    <td>${serialNumber++}</td>
-                    <td><strong>${usersList[i].name || 'N/A'}</strong></td>
-                    <td>${usersList[i].mobile || 'N/A'}</td>
-                    <td><span class="${roleClass}">${usersList[i].role || 'USER'}</span></td>
-                    <td>₹${usersList[i].balance || '0.00'}</td>
-                    <td><em style="color: #666;">Registered profile</em></td>
-                </tr>`;
+                var row = '<tr>' +
+                    '<td>' + (serialNumber++) + '</td>' +
+                    '<td><strong>' + (usersList[i].name || 'N/A') + '</strong></td>' +
+                    '<td>' + (usersList[i].mobile || 'N/A') + '</td>' +
+                    '<td><span class="' + roleClass + '">' + (usersList[i].role || 'USER') + '</span></td>' +
+                    '<td>₹' + (usersList[i].balance || '0.00') + '</td>' +
+                    '<td><em style="color: #666;">Registered profile</em></td>' +
+                '</tr>';
                 tableBody.innerHTML += row;
             }
 
-            // 2. లోకల్ స్టోరేజ్ నుండి కూరగాయల అమ్మకాల లిస్ట్ కూడా ఇదే టేబుల్‌లోకి లూప్ చేయడం
-            let vegList = JSON.parse(localStorage.getItem('veg_market_items')) || [];
-            for (let j = 0; j < vegList.length; j++) {
-                let row = `<tr>
-                    <td>${serialNumber++}</td>
-                    <td><strong>${vegList[j].farmer || 'N/A'}</strong></td>
-                    <td>--</td>
-                    <td><span class="badge-farmer">FARMER STOCK</span></td>
-                    <td>--</td>
-                    <td>Added: <strong>${vegList[j].name || 'N/A'}</strong> (${vegList[j].quantity || '0'} KG) @ ₹${vegList[j].price || '0'}/kg</td>
-                </tr>`;
-                tableBody.innerHTML += row;
+            // 2. లోకల్ స్టోరేజ్ నుండి కూరగాయల లిస్ట్ లూప్ చేయడం
+            var vegList = JSON.parse(localStorage.getItem('veg_market_items')) || [];
+            for (var j = 0; j < vegList.length; j++) {
+                var rowVeg = '<tr>' +
+                    '<td>' + (serialNumber++) + '</td>' +
+                    '<td><strong>' + (vegList[j].farmer || 'N/A') + '</strong></td>' +
+                    '<td>--</td>' +
+                    '<td><span class="badge-farmer">FARMER STOCK</span></td>' +
+                    '<td>--</td>' +
+                    '<td>Added: <strong>' + (vegList[j].name || 'N/A') + '</strong> (' + (vegList[j].quantity || '0') + ' KG) @ ₹' + (vegList[j].price || '0') + '/kg</td>' +
+                '</tr>';
+                tableBody.innerHTML += rowVeg;
             }
         }
     </script>
