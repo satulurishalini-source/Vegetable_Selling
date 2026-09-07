@@ -6,7 +6,7 @@
     <title>Admin Dashboard - Secure Single Table</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 80vh; }
-        .container { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); margin-bottom: 20px; width: 100%; max-width: 900px; }
+        .container { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); margin-bottom: 20px; width: 100%; max-width: 950px; }
         
         /* 🔒 Login Form Styling */
         .login-box { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 320px; text-align: center; }
@@ -26,6 +26,8 @@
         /* Roles Style */
         .badge-farmer { background-color: #E8F5E9; color: #2E7D32; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 13px; }
         .badge-customer { background-color: #E3F2FD; color: #1565C0; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 13px; }
+        .badge-pending { background-color: #FFF3E0; color: #E65100; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 13px; }
+        .badge-accepted { background-color: #E8F5E9; color: #1B5E20; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 13px; }
 
         #adminContent { display: none; width: 100%; max-width: 950px; }
     </style>
@@ -56,7 +58,7 @@
                         <th>Mobile Number</th>
                         <th>Role (బాధ్యత)</th>
                         <th>Wallet Balance</th>
-                        <th>Activity Details (కూరగాయలు / ధర వివరాలు)</th>
+                        <th>Activity & SMS Bill Details (కూరగాయలు / ధర / ఆర్డర్ వివరాలు)</th>
                     </tr>
                 </thead>
                 <tbody id="masterTableBody">
@@ -67,9 +69,9 @@
     </div>
 
     <script>
-        // 🔑 Login Credentials
-        const CORRECT_USER = "admin";
-        const CORRECT_PASS = "admin123";
+        // 🔑 1. లాగిన్ వివరాలు మీ పేరుతో మార్చబడ్డాయి (Username: shalini, Password: shalini123)
+        const CORRECT_USER = "shalini";
+        const CORRECT_PASS = "shalini123";
 
         function checkAdminLogin() {
             var inputUser = document.getElementById('adminUser').value.trim();
@@ -79,6 +81,7 @@
             if (inputUser === CORRECT_USER && inputPass === CORRECT_PASS) {
                 document.getElementById('loginBox').style.display = 'none';
                 document.getElementById('adminContent').style.display = 'block';
+                document.body.style.justifyContent = 'flex-start';
                 loadSingleTableData();
             } else {
                 errorMsg.style.display = 'block';
@@ -88,6 +91,7 @@
         function adminLogout() {
             document.getElementById('loginBox').style.display = 'block';
             document.getElementById('adminContent').style.display = 'none';
+            document.body.style.justifyContent = 'center';
             document.getElementById('adminUser').value = '';
             document.getElementById('adminPass').value = '';
             document.getElementById('errorMsg').style.display = 'none';
@@ -127,6 +131,32 @@
                     '<td>Added: <strong>' + (vegList[j].name || 'N/A') + '</strong> (' + (vegList[j].quantity || '0') + ' KG) @ ₹' + (vegList[j].price || '0') + '/kg</td>' +
                 '</tr>';
                 tableBody.innerHTML += rowVeg;
+            }
+
+            // 3. 🛒 కస్టమర్ కార్ట్ ఆర్డర్ మరియు లైవ్ SMS బిల్లు ట్రాకింగ్ వివరాలను లూప్ చేయడం
+            var orderStatus = localStorage.getItem('current_order_status');
+            if (orderStatus && orderStatus !== 'Empty') {
+                var lastCode = localStorage.getItem('last_generated_code') || 'FF-PEND-1122';
+                var vegName = localStorage.getItem('ordered_vegetable') || 'Fresh Tomatoes';
+                var vegQty = localStorage.getItem('ordered_quantity') || '2';
+                var vegPrice = localStorage.getItem('ordered_price') || '30';
+                var totalAmount = vegQty * vegPrice;
+                var acceptedTime = localStorage.getItem('order_accepted_time') || 'Waiting...';
+                
+                var statusBadge = orderStatus === 'Pending' ? 'badge-pending' : 'badge-accepted';
+                var activityText = orderStatus === 'Pending' ? 
+                    'Ordered: <strong>' + vegName + '</strong> (' + vegQty + ' KG) - Total: ₹' + totalAmount + '.00 | Status: ⏳ Pending Farmer Acceptance' :
+                    'Ordered: <strong>' + vegName + '</strong> (' + vegQty + ' KG) - Total: ₹' + totalAmount + '.00 | 📬 <strong>SMS Bill Dispatched</strong> at ' + acceptedTime;
+
+                var rowOrder = '<tr>' +
+                    '<td>' + (serialNumber++) + '</td>' +
+                    '<td><strong>' + (localStorage.getItem('customer_name') || 'shalini') + '</strong></td>' +
+                    '<td>--</td>' +
+                    '<td><span class="' + statusBadge + '">CART ORDER (' + orderStatus.toUpperCase() + ')</span></td>' +
+                    '<td>--</td>' +
+                    '<td>Code: <strong>' + lastCode + '</strong> | ' + activityText + '</td>' +
+                '</tr>';
+                tableBody.innerHTML += rowOrder;
             }
         }
     </script>
