@@ -11,13 +11,16 @@
         .logout-btn { background-color: #f44336; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .logout-btn:hover { background-color: #d32f2f; }
         .main-container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
-        .welcome-text { color: #2e7d32; font-size: 22px; margin-bottom: 20px; }
+        .welcome-text { color: #2e7d32; font-size: 22px; margin-bottom: 20px; font-weight: bold; }
         
         .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .card h3 { margin-top: 0; color: #333; border-bottom: 2px solid #e0e0e0; padding-bottom: 8px; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 20px; }
         
-        /* 🛒 Cart & Bill Design */
+        /* Headings Style */
+        .card h3 { margin-top: 0; color: #2e7d32; border-bottom: 2px solid #e0e0e0; padding-bottom: 8px; font-size: 18px; font-weight: bold; }
+        .card h4 { margin: 0 0 10px 0; color: #333; font-size: 16px; font-weight: bold; }
+        
+        /* Cart & Bill Design */
         .cart-item { background: #fafafa; padding: 12px; border-left: 4px solid #ff9800; border-radius: 4px; margin-top: 10px; }
         .bill-box { background: #e8f5e9; padding: 20px; border: 2px dashed #4caf50; border-radius: 8px; margin-top: 20px; font-family: monospace; font-size: 14px; }
         .bill-header { text-align: center; font-size: 18px; font-weight: bold; color: #2e7d32; margin-bottom: 10px; }
@@ -34,15 +37,17 @@
     <div class="main-container">
         <div class="welcome-text">Welcome, <span id="custNameDisplay">shalini</span> (Customer)</div>
 
-        <!-- Info Notice -->
-        <p style="background-color: #e8f5e9; padding: 12px; border-left: 4px solid #2e7d32; border-radius: 4px; color: #1b5e20; font-size: 14px;">
+        <!-- Info Notice Box -->
+        <p style="background-color: #e8f5e9; padding: 12px; border-left: 4px solid #2e7d32; border-radius: 4px; color: #1b5e20; font-size: 14px; line-height: 1.5;">
             💡 <strong>డెమో టెస్టింగ్ విధానం:</strong> రైతు లాగిన్ లో పంట వివరాలు యాడ్ చేసిన తర్వాత, ఇక్కడ కనిపించే కూరగాయల పక్కన ఉన్న "Buy Now" బటన్ నొక్కండి. మీ ఆర్డర్ రైతు డాష్‌బోర్డ్ లోపల <strong>Accept</strong> అవ్వగానే ఇక్కడ లైవ్ బిల్లు కనిపిస్తుంది!
         </p>
 
-        <!-- 🥦 1. Available Market Vegetables Card -->
-        <div class="card" style="margin-bottom: 20px;">
+        <!-- 🥦 1. Available Market Vegetables -->
+        <div class="card">
             <h3>🥦 Available Market Vegetables (మార్కెట్ లో ఉన్న కూరగాయలు)</h3>
-            <div id="availableVegetablesSection" style="margin-top: 15px;"></div>
+            <div id="availableVegetablesSection" style="margin-top: 15px;">
+                <!-- Vegetables Load Here -->
+            </div>
         </div>
 
         <div class="grid-container">
@@ -50,7 +55,7 @@
             <div class="card">
                 <h3>🛒 Vegetables in Your Cart (మీ కార్ట్)</h3>
                 <div id="cartSection">
-                    <p style="color: #999; font-style: italic;">Your Cart is Empty.</p>
+                    <p style="color: #999; font-style: italic; margin: 0;">Your Cart is Empty.</p>
                 </div>
             </div>
 
@@ -58,15 +63,14 @@
             <div class="card">
                 <h3>📄 Live SMS Bill Invoice (రైతు అప్రూవ్ చేసిన బిల్లు)</h3>
                 <div id="billSection" style="display: none;">
-                    <!-- Live Dynamic Bill Generated Here -->
+                    <!-- Live Bill Generated Here -->
                 </div>
-                <p style="color: #999; font-style: italic;" id="noBillText">Waiting for order confirmation to generate invoice.</p>
+                <p style="color: #999; font-style: italic; margin: 0;" id="noBillText">Waiting for order confirmation to generate invoice.</p>
             </div>
         </div>
     </div>
 
     <script>
-        // లాగిన్ అయిన కస్టమర్ పేరు సెట్ చేయడం
         let currentUser = JSON.parse(localStorage.getItem('current_user')) || { name: "shalini" };
         document.getElementById('custNameDisplay').innerText = currentUser.name;
         localStorage.setItem('customer_name', currentUser.name);
@@ -80,13 +84,13 @@
             marketSection.innerHTML = ''; 
 
             if (vegList.length === 0) {
-                marketSection.innerHTML = `<p style="color: #777; font-style: italic;">ప్రస్తుతానికి మార్కెట్ లో ఎలాంటి కూరగాయలు అందుబాటులో లేవు.</p>`;
+                marketSection.innerHTML = `<p style="color: #777; font-style: italic; margin: 0;">ప్రస్తుతానికి మార్కెట్ లో ఎలాంటి కూరగాయలు అందుబాటులో లేవు. దయచేసి రైతు ఐడీలో పంటను యాడ్ చేయండి.</p>`;
                 return;
             }
 
             for (let i = 0; i < vegList.length; i++) {
                 let itemCard = `
-                    <div style="background: #fff; padding: 15px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+                    <div style="background: #fff; padding: 15px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; font-family: Arial, sans-serif;">
                         <div>
                             <h4 style="margin: 0; color: #2e7d32;">🥦 ${vegList[i].name}</h4>
                             <p style="margin: 5px 0 0 0; font-size: 14px; color: #555;">
@@ -132,7 +136,7 @@
             let noBillText = document.getElementById('noBillText');
 
             if (status === 'Empty') {
-                if (cartSection) cartSection.innerHTML = `<p style="color: #999; font-style: italic;">Your Cart is Empty.</p>`;
+                if (cartSection) cartSection.innerHTML = `<p style="color: #999; font-style: italic; margin: 0;">Your Cart is Empty.</p>`;
             } else {
                 let badgeColor = status === 'Pending' ? '#FF9800' : '#4CAF50';
                 if (cartSection) {
@@ -159,14 +163,8 @@
                         <p style="text-align:center; font-weight:bold; color:#4CAF50; margin: 5px 0;">✔ ORDER APPROVED & REGISTERED</p>
                         <p>-----------------------------------</p>
                         <p><strong>Invoice Code:</strong> <span style="color:#2e7d32; font-weight:bold;">${liveCode}</span></p>
+                        <p><strong>Customer:</strong> ${currentUser.name}</p>
                         <p><strong>Product:</strong> ${vegName}</p>
                         <p><strong>Quantity:</strong> ${vegQty} KG @ ₹${vegPrice}/kg</p>
                         <p><strong>Total Bill:</strong> ₹${totalAmount}.00</p>
                         <p><strong>Dispatched Time:</strong> ${acceptTime}</p>
-                        <p>-----------------------------------</p>
-                        <p style="text-align: center; font-size: 12px; color: #666; margin: 0;">📬 An SMS bill has been sent to your registered mobile number!</p>
-                    </div>
-                `;
-                billSection.style.display = 'block';
-            } else {
-                if (billSection) billSection.style.display = 'none';
