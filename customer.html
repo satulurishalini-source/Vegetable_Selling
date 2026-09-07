@@ -101,12 +101,11 @@
         .btn-warning { background: var(--secondary); color: white; }
         .btn-danger { background: #d32f2f; color: white; }
 
-        /* 📄 Invoice Billing Card Styling (న్యూ లుక్) */
+        /* 📄 Invoice Billing Card Styling */
         .bill-card {
             display: none;
             background: #ffffff;
             padding: 25px;
-            border: 2px dashed var(--primary);
             border-radius: var(--radius);
             max-width: 450px;
             margin: 0 auto 2rem auto;
@@ -114,7 +113,7 @@
             animation: fadeIn 0.5s ease-in-out;
         }
         .bill-header { text-align: center; color: var(--primary-dark); font-weight: bold; font-size: 24px; margin-bottom: 5px; }
-        .bill-status { text-align: center; font-size: 14px; color: white; background: var(--primary); padding: 6px 12px; border-radius: 20px; margin-bottom: 20px; font-weight: bold; letter-spacing: 0.5px; }
+        .bill-status { text-align: center; font-size: 14px; color: white; padding: 6px 12px; border-radius: 20px; margin-bottom: 20px; font-weight: bold; letter-spacing: 0.5px; }
         .bill-line { display: flex; justify-content: space-between; margin: 12px 0; font-size: 16px; color: var(--text-dark); }
         .bill-total { display: flex; justify-content: space-between; margin-top: 15px; padding-top: 12px; border-top: 2px dashed var(--gray-border); font-size: 20px; font-weight: bold; color: var(--primary-dark); }
 
@@ -138,29 +137,20 @@
         <div class="dashboard-header">
             <div class="welcome-message" id="userInfo">Welcome, Customer</div>
             <div class="action-buttons">
-                <button class="btn btn-warning" onclick="simulateOrderFlow()">🛒 Click to Order & Get Bill</button>
+                <!-- డెమో కోసం ఈ బటన్ నొక్కగానే ఆర్డర్ ఫ్లో స్టార్ట్ అవుతుంది -->
+                <button class="btn btn-warning" onclick="placeCustomerOrder('Fresh Tomatoes', '2.0', '25')">🛒 Click to Order & Get Bill</button>
             </div>
         </div>
 
-        <!-- 📄 లైవ్ ఇన్వాయిస్ బిల్లు కార్డు (రైతు యాక్సెప్ట్ చేయగానే ఆటోమేటిక్‌గా ఓపెన్ అవుతుంది) -->
-        <div class="bill-card" id="billSection">
-            <div class="bill-header">🥦 FreshFarm Invoice</div>
-            <div class="bill-status">🎉 ORDER ACCEPTED BY FARMER</div>
-            <div class="bill-line"><strong>Invoice No:</strong> <span style="color: #666;">#FF-94827</span></div>
-            <div class="bill-line"><strong>Customer Name:</strong> <span id="billCustName" style="font-weight: bold;">Shalini</span></div>
-            <div class="bill-line"><strong>Vegetable Item:</strong> <span id="billVegName">Fresh Tomatoes</span></div>
-            <div class="bill-line"><strong>Quantity Bought:</strong> <span id="billQty">2.0 KG</span></div>
-            <div class="bill-line"><strong>Rate:</strong> <span id="billRate">₹25.00 / kg</span></div>
-            <div class="bill-total"><span>Total Paid:</span> <span id="billTotal">₹50.00</span></div>
-            <p style="text-align: center; font-size: 13px; color: var(--text-muted); margin: 20px 0 0 0; font-style: italic;">Thank you for buying directly from the roots! 🌾</p>
-        </div>
+        <!-- 📄 లైవ్ ఇన్వాయిస్ బిల్లు కార్డు (జావాస్క్రిప్ట్ ద్వారా లోడ్ అవుతుంది) -->
+        <div class="bill-card" id="billSection"></div>
 
         <!-- Market Stock Section -->
         <div class="card">
             <div class="card-title"><span>🛒</span> Available Market Vegetables</div>
             <p style="color: var(--text-muted);">రైతు అందుబాటులో ఉంచిన తాజా కూరగాయల వివరాలు ఇక్కడ చూడవచ్చు.</p>
             <p style="font-size: 0.95rem; color: var(--primary); font-weight: bold; background: #e8f5e9; padding: 10px; border-radius: 6px;">
-                💡 <strong>డెమో టెస్టింగ్ విధానం:</strong> పైన ఉన్న "Click to Order & Get Bill" బటన్ నొక్కిన తర్వాత, మీ రైతు (Farmer) డాష్‌బోర్డ్ లోపల 'Accept Order ✅' బటన్ క్లిక్ చేయండి. వెంటనే ఇక్కడ బిల్లు ప్రత్యక్షమవుతుంది!
+                💡 <strong>డెమో టెస్టింగ్ విధానం:</strong> పైన ఉన్న "Click to Order & Get Bill" బటన్ నొక్కిన తర్వాత, మీ రైతు (Farmer) డాష్‌బోర్డ్ లోపల 'Accept Order ✅' బటన్ క్లిక్ చేయండి. వెంటనే ఇక్కడ బిల్లు అప్రూవ్డ్ గా మారుతుంది!
             </p>
         </div>
 
@@ -170,60 +160,58 @@
         // లాగిన్ యూజర్ సమాచారం లోడ్ చేయడం
         let currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Shalini' };
         document.getElementById('userInfo').innerHTML = `Welcome, <strong>${currentUser.name}</strong> (Customer)`;
-        document.getElementById('billCustName').innerText = currentUser.name;
 
-        // కూరగాయల ఆర్డర్ డేటాని లోకల్ స్టోరేజ్ లోకి పంపే ఫంక్షన్
-        function simulateOrderFlow() {
-            // లోకల్ స్టోరేజ్ లో ఆర్డర్ అండ్ ప్రైస్ సెట్ చేయడం
+        // కస్టమర్ ఆర్డర్ పెట్టినప్పుడు రన్ అయ్యే ఫంక్షన్
+        function placeCustomerOrder(vegetableName, quantity, price) {
+            // 🔑 ఆర్డర్ పెట్టకముందే (Before Acceptance) తాత్కాలిక కోడ్ జనరేట్ చేయడం
+            let randomNum = Math.floor(1000 + Math.random() * 9000);
+            let pendingCode = `FF-PEND-${randomNum}`;
+            
+            // లోకల్ స్టోరేజ్‌లో పెండింగ్ వివరాలు దాచడం
             localStorage.setItem('current_order_status', 'Pending');
-            
-            // మీ ఒరిजినల్ ఐటమ్స్ నుండి డెమో డేటా తెచ్చుకోవడం
-            let marketItems = JSON.parse(localStorage.getItem('veg_market_items')) || [];
-            if(marketItems.length > 0) {
-                localStorage.setItem('last_bought_name', marketItems[0].name);
-                localStorage.setItem('last_bought_price', marketItems[0].price);
-                localStorage.setItem('last_bought_qty', '2.0');
-            } else {
-                localStorage.setItem('last_bought_name', 'Tomatoes');
-                localStorage.setItem('last_bought_price', '25');
-                localStorage.setItem('last_bought_qty', '2.0');
-            }
+            localStorage.setItem('last_generated_code', pendingCode);
+            localStorage.setItem('ordered_vegetable', vegetableName);
+            localStorage.setItem('ordered_quantity', quantity);
+            localStorage.setItem('ordered_price', price);
 
-            alert("🛍️ Order Placed! Now open Farmer Dashboard and click 'Accept Order ✅'.");
-            window.location.reload();
+            alert(`🛒 Order Placed!\nYour Pending Tracking Code is: ${pendingCode}\n\nWaiting for Farmer's Acceptance...`);
+            checkLiveOrderStatus(); // వెంటనే స్క్రీన్ పై చూపించడానికి
         }
 
-        // 🧠 రైతు యాక్సెప్ట్ ఆర్డర్ కొట్టాడా లేదా అని లైవ్ గా ట్రాక్ చేసే సిస్టమ్
-        function checkLiveBillStatus() {
+        // లైవ్ ఆర్డర్ స్టేటస్ మరియు బిల్లును స్క్రీన్ పై ట్రాక్ చేసే ఫంక్షన్
+        function checkLiveOrderStatus() {
             let status = localStorage.getItem('current_order_status');
-            
-            if (status === 'Accepted') {
-                // లోకల్ స్టోరేజ్ నుండి లేటెస్ట్ బిల్లు డేటా వివరాలు బాక్స్ లోకి మార్చడం
-                let vegName = localStorage.getItem('last_bought_name') || 'Tomatoes';
-                let price = parseFloat(localStorage.getItem('last_bought_price') || '25');
-                let qty = parseFloat(localStorage.getItem('last_bought_qty') || '2');
-                let total = price * qty;
+            let liveCode = localStorage.getItem('last_generated_code');
+            let vegName = localStorage.getItem('ordered_vegetable') || 'Fresh Tomatoes';
+            let vegQty = localStorage.getItem('ordered_quantity') || '2.0';
+            let vegPrice = localStorage.getItem('ordered_price') || '25';
+            let totalPaid = parseFloat(vegQty) * parseFloat(vegPrice);
 
-                document.getElementById('billVegName').innerText = vegName;
-                document.getElementById('billQty').innerText = qty + " KG";
-                document.getElementById('billRate').innerText = "₹" + price.toFixed(2) + " / kg";
-                document.getElementById('billTotal').innerText = "₹" + total.toFixed(2);
+            let billSection = document.getElementById('billSection');
+            if (!billSection) return;
 
-                // బిల్లు కార్డ్‌ను స్క్రీన్ పై ప్రదర్శించడం
-                document.getElementById('billSection').style.display = 'block';
-            } else {
-                document.getElementById('billSection').style.display = 'none';
-            }
-        }
-        
-        // ప్రతి 1.5 సెకన్లకు బ్యాక్‌గ్రౌండ్ లో లైవ్ చెక్ రన్ అవుతుంది (Real-time Simulation)
-        setInterval(checkLiveBillStatus, 1500);
-        checkLiveBillStatus();
-
-        function logout() {
-            localStorage.removeItem('currentUser');
-            window.location.href = 'login.html';
-        }
-    </script>
-</body>
-</html>
+            if (status === 'Pending') {
+                // ⏳ రైతు యాక్సెప్ట్ చేయకముందు వచ్చే ఆరెంజ్ పెండింగ్ బిల్లు
+                billSection.style.border = "2px dashed #ff9800";
+                billSection.innerHTML = `
+                    <div class="bill-header" style="color: #f57c00;">🥦 FreshFarm Invoice</div>
+                    <div class="bill-status" style="background: #ff9800;">⏳ ORDER PENDING (రైతు అప్రూవల్ కోసం వెయిటింగ్)</div>
+                    <div class="bill-line"><strong>Tracking Code:</strong> <span style="font-weight: bold; color: #f57c00;">${liveCode}</span></div>
+                    <div class="bill-line"><strong>Customer Name:</strong> <span>${currentUser.name}</span></div>
+                    <div class="bill-line"><strong>Vegetable Item:</strong> <span>${vegName}</span></div>
+                    <div class="bill-line"><strong>Quantity:</strong> <span>${vegQty} KG</span></div>
+                    <div class="bill-line"><strong>Rate:</strong> <span>Template: ₹${vegPrice}.00 / kg</span></div>
+                    <div class="bill-total" style="color: #f57c00; border-top-color: #ff9800;"><span>Total Est. Bill:</span> <span>₹${totalPaid}.00</span></div>
+                    <p style="text-align: center; font-size: 13px; color: var(--text-muted); margin-top: 20px; font-style: italic;">Please wait, the farmer will reveal the code soon! 🌾</p>
+                `;
+                billSection.style.display = 'block';
+            } 
+            else if (status === 'Accepted') {
+                // 🎉 రైతు యాక్సెప్ట్ చేసాక వచ్చే గ్రీన్ అప్రూవ్డ్ బిల్లు
+                let acceptedTime = localStorage.getItem('order_accepted_time') || 'Just Now';
+                billSection.style.border = "2px dashed #2e7d32";
+                billSection.innerHTML = `
+                    <div class="bill-header">🥦 FreshFarm Invoice</div>
+                    <div class="bill-status" style="background: #2e7d32;">🎉 ORDER APPROVED & REGISTERED</div>
+                    <div class="bill-line"><strong>Invoice No:</strong> <span style="font-weight: bold; color: #2e7d32;">${liveCode}</span></div>
+                    <div class="bill-line"><strong>Accepted Time:</strong> <span style="color: #2e7d32; font-weight: bold;">${acceptedTime}</span></div>
