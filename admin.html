@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Vegetable Selling</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
+        h1, h2 { color: #333; }
+        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #4CAF50; color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+
+    <h1>Admin Dashboard 📊</h1>
+
+    <!-- ఫార్మర్స్ డేటా టేబుల్ -->
+    <div class="container">
+        <h2>Farmers Data (రైతుల వివరాలు)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>Name</th>
+                    <th>Vegetable</th>
+                    <th>Quantity (KG)</th>
+                    <th>Price (₹)</th>
+                </tr>
+            </thead>
+            <tbody id="farmerTableBody">
+                <!-- For Loop ద్వారా డేటా ఇక్కడ యాడ్ అవుతుంది -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- కస్టమర్స్ డేటా టేబుల్ -->
+    <div class="container">
+        <h2>Customers Data (కస్టమర్స్ వివరాలు)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>Name</th>
+                    <th>Ordered Item</th>
+                    <th>Address</th>
+                </tr>
+            </thead>
+            <tbody id="customerTableBody">
+                <!-- For Loop ద్వారా డేటా ఇక్కడ యాడ్ అవుతుంది -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // 1. లోకల్ స్టోరేజ్ నుండి ఫార్మర్స్ డేటా తెచ్చుకోవడం
+        // (గమనిక: మీ farmer code లో ఏ పేరుతో సేవ్ చేశారో ఆ కీ ఇక్కడ ఇవ్వాలి, ఉదాహరణకు 'farmers')
+        let farmersList = JSON.parse(localStorage.getItem('farmers')) || [];
+        let farmerTable = document.getElementById('farmerTableBody');
+
+        // FOR LOOP ఉపయోగించి డేటాని టేబుల్ లో చూపించడం [1]
+        for (let i = 0; i < farmersList.length; i++) {
+            let row = `<tr>
+                <td>${i + 1}</td>
+                <td>${farmersList[i].name || 'N/A'}</td>
+                <td>${farmersList[i].vegetable || 'N/A'}</td>
+                <td>${farmersList[i].quantity || '0'}</td>
+                <td>${farmersList[i].price || '0'}</td>
+            </tr>`;
+            farmerTable.innerHTML += row;
+        }
+
+        // 2. లోకల్ స్టోరేజ్ నుండి కస్టమర్స్ డేటా తెచ్చుకోవడం
+        let customersList = JSON.parse(localStorage.getItem('customers')) || [];
+        let customerTable = document.getElementById('customerTableBody');
+
+        // FOR LOOP ఉపయోగించి కస్టమర్స్ డేటాని టేబుల్ లో చూపించడం [1]
+        for (let j = 0; j < customersList.length; j++) {
+            let row = `<tr>
+                <td>${j + 1}</td>
+                <td>${customersList[j].name || 'N/A'}</td>
+                <td>${customersList[j].item || 'N/A'}</td>
+                <td>${customersList[j].address || 'N/A'}</td>
+            </tr>`;
+            customerTable.innerHTML += row;
+        }
+    </script>
+</body>
+</html>
