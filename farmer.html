@@ -202,6 +202,7 @@
                     <p style="margin: 5px 0 0 0; color: #555; font-size: 0.95rem;">కస్టమర్ (Shalini) నుండి వచ్చిన ఆర్డర్‌ను యాక్సెప్ట్ చేయడానికి కింద బటన్ నొక్కండి.</p>
                 </div>
                 <div>
+                    <!-- 🧠 ఇక్కడ మీ పాత యాక్సెప్ట్ బటన్ కొత్త ఫంక్షన్ తో లింక్ చేయబడింది -->
                     <button class="btn btn-primary" onclick="acceptCustomerOrder()" style="font-size: 1.1rem; padding: 0.8rem 2rem; border-radius: 30px; box-shadow: 0 4px 10px rgba(46,125,50,0.2);">
                         Accept Order ✅
                     </button>
@@ -216,15 +217,39 @@
         let currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: 'shalini' };
         document.getElementById('userInfo').innerHTML = `Welcome, <strong>${currentUser.name}</strong> (Farmer)`;
 
-        // 🧠 బటన్ నొక్కినప్పుడు రన్ అవ్వాల్సిన కరెక్ట్ యాక్సెప్ట్ లాజిక్
+        // 🧠 రైతు ఆర్డర్ యాక్సెప్ట్ చేసినప్పుడు రన్ అయ్యే కొత్త ఫ్యూచర్-ఫ్లో లాజిక్
         function acceptCustomerOrder() {
-            // 1. లోకల్ స్టోరేజ్‌లో స్టేటస్‌ని 'Accepted' గా మార్చడం
+            let status = localStorage.getItem('current_order_status');
+            
+            if (status !== 'Pending') {
+                alert("❌ No pending orders available to accept! Please place an order from Customer Dashboard first.");
+                return;
+            }
+
+            // 1. స్టేటస్‌ని 'Accepted' గా మార్చడం
             localStorage.setItem('current_order_status', 'Accepted');
             
-            // 2. రైతుకు ఒక కన్ఫర్మేషన్ పాప్-అప్ అలర్ట్ మెసేజ్ చూపించడం
-            alert("🔔 Live Notification: Order Accepted Successfully! Bill Invoice generated for Customer.");
+            // 2. 🕒 లైవ్ టైమ్ మరియు తేదీని తీసుకోవడం (Time Stamp)
+            let now = new Date();
+            let currentTimeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}); // e.g., "10:50 AM"
+            localStorage.setItem('order_accepted_time', currentTimeString);
+
+            // 3. పాత పెండింగ్ కోడ్‌ని అప్రూవ్డ్ కోడ్‌గా మార్చడం (PEND -> APRV)
+            let pendingCode = localStorage.getItem('last_generated_code') || 'FF-PEND-1234';
+            let approvedCode = pendingCode.replace('PEND', 'APRV');
+            localStorage.setItem('last_generated_code', approvedCode);
+
+            // 📱 4. SMS బిల్లు రూపంలో ఒక రియలిస్టిక్ మొబైల్ అలర్ట్ చూపించడం
+            let vegName = localStorage.getItem('ordered_vegetable') || 'Fresh Tomatoes';
+            let vegQty = localStorage.getItem('ordered_quantity') || '2.0';
+            let vegPrice = localStorage.getItem('ordered_price') || '25';
+            let totalPaid = parseFloat(vegQty) * parseFloat(vegPrice);
+
+            let smsMessage = `🥦 FreshFarm Approved Bill\n---------------------------\nInvoice Code: ${approvedCode}\nStatus: ACCEPTED & REGISTERED\nTime Revealed: ${currentTimeString}\nFarmer Name: ${currentUser.name}\nItem: ${vegName} (${vegQty} KG)\nTotal Amount: ₹${totalPaid}.00\n---------------------------\nYour fresh vegetables are ready for delivery! 🌾`;
+
+            alert(`📱 SMS DISPATCHED TO CUSTOMER MOBILE!\n\n${smsMessage}`);
             
-            // 3. పేజీని రీఫ్రెష్ చేయడం
+            // 5. పేజీని రీఫ్రెష్ చేయడం
             location.reload();
         }
 
