@@ -3,133 +3,187 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Farmer Inventory Portal - 10 Vegetables</title>
+    <title>Fresh Market - Customer Order & Single Bill System</title>
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #f2f7f2; margin: 0; padding: 20px; color: #2c3e50; }
+        body { background-color: #f7faf7; margin: 0; padding: 20px; color: #2d3748; }
         
-        .farmer-container { max-width: 700px; margin: 0 auto; background: #ffffff; border: 1px solid #d0dfd0; border-radius: 10px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .main-title { font-size: 20px; font-weight: bold; color: #1b5e20; margin-bottom: 5px; display: flex; align-items: center; gap: 8px; }
-        .subtitle { font-size: 13px; color: #666; margin-bottom: 20px; border-bottom: 2px solid #a5d6a7; padding-bottom: 8px; }
-        
-        .scroll-zone { max-height: 68vh; overflow-y: auto; padding-right: 8px; margin-bottom: 15px; }
-        
-        /* Compact Form Grid Card Styling */
-        .veg-form-card { background: #fafafa; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; margin-bottom: 12px; }
-        .veg-form-card:hover { border-color: #a5d6a7; background: #fff; }
-        .card-header { font-size: 13px; font-weight: bold; color: #2e7d32; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-        
-        .grid-row { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 10px; }
-        .field-group { display: flex; flex-direction: column; }
-        
-        label { font-size: 11px; font-weight: 600; color: #555; margin-bottom: 4px; }
-        input { padding: 7px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px; width: 100%; }
-        input:focus { outline: none; border-color: #2e7d32; box-shadow: 0 0 3px rgba(46,125,50,0.2); }
-        input::placeholder { color: #ccc; font-style: italic; font-size: 12px; }
+        .market-layout { display: grid; grid-template-columns: 1.3fr 1fr; gap: 25px; max-width: 1200px; margin: 0 auto; }
+        @media (max-width: 900px) { .market-layout { grid-template-columns: 1fr; } }
 
-        .submit-bar { position: sticky; bottom: 0; background: #fff; padding-top: 10px; border-top: 1px solid #eee; }
-        .master-submit-btn { width: 100%; background: #1b5e20; color: white; border: none; padding: 12px; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: background 0.2s; }
-        .master-submit-btn:hover { background: #0d3c0e; }
+        .panel { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        h2 { margin-top: 0; font-size: 18px; color: #1b5e20; border-bottom: 2px solid #cbd5e0; padding-bottom: 8px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+
+        /* Left Column: 10 Vegetables List */
+        .veg-list-scroll { max-height: 80vh; overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 12px; }
+        .veg-card { background: #ffffff; border: 1px solid #edf2f7; border-radius: 8px; padding: 14px; display: flex; justify-content: space-between; align-items: center; transition: border-color 0.2s; }
+        .veg-card:hover { border-color: #c8e6c9; }
+        .info-pane .name { font-size: 16px; font-weight: bold; color: #2e7d32; }
+        .info-pane .details { font-size: 13px; color: #4a5568; margin-top: 4px; }
+        .action-pane { display: flex; align-items: center; gap: 8px; }
+        .qty-input { width: 75px; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px; text-align: center; font-size: 14px; }
+        .unit-dropdown { padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px; background: white; cursor: pointer; font-size: 14px; }
+        .add-btn { background: #2e7d32; color: white; border: none; padding: 7px 14px; border-radius: 4px; font-size: 13px; font-weight: bold; cursor: pointer; }
+        .add-btn:hover { background: #1b5e20; }
+
+        /* Right Column: Order Bill Receipt Summary */
+        .bill-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
+        .bill-table th, .bill-table td { border-bottom: 1px solid #e2e8f0; padding: 12px 8px; text-align: left; }
+        .bill-table th { background-color: #f1f8e9; color: #2e7d32; font-weight: bold; }
+        .bill-table td.num { text-align: right; }
+        .total-row { font-size: 16px; font-weight: bold; color: #1b5e20; background: #e8f5e9; }
+        .remove-btn { color: #e53e3e; background: none; border: none; cursor: pointer; font-weight: bold; font-size: 14px; }
+        .checkout-btn { width: 100%; background: #1b5e20; color: white; border: none; padding: 12px; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: background 0.2s; }
+        .checkout-btn:hover { background: #0d3c0e; }
+        .empty-bill { text-align: center; color: #718096; padding: 40px; font-style: italic; border: 2px dashed #e2e8f0; border-radius: 6px; }
     </style>
 </head>
 <body>
 
-<div class="farmer-container">
-    <div class="main-title">🚜 Farmer Dashboard: Bulk Stock Updates</div>
-    <div class="subtitle">Set up, change pricing structures, and fill live stock tracking indicators for up to 10 vegetables simultaneously.</div>
+<div class="market-layout">
     
-    <form id="farmerBulkInventoryForm" onsubmit="captureFarmerSubmission(event)">
-        <div class="scroll-zone" id="farmerFormInputsContainer">
-            <!-- 10 Form card structures render dynamically via execution loops -->
+    <!-- LEFT CONSOLE: CUSTOMER ITEM GRID MARKET SELECTION -->
+    <div class="panel">
+        <h2>🥦 Available Market Vegetables</h2>
+        <div class="veg-list-scroll" id="customerMarketGrid">
+            <!-- JavaScript prints the 10 vegetable items directly right here -->
         </div>
+    </div>
 
-        <div class="submit-bar">
-            <button type="submit" class="master-submit-btn">Publish All 10 Veg Entries To Live Store Feed</button>
+    <!-- RIGHT CONSOLE: THE SINGLE CONSOLIDATED CUSTOMER BILL -->
+    <div class="panel">
+        <h2>🧾 Single Order Bill Summary</h2>
+        <div id="billContainer">
+            <table class="bill-table" id="billTable" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>Vegetable Item</th>
+                        <th>Selected Qty</th>
+                        <th style="text-align: right;">Cost (₹)</th>
+                        <th>Cancel</th>
+                    </tr>
+                </thead>
+                <tbody id="billItemsBody">
+                    <!-- Added rows stream into here dynamically -->
+                </tbody>
+            </table>
+            <div id="emptyBillMessage" class="empty-bill">Your bill is empty. Adjust quantities on the left side and click "Add to Bill" to calculate costs!</div>
         </div>
-    </form>
+        
+        <button class="checkout-btn" onclick="checkoutSingleBill()">🛒 Place Order & Generate Bill Receipt</button>
+    </div>
+
 </div>
 
 <script>
-    // 1. Initial configuration blueprint matrix mapping typical local veggie item properties
-    const standardPlaceholders = [
-        { label: "Vegetable 1", name: "Tomatoes", price: 25, stock: 40, icon: "🍅" },
-        { label: "Vegetable 2", name: "Potatoes", price: 49, stock: 60, icon: "🥔" },
-        { label: "Vegetable 3", name: "Carrots", price: 20, stock: 35, icon: "🥕" },
-        { label: "Vegetable 4", name: "Onions", price: 35, stock: 80, icon: "🧅" },
-        { label: "Vegetable 5", name: "Cabbage", price: 30, stock: 25, icon: "🥬" },
-        { label: "Vegetable 6", name: "Green Chillies", price: 40, stock: 15, icon: "🌶️" },
-        { label: "Vegetable 7", name: "Brinjal", price: 35, stock: 20, icon: "🍆" },
-        { label: "Vegetable 8", name: "Cucumber", price: 30, stock: 30, icon: "🥒" },
-        { label: "Vegetable 9", name: "Lady Finger", price: 45, stock: 18, icon: "🌱" },
-        { label: "Vegetable 10", name: "Capsicum", price: 60, stock: 12, icon: "🫑" }
+    // 1. Array containing exactly 10 vegetables matching your previous catalog setup
+    const customerProductsList = [
+        { id: 1, name: "Tomatoes", pricePerKg: 25, defaultQty: 500, defaultUnit: "Grams", icon: "🍅", farmer: "shalini" },
+        { id: 2, name: "Potatoes", pricePerKg: 49, defaultQty: 250, defaultUnit: "Grams", icon: "🥔", farmer: "shalini" },
+        { id: 3, name: "Carrot", pricePerKg: 20, defaultQty: 500, defaultUnit: "Grams", icon: "🥕", farmer: "shalini" },
+        { id: 4, name: "Onions", pricePerKg: 35, defaultQty: 1, defaultUnit: "KG", icon: "🧅", farmer: "shalini" },
+        { id: 5, name: "Cabbage", pricePerKg: 30, defaultQty: 1, defaultUnit: "KG", icon: "🥬", farmer: "ramesh" },
+        { id: 6, name: "Green Chillies", pricePerKg: 40, defaultQty: 100, defaultUnit: "Grams", icon: "🌶️", farmer: "ramesh" },
+        { id: 7, name: "Brinjal", pricePerKg: 35, defaultQty: 500, defaultUnit: "Grams", icon: "🍆", farmer: "shalini" },
+        { id: 8, name: "Cucumber", pricePerKg: 30, defaultQty: 500, defaultUnit: "Grams", icon: "🥒", farmer: "kumar" },
+        { id: 9, name: "Lady Finger", pricePerKg: 45, defaultQty: 250, defaultUnit: "Grams", icon: "🌱", farmer: "kumar" },
+        { id: 10, name: "Capsicum", pricePerKg: 60, defaultQty: 250, defaultUnit: "Grams", icon: "🫑", farmer: "shalini" }
     ];
 
-    // 2. Programmatically generate the 10 data entry slots inside the scroll frame
-    function buildFarmerInterface() {
-        const targetContainer = document.getElementById('farmerFormInputsContainer');
-        targetContainer.innerHTML = "";
+    // Local Customer Cart Basket Array Memory Cache
+    let customerActiveBillItems = [];
 
-        standardPlaceholders.forEach((config, idx) => {
-            const cardIndex = idx + 1;
-            const formCard = document.createElement('div');
-            formCard.className = 'veg-form-card';
-            formCard.setAttribute('data-card-id', cardIndex);
-            
-            formCard.innerHTML = `
-                <div class="card-header">${config.icon} ${config.label}</div>
-                <div class="grid-row">
-                    <div class="field-group">
-                        <label>Vegetable Name</label>
-                        <input type="text" class="v-name" placeholder="e.g., ${config.name}" value="${config.name}">
-                    </div>
-                    <div class="field-group">
-                        <label>Price per KG (₹)</label>
-                        <input type="number" class="v-price" placeholder="e.g., ${config.price}" value="${config.price}" min="0" step="any">
-                    </div>
-                    <div class="field-group">
-                        <label>Available Stock (KG)</label>
-                        <input type="number" class="v-stock" placeholder="e.g., ${config.stock}" value="${config.stock}" min="0" step="any">
-                    </div>
+    // 2. Loop and generate the 10 customer vegetable blocks automatically on page startup
+    function initCustomerMarket() {
+        const grid = document.getElementById('customerMarketGrid');
+        grid.innerHTML = "";
+
+        customerProductsList.forEach(item => {
+            const rowCard = document.createElement('div');
+            rowCard.className = 'veg-card';
+            rowCard.innerHTML = `
+                <div class="info-pane">
+                    <div class="name">${item.icon} ${item.name}</div>
+                    <div class="details">Price: <strong>₹${item.pricePerKg} / KG</strong> | Farmer: ${item.farmer}</div>
+                </div>
+                <div class="action-pane">
+                    <input type="number" class="qty-input" value="${item.defaultQty}" min="1" id="cust-qty-${item.id}">
+                    <select class="unit-dropdown" id="cust-unit-${item.id}">
+                        <option value="Grams" ${item.defaultUnit === "Grams" ? "selected" : ""}>Grams</option>
+                        <option value="KG" ${item.defaultUnit === "KG" ? "selected" : ""}>KG</option>
+                    </select>
+                    <button class="add-btn" onclick="addVegItemToBill(${item.id})">Add to Bill</button>
                 </div>
             `;
-            targetContainer.appendChild(formCard);
+            grid.appendChild(rowCard);
         });
     }
 
-    // 3. Collection aggregator parser script capturing all variables on single click
-    function captureFarmerSubmission(event) {
-        event.preventDefault(); // Stop standard form reloading page events
-        
-        const inventoryCards = document.querySelectorAll('.veg-form-card');
-        const compiledFarmerBatchPayload = [];
+    // 3. Mathematical unit converter processor logic
+    function addVegItemToBill(productId) {
+        const product = customerProductsList.find(p => p.id === productId);
+        const qtyVal = parseFloat(document.getElementById(`cust-qty-${productId}`).value);
+        const unitVal = document.getElementById(`cust-unit-${productId}`).value;
 
-        inventoryCards.forEach(card => {
-            const indexId = card.getAttribute('data-card-id');
-            const cleanName = card.querySelector('.v-name').value.trim();
-            const rawPrice = card.querySelector('.v-price').value;
-            const rawStock = card.querySelector('.v-stock').value;
+        if (isNaN(qtyVal) || qtyVal <= 0) {
+            alert("Please provide a valid quantity count.");
+            return;
+        }
 
-            // Only parse row records if the name isn't left empty by the farmer
-            if (cleanName !== "") {
-                compiledFarmerBatchPayload.push({
-                    slotNumber: parseInt(indexId),
-                    vegetableName: cleanName,
-                    pricePerKg: parseFloat(rawPrice) || 0,
-                    stockAvailableKg: parseFloat(rawStock) || 0,
-                    updatedTimestamp: new Date().toISOString()
-                });
-            }
-        });
+        // Standard scaling adjustment algorithm factors mapping out weight matrices
+        let massInKg = qtyVal;
+        if (unitVal === "Grams") {
+            massInKg = qtyVal / 1000;
+        }
 
-        // Output complete consolidated structural object data trace matching requirements
-        console.log("SUCCESS: Bulk Farmer Catalog Data Object:", compiledFarmerBatchPayload);
-        
-        alert(`📊 Inventory Sync Complete!\n----------------------------\nProcessed ${compiledFarmerBatchPayload.length} live vegetable listings successfully.\n\nOpen your developer console (F12) to inspect the structured batch data payload.`);
+        const mathematicallyCalculatedCost = massInKg * product.pricePerKg;
+
+        // If item exists in the invoice already, update its entries instead of appending duplicates
+        const matchesIndex = customerActiveBillItems.findIndex(i => i.id === productId);
+        if (matchesIndex > -1) {
+            customerActiveBillItems[matchesIndex] = {
+                ...customerActiveBillItems[matchesIndex],
+                quantity: qtyVal,
+                unit: unitVal,
+                rowPrice: mathematicallyCalculatedCost
+            };
+        } else {
+            customerActiveBillItems.push({
+                id: product.id,
+                name: product.name,
+                icon: product.icon,
+                quantity: qtyVal,
+                unit: unitVal,
+                rowPrice: mathematicallyCalculatedCost
+            });
+        }
+
+        calculateAndRenderBillTable();
     }
 
-    // Run layout injection logic safely on window frame setup cycles
-    window.onload = buildFarmerInterface;
-</script>
+    // 4. Utility routine to drop specific line row items out of the running invoice computation
+    function removeVegItemFromBill(id) {
+        customerActiveBillItems = customerActiveBillItems.filter(item => item.id !== id);
+        calculateAndRenderBillTable();
+    }
 
-</body>
-</html>
+    // 5. Interface builder computing real-time item rows and appending Grand Total
+    function calculateAndRenderBillTable() {
+        const tbody = document.getElementById('billItemsBody');
+        const emptyAlert = document.getElementById('emptyBillMessage');
+        const billTable = document.getElementById('billTable');
+        
+        tbody.innerHTML = "";
+        
+        if (customerActiveBillItems.length === 0) {
+            emptyAlert.style.display = "block";
+            billTable.style.display = "none";
+            return;
+        }
+
+        emptyAlert.style.display = "none";
+        billTable.style.display = "table";
+
+        let singleInvoiceGrandTotal = 0;
+
+        customerActiveBillItems.forEach(item => {
