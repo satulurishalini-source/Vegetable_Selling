@@ -3,88 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FreshFarm - Customer Dashboard</title>
+    <title>FreshFarm Dashboard</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #f4f6f8; color: #333; padding-bottom: 50px; }
         .top-bar { background-color: #ffffff; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e7eb; }
         .brand { font-size: 20px; font-weight: bold; color: #16a34a; }
-        .btn-logout { background-color: #ef4444; color: white; border: none; padding: 6px 16px; border-radius: 4px; cursor: pointer; font-weight: 600; }
-        .container { max-width: 900px; margin: 20px auto 0; padding: 0 15px; }
-        .welcome-title { font-size: 22px; margin-bottom: 20px; color: #1e293b; }
+        .nav-btn { background: #e2e8f0; border: none; padding: 8px 16px; font-weight: 600; border-radius: 4px; cursor: pointer; margin-left: 5px; }
+        .nav-btn.active { background: #16a34a; color: white; }
+        .container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
         .card { background: #ffffff; border-radius: 6px; border: 1px solid #e5e7eb; margin-bottom: 20px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .card-header { font-size: 16px; font-weight: 600; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; color: #1f2937; }
-        .market-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 6px; margin-bottom: 10px; }
-        .item-details h4 { margin-bottom: 4px; color: #111827; font-size: 15px; text-transform: capitalize; }
-        .item-details p { font-size: 13px; color: #6b7280; }
-        .btn-buy { background-color: #16a34a; color: white; border: none; padding: 8px 16px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 13px; }
+        .card-header { font-size: 16px; font-weight: 600; margin-bottom: 15px; color: #1f2937; }
+        .market-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #f3f4f6; }
+        .btn-buy { background-color: #16a34a; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; }
         .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .cart-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 12px; }
-        .cart-table th, .cart-table td { padding: 8px 6px; border-bottom: 1px solid #f3f4f6; text-align: left; }
-        .cart-table th { background-color: #f9fafb; font-weight: 600; color: #4b5563; }
-        .total-row { font-weight: bold; color: #111827; background-color: #f0fdf4; }
-        .qty-btn { padding: 2px 6px; font-weight: bold; cursor: pointer; border: 1px solid #cbd5e1; background: #fff; border-radius: 3px; }
-        .btn-order { width: 100%; background-color: #16a34a; color: white; border: none; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .badge-pending { background-color: #ef4444; color: white; padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; display: inline-block; }
-        .badge-accepted { background-color: #10b981; color: white; padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; display: inline-block; }
+        .cart-table th, .cart-table td { padding: 6px; border-bottom: 1px solid #f3f4f6; text-align: left; }
+        .btn-order { width: 100%; background-color: #16a34a; color: white; border: none; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .badge { padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; display: inline-block; color: white; }
+        .pending { background-color: #ef4444; }
+        .accepted { background-color: #10b981; }
         .invoice-card { background-color: #f0fdf4; border: 1px dashed #16a34a; border-radius: 6px; padding: 15px; font-size: 13px; }
-        .invoice-header { display: flex; justify-content: space-between; align-items: center; font-weight: bold; color: #15803d; margin-bottom: 10px; }
-        .invoice-row { margin-bottom: 6px; color: #374151; }
+        .order-notification-box { background-color: #fffbeb; border: 1px dashed #f59e0b; border-radius: 6px; padding: 15px; text-align: center; }
+        .btn-accept { background-color: #1a7f37; color: white; border: none; padding: 10px 18px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 12px; }
     </style>
 </head>
 <body>
 
     <div class="top-bar">
         <div class="brand">🌱 FreshFarm</div>
-        <button class="btn-logout">Logout</button>
+        <div>
+            <button id="tab-cust" class="nav-btn active" onclick="switchView('customer')">Customer View</button>
+            <button id="tab-farm" class="nav-btn" onclick="switchView('farmer')">Farmer View</button>
+        </div>
     </div>
 
-    <div class="container">
-        <h2 class="welcome-title">Welcome, shalini (Customer)</h2>
-
+    <!-- Customer View -->
+    <div id="customer-view" class="container">
         <div class="card">
-            <div class="card-header">📊 Available Market Vegetables</div>
+            <div class="card-header">🥦 Available Vegetables</div>
             <div id="market-list"></div>
         </div>
 
         <div class="bottom-grid">
             <div class="card">
-                <div class="card-header">🛒 Vegetables in Your Cart</div>
+                <div class="card-header">🛒 Cart Details</div>
                 <div id="cart-container"></div>
             </div>
 
             <div class="card">
                 <div class="card-header">📱 Live SMS Bill Invoice</div>
                 <div id="invoice-placeholder" style="color: #6b7280; font-size: 14px;">Waiting for confirmation...</div>
-
                 <div id="invoice-content" class="invoice-card" style="display: none;">
-                    <div class="invoice-header">
-                        <span>🌱 FreshFarm Bill</span>
-                        <span style="border: 1px solid #16a34a; color: #16a34a; font-size: 10px; padding: 2px 6px; border-radius: 3px;">✓ ORDER APPROVED</span>
-                    </div>
-                    <div class="invoice-row" id="inv-code"><strong>Code:</strong> -</div>
-                    <div class="invoice-row" id="inv-items"><strong>Items:</strong> -</div>
-                    <div class="invoice-row" id="inv-total"><strong>Total Bill:</strong> ₹0.00</div>
-                    <div class="invoice-row" id="inv-time"><strong>Time:</strong> -</div>
+                    <div style="font-weight: bold; color: #15803d; margin-bottom: 8px;">🌱 FreshFarm Bill (APPROVED)</div>
+                    <div id="inv-code"></div>
+                    <div id="inv-items"></div>
+                    <div id="inv-total" style="font-weight: bold; margin-top: 4px;"></div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Farmer View -->
+    <div id="farmer-view" class="container" style="display: none;">
+        <div class="card">
+            <div class="card-header">📊 Live Customer Orders</div>
+            <div id="no-orders" style="color: #6b7280;">No pending orders right now.</div>
+            <div id="order-box" class="order-notification-box" style="display: none;">
+                <div style="color: #d97706; font-weight: bold; margin-bottom: 8px;">🔔 New Order Received!</div>
+                <p id="order-items"></p>
+                <p id="order-total" style="font-weight: bold; margin-top: 4px;"></p>
+                <button class="btn-accept" onclick="acceptOrder()">Accept Order & Send SMS ✔️</button>
             </div>
         </div>
     </div>
 
     <script>
         const vegetables = [
-            { id: 1, name: 'tomatoes', price: 35, stock: 1, farmer: 'shalini' },
-            { id: 2, name: 'potatoes', price: 40, stock: 60, farmer: 'shalini' },
-            { id: 3, name: 'Carrot', price: 20, stock: 40, farmer: 'shalini' },
-            { id: 4, name: 'cabbage', price: 50, stock: 40, farmer: 'shalini' },
-            { id: 5, name: 'chilli', price: 38, stock: 40, farmer: 'shalini' },
-            { id: 6, name: 'brinjal', price: 35, stock: 40, farmer: 'shalini' },
-            { id: 7, name: 'cucumber', price: 30, stock: 50, farmer: 'shalini' },
-            { id: 8, name: 'lady finger', price: 45, stock: 30, farmer: 'shalini' },
-            { id: 9, name: 'onion', price: 25, stock: 80, farmer: 'shalini' }
+            { id: 1, name: 'cabbage', price: 50 },
+            { id: 2, name: 'chilli', price: 38 },
+            { id: 3, name: 'brinjal', price: 35 },
+            { id: 4, name: 'cucumber', price: 30 },
+            { id: 5, name: 'lady finger', price: 45 },
+            { id: 6, name: 'onion', price: 25 }
         ];
 
-        let cart = JSON.parse(localStorage.getItem('cartData')) || { 4: 1, 5: 1, 6: 1, 7: 1, 8: 1, 9: 1 };
+        let cart = { 1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1 };
+        let activeOrder = null;
+
+        function switchView(view) {
+            document.getElementById('customer-view').style.display = view === 'customer' ? 'block' : 'none';
+            document.getElementById('farmer-view').style.display = view === 'farmer' ? 'block' : 'none';
+            document.getElementById('tab-cust').className = 'nav-btn ' + (view === 'customer' ? 'active' : '');
+            document.getElementById('tab-farm').className = 'nav-btn ' + (view === 'farmer' ? 'active' : '');
+            renderAll();
+        }
 
         function renderMarket() {
             const list = document.getElementById('market-list');
@@ -92,84 +105,15 @@
             vegetables.forEach(item => {
                 list.innerHTML += `
                     <div class="market-item">
-                        <div class="item-details">
-                            <h4>${item.name}</h4>
-                            <p>Price: ₹${item.price} / KG | Stock: ${item.stock} KG</p>
-                        </div>
-                        <button class="btn-buy" onclick="addToCart(${item.id})">Buy Now ↗</button>
-                    </div>
-                `;
+                        <span><strong>${item.name}</strong> - ₹${item.price}/KG</span>
+                        <button class="btn-buy" onclick="addToCart(${item.id})">Buy Now</button>
+                    </div>`;
             });
         }
 
         function addToCart(id) {
             cart[id] = (cart[id] || 0) + 1;
-            saveAndRender();
-        }
-
-        function updateQty(id, delta) {
-            if (cart[id]) {
-                cart[id] += delta;
-                if (cart[id] <= 0) delete cart[id];
-            }
-            saveAndRender();
-        }
-
-        function saveAndRender() {
-            localStorage.setItem('cartData', JSON.stringify(cart));
-            renderCart();
-            syncOrderStatus();
-        }
-
-        function renderCart() {
-            const container = document.getElementById('cart-container');
-            const itemIds = Object.keys(cart);
-            if (itemIds.length === 0) {
-                container.innerHTML = '<p style="color:#6b7280; font-size:13px;">Your cart is empty.</p>';
-                return;
-            }
-
-            let grandTotal = 0;
-            let rowsHtml = '';
-            itemIds.forEach(id => {
-                const item = vegetables.find(v => v.id == id);
-                if (item) {
-                    const qty = cart[id];
-                    const subtotal = item.price * qty;
-                    grandTotal += subtotal;
-                    rowsHtml += `
-                        <tr>
-                            <td>${item.name}</td>
-                            <td>
-                                <button class="qty-btn" onclick="updateQty(${item.id}, -1)">-</button>
-                                ${qty} KG
-                                <button class="qty-btn" onclick="updateQty(${item.id}, 1)">+</button>
-                            </td>
-                            <td>₹${item.price}</td>
-                            <td>₹${subtotal.toFixed(2)}</td>
-                        </tr>
-                    `;
-                }
-            });
-
-            const order = JSON.parse(localStorage.getItem('currentOrder'));
-            const isAccepted = order && order.status === 'ACCEPTED';
-
-            container.innerHTML = `
-                <table class="cart-table">
-                    <thead>
-                        <tr><th>Item</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr>
-                    </thead>
-                    <tbody>
-                        ${rowsHtml}
-                        <tr class="total-row"><td colspan="3">Grand Total:</td><td>₹${grandTotal.toFixed(2)}</td></tr>
-                    </tbody>
-                </table>
-                <span class="${isAccepted ? 'badge-accepted' : 'badge-pending'}">
-                    STATUS: ${isAccepted ? 'Accepted' : 'Pending'}
-                </span>
-                <button class="btn-order" onclick="placeOrder()">Place Order Now 🛒</button>
-            `;
+            renderAll();
         }
 
         function placeOrder() {
@@ -183,34 +127,72 @@
                 }
             });
 
-            const order = {
-                code: 'FF-ORD-' + Math.floor(1000 + Math.random() * 9000),
+            activeOrder = {
+                code: 'FF-ORD-9376',
                 items: itemList.join(', '),
                 total: total.toFixed(2),
-                status: 'PENDING',
-                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                status: 'PENDING'
             };
 
-            localStorage.setItem('currentOrder', JSON.stringify(order));
-            alert('Order sent to Farmer! Please switch to farmer.html tab to Accept.');
-            saveAndRender();
+            renderAll();
+            alert('Order placed! Switch to Farmer View to Accept.');
         }
 
-        function syncOrderStatus() {
-            const order = JSON.parse(localStorage.getItem('currentOrder'));
-            if (order && order.status === 'ACCEPTED') {
-                document.getElementById('invoice-placeholder').style.display = 'none';
-                document.getElementById('invoice-content').style.display = 'block';
-                document.getElementById('inv-code').innerHTML = `<strong>Code:</strong> ${order.code}`;
-                document.getElementById('inv-items').innerHTML = `<strong>Items:</strong> ${order.items}`;
-                document.getElementById('inv-total').innerHTML = `<strong>Total Bill:</strong> ₹${order.total}`;
-                document.getElementById('inv-time').innerHTML = `<strong>Time:</strong> ${order.time}`;
+        function acceptOrder() {
+            if (activeOrder) {
+                activeOrder.status = 'ACCEPTED';
+                renderAll();
             }
         }
 
-        window.addEventListener('storage', syncOrderStatus);
+        function renderAll() {
+            // Render Cart
+            let grandTotal = 0;
+            let rowsHtml = '';
+            Object.keys(cart).forEach(id => {
+                const item = vegetables.find(v => v.id == id);
+                if (item) {
+                    let sub = item.price * cart[id];
+                    grandTotal += sub;
+                    rowsHtml += `<tr><td>${item.name}</td><td>${cart[id]} KG</td><td>₹${sub}</td></tr>`;
+                }
+            });
+
+            const isAccepted = activeOrder && activeOrder.status === 'ACCEPTED';
+            const isPending = activeOrder && activeOrder.status === 'PENDING';
+
+            document.getElementById('cart-container').innerHTML = `
+                <table class="cart-table">
+                    <tr><th>Item</th><th>Qty</th><th>Subtotal</th></tr>
+                    ${rowsHtml}
+                    <tr><td colspan="2"><strong>Total:</strong></td><td><strong>₹${grandTotal.toFixed(2)}</strong></td></tr>
+                </table>
+                <span class="badge ${isAccepted ? 'accepted' : 'pending'}">STATUS: ${activeOrder ? activeOrder.status : 'Pending'}</span>
+                <button class="btn-order" onclick="placeOrder()">Place Order Now 🛒</button>`;
+
+            // Render Invoice
+            if (isAccepted) {
+                document.getElementById('invoice-placeholder').style.display = 'none';
+                document.getElementById('invoice-content').style.display = 'block';
+                document.getElementById('inv-code').innerText = 'Code: ' + activeOrder.code;
+                document.getElementById('inv-items').innerText = 'Items: ' + activeOrder.items;
+                document.getElementById('inv-total').innerText = 'Total Bill: ₹' + activeOrder.total;
+            }
+
+            // Render Farmer View
+            if (isPending) {
+                document.getElementById('no-orders').style.display = 'none';
+                document.getElementById('order-box').style.display = 'block';
+                document.getElementById('order-items').innerText = 'Items: ' + activeOrder.items;
+                document.getElementById('order-total').innerText = 'Total: ₹' + activeOrder.total;
+            } else {
+                document.getElementById('no-orders').style.display = 'block';
+                document.getElementById('order-box').style.display = 'none';
+            }
+        }
+
         renderMarket();
-        saveAndRender();
+        renderAll();
     </script>
 </body>
 </html>
