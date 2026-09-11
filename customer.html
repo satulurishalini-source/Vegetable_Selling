@@ -33,7 +33,6 @@
         <h2 style="margin-bottom: 20px;">Customer Dashboard</h2>
 
         <div class="bottom-grid">
-            <!-- Cart Box -->
             <div class="card">
                 <div class="card-header">🛒 Vegetables in Your Cart</div>
                 <table class="cart-table">
@@ -51,10 +50,9 @@
                     </tbody>
                 </table>
                 <span id="status-badge" class="badge-pending">STATUS: Pending</span>
-                <button class="btn-order" onclick="sendOrderToFarmer()">Place Order Now 🛒</button>
+                <button class="btn-order" onclick="sendOrder()">Place Order Now 🛒</button>
             </div>
 
-            <!-- SMS Bill Invoice Box -->
             <div class="card">
                 <div class="card-header">📱 Live SMS Bill Invoice</div>
                 <div id="invoice-placeholder" style="color: #6b7280; font-size: 14px;">Waiting for farmer confirmation...</div>
@@ -62,7 +60,7 @@
                 <div id="invoice-content" class="invoice-card" style="display: none;">
                     <div class="invoice-header">
                         <span>🌱 FreshFarm Bill</span>
-                        <span style="color: #10b981; font-size: 11px;">✓ SMS DISPATCHED</span>
+                        <span style="color: #10b981; font-size: 11px;">✓ ORDER APPROVED</span>
                     </div>
                     <p id="inv-code">Invoice Code: -</p>
                     <p id="inv-items">Items: -</p>
@@ -72,68 +70,54 @@
             </div>
         </div>
     </div>
-<script>
-    function sendOrderToFarmer() {
-        const order = {
-            code: 'FF-APRV-9376',
-            items: 'cabbage, chilli, brinjal, cucumber, lady finger, onion',
-            total: '223.00',
-            status: 'PENDING',
-            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        };
-        localStorage.setItem('freshfarm_order', JSON.stringify(order));
-        alert('Order sent! Switch to farmer tab to Accept.');
-    }
 
-    function updateSMSInvoice(savedOrder) {
-        if (!savedOrder || savedOrder.status !== 'ACCEPTED') return;
-
-        // 1. Update Cart Status Badge
-        const badge = document.getElementById('status-badge');
-        if (badge) {
-            badge.className = 'badge-accepted';
-            badge.innerText = 'STATUS: Accepted';
+    <script>
+        function sendOrder() {
+            const order = {
+                code: 'FF-APRV-9376',
+                items: 'cabbage, chilli, brinjal, cucumber, lady finger, onion',
+                total: '223.00',
+                status: 'PENDING',
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+            // Sets both possible storage key names so it syncs no matter which key farmer.html reads
+            localStorage.setItem('currentOrder', JSON.stringify(order));
+            localStorage.setItem('freshfarm_order', JSON.stringify(order));
+            alert('Order submitted to Farmer!');
         }
 
-        // 2. Render SMS Bill Instantly
-        const placeholder = document.getElementById('invoice-placeholder');
-        const content = document.getElementById('invoice-content');
-        
-        if (placeholder) placeholder.style.display = 'none';
-        if (content) content.style.display = 'block';
+        function renderInvoice(order) {
+            if (!order) return;
+            
+            // If farmer marked it accepted under either storage structure
+            if (order.status === 'ACCEPTED' || localStorage.getItem('orderAccepted') === 'true') {
+                const badge = document.getElementById('status-badge');
+                if (badge) {
+                    badge.className = 'badge-accepted';
+                    badge.innerText = 'STATUS: Accepted';
+                }
 
-        document.getElementById('inv-code').innerText = 'Invoice Code: ' + savedOrder.code;
-        document.getElementById('inv-items').innerText = 'Items: ' + savedOrder.items;
-        document.getElementById('inv-total').innerText = 'Total Bill: ₹' + savedOrder.total;
-        document.getElementById('inv-time').innerText = 'Time: ' + savedOrder.time;
-    }
+                document.getElementById('invoice-placeholder').style.display = 'none';
+                document.getElementById('invoice-content').style.display = 'block';
 
-    function checkOrderStatus() {
-        const savedOrder = JSON.parse(localStorage.getItem('freshfarm_order'));
-        updateSMSInvoice(savedOrder);
-    }
-
-    // ⚡ Instant Cross-Tab Event Listener (Triggers the exact millisecond farmer clicks Accept)
-    window.addEventListener('storage', (event) => {
-        if (event.key === 'freshfarm_order') {
-            const updatedOrder = JSON.parse(event.newValue);
-            updateSMSInvoice(updatedOrder);
+                document.getElementById('inv-code').innerText = 'Invoice Code: ' + (order.code || 'FF-APRV-9376');
+                document.getElementById('inv-items').innerText = 'Items: ' + (order.items || 'cabbage, chilli, brinjal, cucumber, lady finger, onion');
+                document.getElementById('inv-total').innerText = 'Total Bill: ₹' + (order.total || '223.00');
+                document.getElementById('inv-time').innerText = 'Time: ' + (order.time || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+            }
         }
-    });
 
-    // ⚡ Instant Focus Listener (Triggers immediately when customer clicks back onto this tab)
-    window.addEventListener('focus', checkOrderStatus);
-    document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible') {
-            checkOrderStatus();
+        function checkAllKeys() {
+            const order1 = JSON.parse(localStorage.getItem('currentOrder'));
+            const order2 = JSON.parse(localStorage.getItem('freshfarm_order'));
+            renderInvoice(order1 || order2);
         }
-    });
 
-    // Fast backup check (200ms instead of 1000ms)
-    setInterval(checkOrderStatus, 200);
-
-    // Initial check on load
-    checkOrderStatus();
-</script>
+        // Listen for tab switching & storage changes
+        window.addEventListener('storage', checkAllKeys);
+        window.addEventListener('focus', checkAllKeys);
+        setInterval(checkAllKeys, 300);
+        checkAllKeys();
+    </script>
 </body>
 </html>
