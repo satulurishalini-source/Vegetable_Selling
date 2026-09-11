@@ -6,19 +6,34 @@
     <title>FreshFarm - Customer Dashboard</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #f4f6f8; color: #333; padding-bottom: 50px; }
+        body { background-color: #f4f6f8; color: #111827; padding-bottom: 50px; }
         .top-bar { background-color: #ffffff; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e7eb; }
         .brand { font-size: 20px; font-weight: bold; color: #16a34a; }
+        .btn-logout { background-color: #ef4444; color: white; border: none; padding: 6px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .container { max-width: 900px; margin: 20px auto 0; padding: 0 15px; }
+        .welcome-title { font-size: 20px; margin-bottom: 20px; color: #1e293b; font-weight: bold; }
+        
         .card { background: #ffffff; border-radius: 6px; border: 1px solid #e5e7eb; margin-bottom: 20px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .card-header { font-size: 16px; font-weight: 600; margin-bottom: 15px; color: #1f2937; }
+        .card-header { font-size: 16px; font-weight: 700; margin-bottom: 15px; color: #1f2937; display: flex; align-items: center; gap: 8px; }
+        
+        /* Vegetable Item List Cards */
+        .market-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 6px; margin-bottom: 10px; }
+        .item-details h4 { margin-bottom: 4px; color: #111827; font-size: 15px; text-transform: capitalize; font-weight: 700; }
+        .item-details p { font-size: 13px; color: #6b7280; }
+        .btn-buy { background-color: #16a34a; color: white; border: none; padding: 8px 16px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 13px; }
+        .btn-buy:hover { background-color: #15803d; }
+
         .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .cart-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 12px; }
-        .cart-table th, .cart-table td { padding: 8px 6px; border-bottom: 1px solid #f3f4f6; text-align: left; }
+        .cart-table th, .cart-table td { padding: 8px 6px; border-bottom: 1px solid #f3f4f6; text-align: left; color: #111827; }
         .cart-table th { background-color: #f9fafb; font-weight: 600; color: #4b5563; }
-        .btn-order { width: 100%; background-color: #16a34a; color: white; border: none; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .badge-pending { background-color: #ef4444; color: white; padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; display: inline-block; }
-        .badge-accepted { background-color: #10b981; color: white; padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; display: inline-block; }
+        
+        .btn-order { width: 100%; background-color: #16a34a; color: white; border: none; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 14px; }
+        .btn-order:hover { background-color: #15803d; }
+        
+        .badge-pending { background-color: #ef4444; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; display: inline-block; }
+        .badge-accepted { background-color: #10b981; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; display: inline-block; }
+        
         .invoice-card { background-color: #04091e; color: #ffffff; border-radius: 6px; padding: 15px; font-size: 13px; line-height: 1.6; }
         .invoice-header { display: flex; justify-content: space-between; align-items: center; font-weight: bold; color: #10b981; margin-bottom: 10px; border-bottom: 1px solid #1f2937; padding-bottom: 8px; }
     </style>
@@ -27,12 +42,77 @@
 
     <div class="top-bar">
         <div class="brand">🌱 FreshFarm</div>
+        <button class="btn-logout">Logout</button>
     </div>
 
     <div class="container">
-        <h2 style="margin-bottom: 20px;">Customer Dashboard</h2>
+        <h2 class="welcome-title">Welcome, Customer</h2>
+
+        <!-- Available Market Vegetables Section -->
+        <div class="card">
+            <div class="card-header">📊 Available Market Vegetables</div>
+            <div id="market-list">
+                <div class="market-item">
+                    <div class="item-details">
+                        <h4>🍅 Tomatoes</h4>
+                        <p>Price: ₹35 / KG | Stock: 1 KG</p>
+                    </div>
+                    <button class="btn-buy" onclick="addToCart('tomatoes', 35)">Buy Now ↗</button>
+                </div>
+                <div class="market-item">
+                    <div class="item-details">
+                        <h4>🥔 Potatoes</h4>
+                        <p>Price: ₹40 / KG | Stock: 60 KG</p>
+                    </div>
+                    <button class="btn-buy" onclick="addToCart('potatoes', 40)">Buy Now ↗</button>
+                </div>
+                <div class="market-item">
+                    <div class="item-details">
+                        <h4>🥕 Carrot</h4>
+                        <p>Price: ₹20 / KG | Stock: 40 KG</p>
+                    </div>
+                    <button class="btn-buy" onclick="addToCart('carrot', 20)">Buy Now ↗</button>
+                </div>
+                <div class="market-item">
+                    <div class="item-details">
+                        <h4>🥬 Cabbage</h4>
+                        <p>Price: ₹50 / KG | Stock: 40 KG</p>
+                    </div>
+                    <button class="btn-buy" onclick="addToCart('cabbage', 50)">Buy Now ↗</button>
+                </div>
+                <div class="market-item">
+                    <div class="item-details">
+                        <h4>🌶️ Chilli</h4>
+                        <p>Price: ₹38 / KG | Stock: 40 KG</p>
+                    </div>
+                    <button class="btn-buy" onclick="addToCart('chilli', 38)">Buy Now ↗</button>
+                </div>
+                <div class="market-item">
+                    <div class="item-details">
+                        <h4>🍆 Brinjal</h4>
+                        <p>Price: ₹35 / KG | Stock: 40 KG</p>
+                    </div>
+                    <button class="btn-buy" onclick="addToCart('brinjal', 35)">Buy Now ↗</button>
+                </div>
+                <div class="market-item">
+                    <div class="item-details">
+                        <h4>🥒 Cucumber</h4>
+                        <p>Price: ₹30 / KG | Stock: 50 KG</p>
+                    </div>
+                    <button class="btn-buy" onclick="addToCart('cucumber', 30)">Buy Now ↗</button>
+                </div>
+                <div class="market-item">
+                    <div class="item-details">
+                        <h4>🫛 Lady Finger</h4>
+                        <p>Price: ₹45 / KG | Stock: 30 KG</p>
+                    </div>
+                    <button class="btn-buy" onclick="addToCart('lady finger', 45)">Buy Now ↗</button>
+                </div>
+            </div>
+        </div>
 
         <div class="bottom-grid">
+            <!-- Cart Box -->
             <div class="card">
                 <div class="card-header">🛒 Vegetables in Your Cart</div>
                 <table class="cart-table">
@@ -53,6 +133,7 @@
                 <button class="btn-order" onclick="sendOrder()">Place Order Now 🛒</button>
             </div>
 
+            <!-- Live SMS Invoice Box -->
             <div class="card">
                 <div class="card-header">📱 Live SMS Bill Invoice</div>
                 <div id="invoice-placeholder" style="color: #6b7280; font-size: 14px;">Waiting for farmer confirmation...</div>
@@ -72,6 +153,10 @@
     </div>
 
     <script>
+        function addToCart(name, price) {
+            alert(name.toUpperCase() + ' added to cart!');
+        }
+
         function sendOrder() {
             const order = {
                 code: 'FF-APRV-9376',
@@ -80,17 +165,16 @@
                 status: 'PENDING',
                 time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             };
-            // Sets both possible storage key names so it syncs no matter which key farmer.html reads
+
             localStorage.setItem('currentOrder', JSON.stringify(order));
             localStorage.setItem('freshfarm_order', JSON.stringify(order));
-            alert('Order submitted to Farmer!');
+            alert('Order sent to Farmer! Please switch to farmer.html tab and click Accept.');
         }
 
-        function renderInvoice(order) {
-            if (!order) return;
-            
-            // If farmer marked it accepted under either storage structure
-            if (order.status === 'ACCEPTED' || localStorage.getItem('orderAccepted') === 'true') {
+        function checkOrderStatus() {
+            const order = JSON.parse(localStorage.getItem('freshfarm_order')) || JSON.parse(localStorage.getItem('currentOrder'));
+
+            if (order && order.status === 'ACCEPTED') {
                 const badge = document.getElementById('status-badge');
                 if (badge) {
                     badge.className = 'badge-accepted';
@@ -100,24 +184,17 @@
                 document.getElementById('invoice-placeholder').style.display = 'none';
                 document.getElementById('invoice-content').style.display = 'block';
 
-                document.getElementById('inv-code').innerText = 'Invoice Code: ' + (order.code || 'FF-APRV-9376');
-                document.getElementById('inv-items').innerText = 'Items: ' + (order.items || 'cabbage, chilli, brinjal, cucumber, lady finger, onion');
-                document.getElementById('inv-total').innerText = 'Total Bill: ₹' + (order.total || '223.00');
-                document.getElementById('inv-time').innerText = 'Time: ' + (order.time || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+                document.getElementById('inv-code').innerText = 'Invoice Code: ' + order.code;
+                document.getElementById('inv-items').innerText = 'Items: ' + order.items;
+                document.getElementById('inv-total').innerText = 'Total Bill: ₹' + order.total;
+                document.getElementById('inv-time').innerText = 'Time: ' + order.time;
             }
         }
 
-        function checkAllKeys() {
-            const order1 = JSON.parse(localStorage.getItem('currentOrder'));
-            const order2 = JSON.parse(localStorage.getItem('freshfarm_order'));
-            renderInvoice(order1 || order2);
-        }
-
-        // Listen for tab switching & storage changes
-        window.addEventListener('storage', checkAllKeys);
-        window.addEventListener('focus', checkAllKeys);
-        setInterval(checkAllKeys, 300);
-        checkAllKeys();
+        window.addEventListener('storage', checkOrderStatus);
+        window.addEventListener('focus', checkOrderStatus);
+        setInterval(checkOrderStatus, 300);
+        checkOrderStatus();
     </script>
 </body>
 </html>
