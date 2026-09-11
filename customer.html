@@ -1,1095 +1,179 @@
-```html
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Customer Dashboard - FreshFarm</title>
-
-    <style>
-
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            background-color: #f4f4f4;
-        }
-
-        .navbar {
-            background: white;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .logo {
-            color: #2e7d32;
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        .logout-btn {
-            background: #f44336;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .main-container {
-            max-width: 1100px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
-
-        .welcome-text {
-            color: #2e7d32;
-            font-size: 22px;
-            margin-bottom: 20px;
-            font-weight: bold;
-        }
-
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
-        }
-
-        .card h3 {
-            margin-top: 0;
-            color: #2e7d32;
-            border-bottom: 2px solid #e0e0e0;
-            padding-bottom: 8px;
-        }
-
-        .vegetable-card {
-            background: #ffffff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 12px;
-        }
-
-        .vegetable-name {
-            color: #2e7d32;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .vegetable-info {
-            color: #555;
-            font-size: 14px;
-            margin: 6px 0;
-        }
-
-        .quantity-row {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            margin-top: 10px;
-            flex-wrap: wrap;
-        }
-
-        .quantity-row input {
-            width: 80px;
-            padding: 8px;
-            border: 1px solid #bbb;
-            border-radius: 4px;
-        }
-
-        .quantity-row select {
-            padding: 8px;
-            border: 1px solid #bbb;
-            border-radius: 4px;
-        }
-
-        .add-btn {
-            background: #2e7d32;
-            color: white;
-            border: none;
-            padding: 9px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .add-btn:hover {
-            background: #1b5e20;
-        }
-
-        .cart-item {
-            background: #fafafa;
-            padding: 14px;
-            border-left: 4px solid #ff9800;
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
-
-        .cart-item-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .remove-btn {
-            background: #f44336;
-            color: white;
-            border: none;
-            padding: 5px 9px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .cart-total {
-            background: #e8f5e9;
-            border: 2px solid #4caf50;
-            padding: 15px;
-            border-radius: 6px;
-            margin-top: 15px;
-            font-size: 20px;
-            font-weight: bold;
-            color: #2e7d32;
-        }
-
-        .place-order-btn {
-            width: 100%;
-            margin-top: 15px;
-            padding: 13px;
-            background: #2e7d32;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 17px;
-            font-weight: bold;
-        }
-
-        .place-order-btn:hover {
-            background: #1b5e20;
-        }
-
-        .bill-box {
-            background: #e8f5e9;
-            border: 2px dashed #4caf50;
-            border-radius: 8px;
-            padding: 20px;
-            font-family: monospace;
-        }
-
-        .bill-row {
-            display: flex;
-            justify-content: space-between;
-            margin: 8px 0;
-            gap: 10px;
-        }
-
-        .grand-total {
-            border-top: 2px solid #333;
-            padding-top: 10px;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .status {
-            text-align: center;
-            font-weight: bold;
-            padding: 7px;
-            border-radius: 5px;
-            margin-bottom: 12px;
-        }
-
-        .pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .accepted {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        @media(max-width: 700px) {
-
-            .grid-container {
-                grid-template-columns: 1fr;
-            }
-
-            .navbar {
-                padding: 15px;
-            }
-
-            .main-container {
-                padding: 0 10px;
-            }
-
-        }
-
-    </style>
-</head>
-
-
-<body>
-
-
-<!-- ================= NAVBAR ================= -->
-
-<div class="navbar">
-
-    <div class="logo">
-        🥦 FreshFarm
-    </div>
-
-    <button
-        class="logout-btn"
-        onclick="logoutUser()">
-        Logout
-    </button>
-
-</div>
-
-
-
-<div class="main-container">
-
-
-<!-- ================= WELCOME ================= -->
-
-<div class="welcome-text">
-
-    Welcome,
-    <span id="custNameDisplay">shalini</span>
-    (Customer)
-
-</div>
-
-
-
-<!-- ================= AVAILABLE VEGETABLES ================= -->
-
-<div class="card">
-
-    <h3>
-        🥦 Available Market Vegetables
-    </h3>
-
-    <p style="color:#666;">
-        Select KG or grams and add vegetables.
-        You can add maximum 10 different vegetables.
-    </p>
-
-    <div id="availableVegetablesSection"></div>
-
-</div>
-
-
-
-<!-- ================= CART + BILL ================= -->
-
-<div class="grid-container">
-
-
-<!-- ================= CART ================= -->
-
-<div class="card">
-
-    <h3>
-        🛒 Your Cart
-    </h3>
-
-    <div id="cartSection">
-
-        <p style="color:#999;font-style:italic;">
-            Your Cart is Empty.
-        </p>
-
-    </div>
-
-    <div id="cartTotal"></div>
-
-
-    <button
-        id="placeOrderButton"
-        class="place-order-btn"
-        onclick="placeOrder()"
-        style="display:none;">
-
-        ✅ Place Complete Order
-
-    </button>
-
-</div>
-
-
-
-<!-- ================= SINGLE BILL ================= -->
-
-<div class="card">
-
-    <h3>
-        📄 Single Order Bill
-    </h3>
-
-    <div id="billSection">
-
-        <p style="color:#999;font-style:italic;">
-            Add vegetables to cart and place your order.
-        </p>
-
-    </div>
-
-</div>
-
-
-</div>
-
-</div>
-
-
-
-<script src="app.js"></script>
-
-
-<script>
-
-
-// ======================================================
-// CUSTOMER
-// ======================================================
-
-let custUser =
-    typeof getCurrentUser === "function"
-        ? getCurrentUser()
-        : null;
-
-
-custUser =
-    custUser || {
-        name: "shalini"
-    };
-
-
-document.getElementById(
-    "custNameDisplay"
-).innerText = custUser.name;
-
-
-
-// ======================================================
-// CART
-// ======================================================
-
-let customerCart =
-    JSON.parse(
-        localStorage.getItem("customer_cart")
-    ) || [];
-
-
-
-// ======================================================
-// DISPLAY AVAILABLE VEGETABLES
-// ======================================================
-
-function displayMarketVegetables() {
-
-    let vegList =
-        JSON.parse(
-            localStorage.getItem(
-                "veg_market_vegetables"
-            )
-        ) || [];
-
-
-    let section =
-        document.getElementById(
-            "availableVegetablesSection"
-        );
-
-
-    section.innerHTML = "";
-
-
-    if (vegList.length === 0) {
-
-        section.innerHTML = `
-
-            <p style="color:#777;font-style:italic;">
-                మార్కెట్ లో ప్రస్తుతం కూరగాయలు లేవు.
-                రైతు Dashboard లో vegetables add చేయండి.
-            </p>
-
-        `;
-
-        return;
-    }
-
-
-
-    vegList.forEach(
-        (vegetable, index) => {
-
-
-            if (
-                Number(vegetable.quantityKg) <= 0
-            ) {
-
-                return;
-
-            }
-
-
-
-            section.innerHTML += `
-
-                <div class="vegetable-card">
-
-                    <div class="vegetable-name">
-
-                        🥦 ${vegetable.name}
-
-                    </div>
-
-
-                    <div class="vegetable-info">
-
-                        Price:
-                        <strong>
-                            ₹${Number(
-                                vegetable.pricePerKg
-                            ).toFixed(2)}
-                            / KG
-                        </strong>
-
-                    </div>
-
-
-                    <div class="vegetable-info">
-
-                        Available Stock:
-                        <strong>
-                            ${vegetable.quantityKg}
-                            KG
-                        </strong>
-
-                    </div>
-
-
-                    <div class="vegetable-info">
-
-                        Farmer:
-                        ${vegetable.farmerName || "Farmer"}
-
-                    </div>
-
-
-                    <div class="quantity-row">
-
-
-                        <input
-                            type="number"
-                            id="quantity_${index}"
-                            min="1"
-                            step="1"
-                            value="1"
-                        >
-
-
-                        <select
-                            id="unit_${index}"
-                        >
-
-                            <option value="kg">
-                                KG
-                            </option>
-
-                            <option value="gram">
-                                Grams
-                            </option>
-
-                        </select>
-
-
-                        <button
-                            class="add-btn"
-                            onclick="
-                                addToCart(
-                                    '${vegetable.name}',
-                                    ${Number(vegetable.pricePerKg)},
-                                    ${Number(vegetable.quantityKg)},
-                                    ${index}
-                                )
-                            "
-                        >
-
-                            🛒 Add to Cart
-
-                        </button>
-
-
-                    </div>
-
-                </div>
-
-            `;
-
-        }
-    );
-
-}
-
-
-
-// ======================================================
-// ADD TO CART
-// ======================================================
-
-function addToCart(
-    vegetableName,
-    pricePerKg,
-    stockKg,
-    index
-) {
-
-
-    let quantity =
-        Number(
-            document.getElementById(
-                "quantity_" + index
-            ).value
-        );
-
-
-    let unit =
-        document.getElementById(
-            "unit_" + index
-        ).value;
-
-
-
-    if (
-        !quantity ||
-        quantity <= 0
-    ) {
-
-        alert(
-            "Please enter a valid quantity."
-        );
-
-        return;
-    }
-
-
-
-    // Convert grams to KG
-
-    let quantityKg;
-
-
-    if (unit === "gram") {
-
-        quantityKg =
-            quantity / 1000;
-
-    } else {
-
-        quantityKg =
-            quantity;
-
-    }
-
-
-
-    // Check stock
-
-    if (
-        quantityKg >
-        Number(stockKg)
-    ) {
-
-        alert(
-            "Available stock is only " +
-            stockKg +
-            " KG."
-        );
-
-        return;
-    }
-
-
-
-    // Find existing vegetable
-
-    let existing =
-        customerCart.findIndex(
-            item =>
-                item.name.toLowerCase() ===
-                vegetableName.toLowerCase()
-        );
-
-
-
-    // Maximum 10 different vegetables
-
-    if (
-        existing === -1 &&
-        customerCart.length >= 10
-    ) {
-
-        alert(
-            "❌ Maximum 10 vegetables allowed in one order."
-        );
-
-        return;
-    }
-
-
-
-    // If vegetable already exists
-
-    if (existing !== -1) {
-
-
-        let newQuantity =
-            customerCart[existing].quantityKg +
-            quantityKg;
-
-
-        if (
-            newQuantity >
-            Number(stockKg)
-        ) {
-
-            alert(
-                "❌ Total quantity exceeds available stock."
-            );
-
-            return;
-        }
-
-
-        customerCart[existing].quantityKg =
-            newQuantity;
-
-    }
-
-    else {
-
-
-        customerCart.push({
-
-            name:
-                vegetableName,
-
-            pricePerKg:
-                Number(pricePerKg),
-
-            quantityKg:
-                quantityKg
-
-        });
-
-    }
-
-
-
-    saveCart();
-
-    displayCart();
-
-
-
-    alert(
-        "✅ " +
-        vegetableName +
-        " added to cart."
-    );
-
-}
-
-
-
-// ======================================================
-// SAVE CART
-// ======================================================
-
-function saveCart() {
-
-    localStorage.setItem(
-        "customer_cart",
-        JSON.stringify(
-            customerCart
-        )
-    );
-
-}
-
-
-
-// ======================================================
-// FORMAT QUANTITY
-// ======================================================
-
-function formatQuantity(
-    quantityKg
-) {
-
-
-    if (
-        quantityKg < 1
-    ) {
-
-        return (
-            quantityKg * 1000
-        ).toFixed(0) + " g";
-
-    }
-
-
-    return (
-        quantityKg
-    ).toFixed(3) + " KG";
-
-}
-
-
-
-// ======================================================
-// DISPLAY CART
-// ======================================================
-
 function displayCart() {
 
+    let cartSection =
+        document.getElementById("cartSection");
 
-    let section =
-        document.getElementById(
-            "cartSection"
-        );
-
-
-    let totalBox =
-        document.getElementById(
-            "cartTotal"
-        );
-
+    let cartTotal =
+        document.getElementById("cartTotal");
 
     let orderButton =
-        document.getElementById(
-            "placeOrderButton"
-        );
+        document.getElementById("placeOrderButton");
 
 
+    // If cart is empty
+    if (customerCart.length === 0) {
 
-    if (
-        customerCart.length === 0
-    ) {
-
-
-        section.innerHTML = `
-
-            <p style="color:#999;font-style:italic;">
+        cartSection.innerHTML = `
+            <p style="
+                color:#999;
+                font-style:italic;
+                margin:0;
+            ">
                 Your Cart is Empty.
             </p>
-
         `;
 
+        cartTotal.innerHTML = "";
 
-        totalBox.innerHTML = "";
-
-        orderButton.style.display =
-            "none";
+        orderButton.style.display = "none";
 
         return;
-
     }
 
 
+    // Maximum 10 vegetables
+    if (customerCart.length > 10) {
 
-    section.innerHTML = "";
+        customerCart =
+            customerCart.slice(0, 10);
+
+        saveCart();
+    }
 
 
+    cartSection.innerHTML = "";
 
     let grandTotal = 0;
 
 
+    // Display all vegetables
+    customerCart.forEach(function(item, index) {
 
-    customerCart.forEach(
-        (item, index) => {
-
-
-            let subtotal =
-                item.quantityKg *
-                item.pricePerKg;
+        let subtotal =
+            Number(item.quantityKg) *
+            Number(item.pricePerKg);
 
 
-            grandTotal +=
-                subtotal;
+        grandTotal += subtotal;
 
 
-
-            section.innerHTML += `
-
-                <div class="cart-item">
+        let quantityText;
 
 
-                    <div class="cart-item-header">
+        // Convert KG to grams for display
+        if (Number(item.quantityKg) < 1) {
 
-                        <strong>
-                            🥦 ${item.name}
-                        </strong>
+            quantityText =
+                (Number(item.quantityKg) * 1000)
+                .toFixed(0) + " g";
 
+        } else {
 
-                        <button
-                            class="remove-btn"
-                            onclick="
-                                removeFromCart(${index})
-                            "
-                        >
-
-                            ❌ Remove
-
-                        </button>
-
-                    </div>
+            quantityText =
+                Number(item.quantityKg)
+                .toFixed(3) + " KG";
+        }
 
 
-                    <p>
-                        Quantity:
-                        <strong>
-                            ${formatQuantity(
-                                item.quantityKg
-                            )}
-                        </strong>
-                    </p>
+        cartSection.innerHTML += `
+
+            <div class="cart-item"
+                 style="
+                    background:#fafafa;
+                    padding:14px;
+                    border-left:5px solid #ff9800;
+                    border-radius:5px;
+                    margin-top:10px;
+                 ">
+
+                <div style="
+                    display:flex;
+                    justify-content:space-between;
+                    align-items:center;
+                ">
+
+                    <strong style="font-size:18px;">
+
+                        ${index + 1}.
+                        🥦 ${item.name}
+
+                    </strong>
 
 
-                    <p>
-                        Price:
-                        ₹${item.pricePerKg.toFixed(2)}
-                        / KG
-                    </p>
-
-
-                    <p>
-                        Subtotal:
-                        <strong>
-                            ₹${subtotal.toFixed(2)}
-                        </strong>
-                    </p>
+                    <button
+                        onclick="removeFromCart(${index})"
+                        style="
+                            background:#f44336;
+                            color:white;
+                            border:none;
+                            padding:6px 10px;
+                            border-radius:4px;
+                            cursor:pointer;
+                        "
+                    >
+                        ❌
+                    </button>
 
                 </div>
 
-            `;
 
-        }
-    );
+                <p style="margin:7px 0;">
+                    <strong>Quantity:</strong>
+                    ${quantityText}
+                </p>
 
 
+                <p style="margin:7px 0;">
+                    <strong>Price:</strong>
+                    ₹${Number(item.pricePerKg).toFixed(2)}
+                    / kg
+                </p>
 
-    totalBox.innerHTML = `
 
-        <div class="cart-total">
+                <p style="margin:7px 0;">
+                    <strong>Subtotal:</strong>
+                    ₹${subtotal.toFixed(2)}
+                </p>
 
-            🧾 Grand Total:
+            </div>
+        `;
+    });
+
+
+    // Grand Total
+    cartTotal.innerHTML = `
+
+        <div style="
+            background:#e8f5e9;
+            border:2px solid #4caf50;
+            padding:15px;
+            border-radius:6px;
+            margin-top:15px;
+            font-size:20px;
+            font-weight:bold;
+            color:#2e7d32;
+        ">
+
+            🧾 GRAND TOTAL:
             ₹${grandTotal.toFixed(2)}
 
             <br>
 
-            <small>
-                ${customerCart.length}
-                / 10 vegetables
-            </small>
+            <span style="
+                font-size:14px;
+                color:#555;
+            ">
+
+                ${customerCart.length}/10
+                vegetables in cart
+
+            </span>
 
         </div>
-
     `;
 
 
-
-    orderButton.style.display =
-        "block";
-
-}
-
-
-
-// ======================================================
-// REMOVE FROM CART
-// ======================================================
-
-function removeFromCart(
-    index
-) {
-
-
-    let name =
-        customerCart[index].name;
-
-
-    customerCart.splice(
-        index,
-        1
-    );
-
-
-    saveCart();
-
-    displayCart();
-
-
-    alert(
-        name +
-        " removed from cart."
-    );
+    // Show one Place Order button
+    orderButton.style.display = "block";
 
 }
-
-
-
-// ======================================================
-// PLACE ONE COMPLETE ORDER
-// ======================================================
-
-function placeOrder() {
-
-
-    if (
-        customerCart.length === 0
-    ) {
-
-        alert(
-            "❌ Your cart is empty."
-        );
-
-        return;
-    }
-
-
-
-    // Create ONE order code
-
-    let randomNumber =
-        Math.floor(
-            1000 +
-            Math.random() * 9000
-        );
-
-
-    let orderCode =
-        "FF-PEND-" +
-        randomNumber;
-
-
-
-    // Calculate ONE grand total
-
-    let grandTotal = 0;
-
-
-    customerCart.forEach(
-        item => {
-
-            grandTotal +=
-                item.quantityKg *
-                item.pricePerKg;
-
-        }
-    );
-
-
-
-    // Create ONE complete order
-
-    let completeOrder = {
-
-        orderCode:
-            orderCode,
-
-        customerName:
-            custUser.name,
-
-        customerCart:
-            customerCart,
-
-        grandTotal:
-            Number(
-                grandTotal.toFixed(2)
-            ),
-
-        status:
-            "Pending",
-
-        orderTime:
-            new Date().toLocaleString()
-
-    };
-
-
-
-    // Save complete order
-
-    localStorage.setItem(
-        "complete_customer_order",
-        JSON.stringify(
-            completeOrder
-        )
-    );
-
-
-    // Keep compatibility with existing farmer code
-
-    localStorage.setItem(
-        "current_order_status",
-        "Pending"
-    );
-
-
-    localStorage.setItem(
-        "last_generated_code",
-        orderCode
-    );
-
-
-    localStorage.setItem(
-        "customer_name",
-        custUser.name
-    );
-
-
-    localStorage.setItem(
-        "order_total",
-        grandTotal.toFixed(2)
-    );
-
-
-
-    // Generate single bill
-
-    generateSingleBill(
-        completeOrder
-    );
-
-
-
-    alert(
-
-        "✅ ONE COMPLETE ORDER PLACED!\n\n" +
-
-        "Order Code: " +
-        orderCode +
-        "\n\n" +
-
-        "Total Items: " +
-        customerCart.length +
-```
