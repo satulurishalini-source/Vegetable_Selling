@@ -6,25 +6,95 @@
     <title>FreshFarm - Farmer Dashboard</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #f4f6f8; color: #333; padding-bottom: 50px; }
-        .top-bar { background-color: #f8f9fa; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e0e0e0; }
-        .brand { font-size: 20px; font-weight: bold; color: #1a7f37; }
+        body { background-color: #f4f6f8; color: #111827; padding-bottom: 50px; }
+        .top-bar { background-color: #ffffff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e7eb; }
+        .brand { font-size: 20px; font-weight: bold; color: #16a34a; }
+        .btn-logout { background-color: #ef4444; color: white; border: none; padding: 6px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
         .card { background: #ffffff; border-radius: 6px; border: 1px solid #e5e7eb; margin-bottom: 20px; padding: 18px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .card-header { font-size: 16px; font-weight: 600; margin-bottom: 15px; color: #212529; }
+        .card-header { font-size: 16px; font-weight: 700; margin-bottom: 15px; color: #111827; display: flex; align-items: center; gap: 8px; }
+        
+        /* Fixed Vegetable Box & Title Styling */
+        .veg-box { background-color: #ffffff; border: 1px solid #d1d5db; border-radius: 6px; padding: 15px; margin-bottom: 15px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .veg-title { margin-bottom: 10px; color: #15803d; font-size: 16px; font-weight: 700; display: block; }
+        
+        .form-group { margin-bottom: 10px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; color: #374151; }
+        .form-group input { width: 100%; padding: 8px 10px; border: 1px solid #9ca3af; border-radius: 4px; font-size: 14px; color: #111827; background-color: #ffffff; }
+        
+        .btn-submit { width: 100%; background-color: #16a34a; color: white; border: none; padding: 12px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 15px; }
+        .btn-submit:hover { background-color: #15803d; }
+        
         .order-notification-box { background-color: #fffbeb; border: 1px dashed #f59e0b; border-radius: 6px; padding: 15px; text-align: center; }
         .title { color: #d97706; font-weight: bold; margin-bottom: 8px; }
-        .btn-accept { background-color: #1a7f37; color: white; border: none; padding: 10px 18px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 12px; }
-        .status-success-banner { color: #166534; font-size: 14px; display: flex; align-items: center; gap: 8px; font-weight: 500; }
+        .btn-accept { background-color: #16a34a; color: white; border: none; padding: 10px 18px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 12px; }
+        .status-success-banner { color: #166534; font-size: 14px; display: flex; align-items: center; gap: 8px; font-weight: 600; background-color: #f0fdf4; padding: 12px; border: 1px solid #bbf7d0; border-radius: 6px; }
     </style>
 </head>
 <body>
 
     <div class="top-bar">
         <div class="brand">🌱 FreshFarm - Farmer Dashboard</div>
+        <button class="btn-logout">Logout</button>
     </div>
 
     <div class="container">
+        <!-- Manage All 8 Vegetables Section -->
+        <div class="card">
+            <div class="card-header">🥦 Manage All Vegetables</div>
+
+            <div class="veg-box">
+                <span class="veg-title">🍅 Vegetable 1: Tomatoes</span>
+                <div class="form-group"><label>Price per KG (₹):</label><input type="number" value="35"></div>
+                <div class="form-group"><label>Quantity Available (KG):</label><input type="number" value="1"></div>
+            </div>
+
+            <div class="veg-box">
+                <span class="veg-title">🥔 Vegetable 2: Potatoes</span>
+                <div class="form-group"><label>Price per KG (₹):</label><input type="number" value="40"></div>
+                <div class="form-group"><label>Quantity Available (KG):</label><input type="number" value="60"></div>
+            </div>
+
+            <div class="veg-box">
+                <span class="veg-title">🥕 Vegetable 3: Carrot</span>
+                <div class="form-group"><label>Price per KG (₹):</label><input type="number" value="20"></div>
+                <div class="form-group"><label>Quantity Available (KG):</label><input type="number" value="40"></div>
+            </div>
+
+            <div class="veg-box">
+                <span class="veg-title">🥬 Vegetable 4: Cabbage</span>
+                <div class="form-group"><label>Price per KG (₹):</label><input type="number" value="50"></div>
+                <div class="form-group"><label>Quantity Available (KG):</label><input type="number" value="40"></div>
+            </div>
+
+            <div class="veg-box">
+                <span class="veg-title">🌶️ Vegetable 5: Chilli</span>
+                <div class="form-group"><label>Price per KG (₹):</label><input type="number" value="38"></div>
+                <div class="form-group"><label>Quantity Available (KG):</label><input type="number" value="40"></div>
+            </div>
+
+            <div class="veg-box">
+                <span class="veg-title">🍆 Vegetable 6: Brinjal</span>
+                <div class="form-group"><label>Price per KG (₹):</label><input type="number" value="35"></div>
+                <div class="form-group"><label>Quantity Available (KG):</label><input type="number" value="40"></div>
+            </div>
+
+            <div class="veg-box">
+                <span class="veg-title">🥒 Vegetable 7: Cucumber</span>
+                <div class="form-group"><label>Price per KG (₹):</label><input type="number" value="30"></div>
+                <div class="form-group"><label>Quantity Available (KG):</label><input type="number" value="50"></div>
+            </div>
+
+            <div class="veg-box">
+                <span class="veg-title">🫛 Vegetable 8: Lady Finger</span>
+                <div class="form-group"><label>Price per KG (₹):</label><input type="number" value="45"></div>
+                <div class="form-group"><label>Quantity Available (KG):</label><input type="number" value="30"></div>
+            </div>
+
+            <button class="btn-submit" onclick="alert('Vegetables updated in market successfully!')">Add All Vegetables to Market</button>
+        </div>
+
+        <!-- Live Orders Section -->
         <div class="card">
             <div class="card-header">📊 Live Customer Orders</div>
 
@@ -43,7 +113,6 @@
 
     <script>
         function acceptOrder() {
-            // 1. Prepare accepted order object
             const orderData = {
                 code: 'FF-APRV-9376',
                 items: 'cabbage, chilli, brinjal, cucumber, lady finger, onion',
@@ -52,12 +121,10 @@
                 time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             };
 
-            // 2. Save under ALL possible keys so customer.html catches it guaranteed
             localStorage.setItem('currentOrder', JSON.stringify(orderData));
             localStorage.setItem('freshfarm_order', JSON.stringify(orderData));
             localStorage.setItem('orderAccepted', 'true');
 
-            // 3. Update Farmer UI
             document.getElementById('order-box').style.display = 'none';
             document.getElementById('order-accepted-banner').style.display = 'flex';
         }
