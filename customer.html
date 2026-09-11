@@ -2,139 +2,236 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Vegetable Market Checkout</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Vegetables to Market</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #fcfcfc;
+            background-color: #f7f7f7;
             padding: 20px;
+            display: flex;
+            justify-content: flex-start;
         }
-        .container {
-            max-width: 500px;
+        .form-container {
+            width: 100%;
+            max-width: 450px;
             background: #ffffff;
             border: 1px solid #e0e0e0;
             border-radius: 6px;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
         }
-        .header {
-            color: #2e7d32;
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-        .product-card {
-            border-bottom: 1px solid #eeeeee;
-            padding-bottom: 15px;
-            margin-bottom: 15px;
-        }
-        .product-title {
-            color: #2e7d32;
-            font-weight: bold;
+        .main-title {
             font-size: 16px;
-            margin-bottom: 5px;
-        }
-        .product-info {
-            font-size: 14px;
-            color: #444444;
-            line-height: 1.5;
-            margin-bottom: 12px;
-        }
-        .controls {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        .quantity-field {
-            width: 70px;
-            padding: 6px;
-            border: 1px solid #cccccc;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-        .unit-dropdown {
-            padding: 6px;
-            border: 1px solid #cccccc;
-            border-radius: 4px;
-            background-color: #ffffff;
-            font-size: 14px;
-            cursor: pointer;
-        }
-        .btn-add-cart {
-            background-color: #2e7d32;
-            color: #ffffff;
-            border: none;
-            padding: 7px 15px;
-            border-radius: 4px;
-            font-size: 14px;
-            cursor: pointer;
             font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
         }
-        .btn-add-cart:hover {
+        .veg-card {
+            border: 1px solid #e6e6e6;
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 12px;
+            background-color: #fff;
+        }
+        .veg-header {
+            font-size: 13px;
+            font-weight: bold;
+            color: #2e7d32;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .input-group {
+            margin-bottom: 8px;
+        }
+        .input-group:last-child {
+            margin-bottom: 0;
+        }
+        label {
+            display: block;
+            font-size: 11px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 3px;
+        }
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        input::placeholder {
+            color: #aaa;
+            font-style: italic;
+        }
+        .submit-btn {
+            width: 100%;
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+        }
+        .submit-btn:hover {
             background-color: #1b5e20;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">Available Market Vegetables</div>
+<div class="form-container">
+    <div class="main-title">🚜 Add Vegetables to Market</div>
+    
+    <form id="vegetableMarketForm" onsubmit="submitForm(event)">
+        
+        <!-- Vegetable 1 -->
+        <div class="veg-card" data-index="1">
+            <div class="veg-header">🥔 Vegetable 1</div>
+            <div class="input-group">
+                <label>Vegetable Name:</label>
+                <input type="text" class="veg-name" placeholder="e.g., Tomato">
+            </div>
+            <div class="input-group">
+                <label>Price per KG (₹):</label>
+                <input type="number" class="veg-price" placeholder="e.g., 20" min="0">
+            </div>
+            <div class="input-group">
+                <label>Quantity Available (KG):</label>
+                <input type="number" class="veg-qty" placeholder="e.g., 10" min="0">
+            </div>
+        </div>
 
-    <!-- Tomatoes Card -->
-    <div class="product-card" id="item-tomatoes">
-        <div class="product-title">🥦 tomatoes</div>
-        <div class="product-info">
-            Price: ₹<span class="base-price">25</span> / KG<br>
-            Stock: 1 KG<br>
-            Farmer: shalini
+        <!-- Vegetable 2 -->
+        <div class="veg-card" data-index="2">
+            <div class="veg-header">🧅 Vegetable 2</div>
+            <div class="input-group">
+                <label>Vegetable Name:</label>
+                <input type="text" class="veg-name" placeholder="e.g., Potato">
+            </div>
+            <div class="input-group">
+                <label>Price per KG (₹):</label>
+                <input type="number" class="veg-price" placeholder="e.g., 30" min="0">
+            </div>
+            <div class="input-group">
+                <label>Quantity Available (KG):</label>
+                <input type="number" class="veg-qty" placeholder="e.g., 20" min="0">
+            </div>
         </div>
-        <div class="controls">
-            <input type="number" class="quantity-field" value="500" min="1">
-            <select class="unit-dropdown">
-                <option value="Grams">Grams</option>
-                <option value="KG">KG</option>
-            </select>
-            <button class="btn-add-cart" onclick="addToCart('item-tomatoes')">Add to Cart</button>
-        </div>
-    </div>
 
-    <!-- Potatoes Card -->
-    <div class="product-card" id="item-potatoes">
-        <div class="product-title">🥦 potatoes</div>
-        <div class="product-info">
-            Price: ₹<span class="base-price">49</span> / KG<br>
-            Stock: 60 KG<br>
-            Farmer: shalini
+        <!-- Vegetable 3 -->
+        <div class="veg-card" data-index="3">
+            <div class="veg-header">🥦 Vegetable 3</div>
+            <div class="input-group">
+                <label>Vegetable Name:</label>
+                <input type="text" class="veg-name" placeholder="e.g., Cabbage">
+            </div>
+            <div class="input-group">
+                <label>Price per KG (₹):</label>
+                <input type="number" class="veg-price" placeholder="e.g., 20" min="0">
+            </div>
+            <div class="input-group">
+                <label>Quantity Available (KG):</label>
+                <input type="number" class="veg-qty" placeholder="e.g., 15" min="0">
+            </div>
         </div>
-        <div class="controls">
-            <input type="number" class="quantity-field" value="250" min="1">
-            <select class="unit-dropdown">
-                <option value="Grams">Grams</option>
-                <option value="KG">KG</option>
-            </select>
-            <button class="btn-add-cart" onclick="addToCart('item-potatoes')">Add to Cart</button>
+
+        <!-- Vegetable 4 -->
+        <div class="veg-card" data-index="4">
+            <div class="veg-header">🌶️ Vegetable 4</div>
+            <div class="input-group">
+                <label>Vegetable Name:</label>
+                <input type="text" class="veg-name" placeholder="e.g., Chili">
+            </div>
+            <div class="input-group">
+                <label>Price per KG (₹):</label>
+                <input type="number" class="veg-price" placeholder="e.g., 40" min="0">
+            </div>
+            <div class="input-group">
+                <label>Quantity Available (KG):</label>
+                <input type="number" class="veg-qty" placeholder="e.g., 5" min="0">
+            </div>
         </div>
-    </div>
+
+        <!-- Vegetable 5 -->
+        <div class="veg-card" data-index="5">
+            <div class="veg-header">🍆 Vegetable 5</div>
+            <div class="input-group">
+                <label>Vegetable Name:</label>
+                <input type="text" class="veg-name" placeholder="e.g., Brinjal">
+            </div>
+            <div class="input-group">
+                <label>Price per KG (₹):</label>
+                <input type="number" class="veg-price" placeholder="e.g., 35" min="0">
+            </div>
+            <div class="input-group">
+                <label>Quantity Available (KG):</label>
+                <input type="number" class="veg-qty" placeholder="e.g., 12" min="0">
+            </div>
+        </div>
+
+        <!-- Vegetable 6 -->
+        <div class="veg-card" data-index="6">
+            <div class="veg-header">🥒 Vegetable 6</div>
+            <div class="input-group">
+                <label>Vegetable Name:</label>
+                <input type="text" class="veg-name" placeholder="e.g., Cucumber">
+            </div>
+            <div class="input-group">
+                <label>Price per KG (₹):</label>
+                <input type="number" class="veg-price" placeholder="e.g., 30" min="0">
+            </div>
+            <div class="input-group">
+                <label>Quantity Available (KG):</label>
+                <input type="number" class="veg-qty" placeholder="e.g., 10" min="0">
+            </div>
+        </div>
+
+        <!-- Master Submission Action Button -->
+        <button type="submit" class="submit-btn">➕ Add All Vegetables to Market</button>
+    </form>
 </div>
 
 <script>
-function addToCart(productId) {
-    const card = document.getElementById(productId);
-    const name = card.querySelector('.product-title').innerText;
-    const pricePerKg = parseFloat(card.querySelector('.base-price').innerText);
-    const quantity = parseFloat(card.querySelector('.quantity-field').value);
-    const unit = card.querySelector('.unit-dropdown').value;
+function submitForm(event) {
+    event.preventDefault(); // Stop standard window page reload
+    
+    const vegetableCards = document.querySelectorAll('.veg-card');
+    const batchVegetablesList = [];
 
-    let finalPrice = 0;
+    vegetableCards.forEach(card => {
+        const nameValue = card.querySelector('.veg-name').value.trim();
+        const priceValue = card.querySelector('.veg-price').value;
+        const qtyValue = card.querySelector('.veg-qty').value;
 
-    if (unit === "Grams") {
-        // Divide by 1000 to convert grams input to its KG price equivalent
-        finalPrice = (quantity / 1000) * pricePerKg;
-    } else {
-        finalPrice = quantity * pricePerKg;
-    }
+        // Only pack the item row if the user actually typed a name entry
+        if (nameValue !== "") {
+            batchVegetablesList.push({
+                itemNumber: card.getAttribute('data-index'),
+                name: nameValue,
+                pricePerKg: parseFloat(priceValue) || 0,
+                stockAvailableKg: parseFloat(qtyValue) || 0
+            });
+        }
+    });
 
-    alert(`Item: ${name}\nQuantity: ${quantity} ${unit}\nTotal Calculated Price: ₹${finalPrice.toFixed(2)}`);
+    console.log("Submitting Market List payload:", batchVegetablesList);
+    alert(`Successfully processed data entries for ${batchVegetablesList.length} vegetables! Check console logs for standard JSON payload format output.`);
 }
 </script>
 
