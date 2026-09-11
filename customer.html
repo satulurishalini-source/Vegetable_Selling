@@ -4,147 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Dashboard - FreshFarm</title>
-
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            background-color: #f4f4f4;
-        }
-
-        .navbar {
-            background-color: #ffffff;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .logo {
-            color: #2e7d32;
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        .logout-btn {
-            background-color: #f44336;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .main-container {
-            max-width: 1000px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
-
-        .welcome-text {
-            color: #2e7d32;
-            font-size: 22px;
-            margin-bottom: 20px;
-            font-weight: bold;
-        }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
-        }
-
-        .card h3 {
-            margin-top: 0;
-            color: #2e7d32;
-            border-bottom: 2px solid #e0e0e0;
-            padding-bottom: 8px;
-            font-size: 18px;
-        }
-
-        .market-item {
-            background: #fff;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .cart-item {
-            background: #fafafa;
-            padding: 12px;
-            border-left: 4px solid #ff9800;
-            border-radius: 4px;
-            margin-top: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .quantity-input {
-            width: 70px;
-            padding: 7px;
-            margin-right: 6px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        .buy-btn,
-        .checkout-btn {
-            background-color: #2e7d32;
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .checkout-btn {
-            width: 100%;
-            margin-top: 15px;
-            font-size: 16px;
-        }
-
-        .buy-btn:hover,
-        .checkout-btn:hover {
-            background-color: #1b5e20;
-        }
-
-        .remove-btn {
-            background: #f44336;
-            color: white;
-            border: none;
-            padding: 6px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .bill-box {
-            background: #e8f5e9;
-            padding: 20px;
-            border: 2px dashed #4caf50;
-            border-radius: 8px;
-            margin-top: 20px;
-            font-family: monospace;
-            line-height: 1.5;
-        }
+        body { font-family: Arial, sans-serif; margin: 0; background-color: #f4f4f4; }
+        .navbar { background-color: #ffffff; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .logo { color: #2e7d32; font-size: 24px; font-weight: bold; }
+        .logout-btn { background-color: #f44336; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .main-container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
+        .welcome-text { color: #2e7d32; font-size: 22px; margin-bottom: 20px; font-weight: bold; }
+        .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .card h3 { margin-top: 0; color: #2e7d32; border-bottom: 2px solid #e0e0e0; padding-bottom: 8px; font-size: 18px; }
+        .market-item { background: #fff; padding: 15px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 15px; }
+        .cart-item { background: #fafafa; padding: 12px; border-left: 4px solid #ff9800; border-radius: 4px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .quantity-input { width: 70px; padding: 7px; margin-right: 6px; border: 1px solid #ccc; border-radius: 4px; }
+        .buy-btn, .checkout-btn { background-color: #2e7d32; color: white; border: none; padding: 10px 18px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 14px; }
+        .checkout-btn { width: 100%; margin-top: 15px; font-size: 16px; }
+        .buy-btn:hover, .checkout-btn:hover { background-color: #1b5e20; }
+        .remove-btn { background: #f44336; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; }
+        .bill-box { background: #e8f5e9; padding: 20px; border: 2px dashed #4caf50; border-radius: 8px; margin-top: 20px; font-family: monospace; line-height: 1.5; }
     </style>
 </head>
 <body>
@@ -162,7 +39,6 @@
     <!-- AVAILABLE VEGETABLES -->
     <div class="card">
         <h3>🥦 Available Market Vegetables</h3>
-        <!-- The JavaScript will dynamically inject the vegetables right here -->
         <div id="availableVegetablesSection">
             <p style="color:#999;font-style:italic;">Loading vegetables...</p>
         </div>
@@ -191,15 +67,9 @@
 
 <script>
 const CART_KEY_PREFIX = "freshfarm_cart_";
-let custUser = getCurrentUser();
+let custUser = { name: "shalini", mobile: "9492465688" }; // Default fallback profile
 
-if (!custUser) {
-    // If not logged in, keep test user session alive locally
-    custUser = { name: "shalini", mobile: "9492465688" };
-    document.getElementById("custNameDisplay").innerText = custUser.name;
-} else {
-    document.getElementById("custNameDisplay").innerText = custUser.name;
-}
+document.getElementById("custNameDisplay").innerText = custUser.name;
 
 function getCartKey() {
     return CART_KEY_PREFIX + custUser.mobile;
@@ -218,46 +88,51 @@ function saveCart(cart) {
 }
 
 /* =========================================================
-   🔄 NEW: INITIALIZE DATA (Fills empty databases automatically)
+   🔄 FIXED INITIALIZER: Matches Admin "veg_market_items" Key
 ========================================================= */
 function initializeMarketVegetables() {
-    // Check if the master system inventory is empty
-    let currentStock = localStorage.getItem("veg_market_vegetables");
+    let currentStock = localStorage.getItem("veg_market_items");
     
+    // If empty or missing, seed default stock into local database
     if (!currentStock || JSON.parse(currentStock).length === 0) {
         const defaultVegetables = [
-            { id: 1, name: "Fresh Tomatoes", pricePerKg: 25, quantityKg: 100, farmerName: "shalini" },
-            { id: 2, name: "Onions", pricePerKg: 40, quantityKg: 60, farmerName: "shalini" },
-            { id: 3, name: "Potatoes", pricePerKg: 49, quantityKg: 10, farmerName: "shalini" },
-            { id: 4, name: "Brinjal", pricePerKg: 30, quantityKg: 45, farmerName: "shalini" }
+            { id: 1, name: "Tomatoes", price: 25, quantity: 100, farmer: "shalini" },
+            { id: 2, name: "Onions", price: 40, quantity: 60, farmer: "shalini" },
+            { id: 3, name: "Potatoes", price: 49, quantity: 10, farmer: "shalini" }
         ];
-        localStorage.setItem("veg_market_vegetables", JSON.stringify(defaultVegetables));
+        localStorage.setItem("veg_market_items", JSON.stringify(defaultVegetables));
     }
 }
 
 /* =========================================================
-   🔄 DISPLAY VEGETABLES
+   🔄 RENDER VEGETABLES
 ========================================================= */
 function displayMarketVegetables() {
     const displayContainer = document.getElementById("availableVegetablesSection");
-    const vegetables = JSON.parse(localStorage.getItem("veg_market_vegetables")) || [];
+    const itemsList = JSON.parse(localStorage.getItem("veg_market_items")) || [];
 
-    if (vegetables.length === 0) {
-        displayContainer.innerHTML = '<p style="color:#999;font-style:italic;">No vegetables available in the market inventory right now.</p>';
+    if (itemsList.length === 0) {
+        displayContainer.innerHTML = '<p style="color:#999;font-style:italic;">No vegetables available in the inventory.</p>';
         return;
     }
 
     displayContainer.innerHTML = "";
-    vegetables.forEach(veg => {
+    itemsList.forEach((veg, index) => {
+        // Safe variable conversion to prevent breaking bugs
+        let vegId = veg.id || index;
+        let name = veg.name || "Unknown Item";
+        let price = veg.price || 0;
+        let qty = veg.quantity || 0;
+
         displayContainer.innerHTML += `
             <div class="market-item">
                 <span>
-                    <strong>${veg.name}</strong> - ₹${veg.pricePerKg}/KG 
-                    <small style="color: #666; margin-left: 10px;">(Stock: ${veg.quantityKg} KG)</small>
+                    <strong>${name}</strong> - ₹${price}/KG 
+                    <small style="color: #666; margin-left: 10px;">(Available: ${qty} KG)</small>
                 </span>
                 <div>
-                    <input type="number" id="qty-${veg.id}" class="quantity-input" value="1" min="1" max="${veg.quantityKg}">
-                    <button class="buy-btn" onclick="addToCart(${veg.id})">Add To Cart</button>
+                    <input type="number" id="qty-${vegId}" class="quantity-input" value="1" min="1" max="${qty}">
+                    <button class="buy-btn" onclick="addToCart(${vegId}, '${name}', ${price}, ${qty})">Add To Cart</button>
                 </div>
             </div>
         `;
@@ -265,17 +140,9 @@ function displayMarketVegetables() {
 }
 
 /* =========================================================
-   ADD TO BASKET
+   ADD TO CART ACTION
 ========================================================= */
-function addToCart(vegId) {
-    const vegetables = JSON.parse(localStorage.getItem("veg_market_vegetables")) || [];
-    const vegetable = vegetables.find(v => Number(v.id) === Number(vegId));
-
-    if (!vegetable) {
-        alert("Vegetable not found.");
-        return;
-    }
-
+function addToCart(vegId, name, price, maxQty) {
     const quantityInput = document.getElementById("qty-" + vegId);
     const quantity = parseFloat(quantityInput.value);
 
@@ -284,21 +151,21 @@ function addToCart(vegId) {
         return;
     }
 
-    if (quantity > vegetable.quantityKg) {
-        alert("Not enough stock available!");
+    if (quantity > maxQty) {
+        alert("Requested quantity is greater than available stock.");
         return;
     }
 
     let cart = getCart();
-    const existingItem = cart.find(item => Number(item.vegId) === Number(vegetable.id));
+    const existingItem = cart.find(item => Number(item.vegId) === Number(vegId));
 
     if (existingItem) {
         existingItem.quantity = Number(existingItem.quantity) + quantity;
     } else {
         cart.push({
-            vegId: vegetable.id,
-            name: vegetable.name,
-            price: Number(vegetable.pricePerKg),
+            vegId: vegId,
+            name: name,
+            price: Number(price),
             quantity: quantity
         });
     }
@@ -306,7 +173,7 @@ function addToCart(vegId) {
     saveCart(cart);
     quantityInput.value = 1;
     renderCart();
-    alert(vegetable.name + " added to cart!");
+    alert(name + " added to cart!");
 }
 
 function renderCart() {
@@ -329,3 +196,57 @@ function renderCart() {
                 <button class="remove-btn" onclick="removeFromCart(${item.vegId})">Remove</button>
             </div>
         `;
+    });
+}
+
+function removeFromCart(vegId) {
+    let cart = getCart();
+    cart = cart.filter(item => Number(item.vegId) !== Number(vegId));
+    saveCart(cart);
+    renderCart();
+}
+
+/* =========================================================
+   🛒 CHECKOUT & LOG APPEND TO MAIN DATABASE
+========================================================= */
+function checkoutCart() {
+    let cart = getCart();
+    if (cart.length === 0) {
+        alert("Your cart is empty!");
+        return;
+    }
+
+    let totalQty = 0;
+    let totalPrice = 0;
+    let itemsDescriptionArray = [];
+    
+    cart.forEach(item => {
+        totalQty += Number(item.quantity);
+        totalPrice += (Number(item.quantity) * Number(item.price));
+        itemsDescriptionArray.push(`${item.name} (${item.quantity} KG)`);
+    });
+    
+    let itemsText = itemsDescriptionArray.join(", ");
+    let dynamicOrderCode = "FF-APRV-" + Math.floor(1000 + Math.random() * 9000);
+    let now = new Date();
+    let formattedTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    // Pushes order sequence to array history list
+    let existingOrders = JSON.parse(localStorage.getItem('veg_market_orders')) || [];
+    let newOrderReceipt = {
+        code: dynamicOrderCode,
+        name: itemsText,
+        quantity: totalQty,
+        price: totalPrice, 
+        status: "Accepted",
+        time: formattedTime
+    };
+
+    existingOrders.push(newOrderReceipt);
+    localStorage.setItem('veg_market_orders', JSON.stringify(existingOrders));
+
+    // Clear session shopping basket
+    saveCart([]);
+    renderCart();
+    displayLiveInvoice(newOrderReceipt);
+    
