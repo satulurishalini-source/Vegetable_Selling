@@ -3,724 +3,287 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FreshFarm - Customer Dashboard</title>
-
+    <title>Vegetable Marketplace</title>
     <style>
+        :root {
+            --primary-green: #2e7d32;
+            --light-green: #e8f5e9;
+            --text-dark: #333;
+            --card-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            --border-radius: 8px;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            background: #f4f4f4;
-        }
-
-        .navbar {
-            background: #2e7d32;
-            color: white;
-            padding: 18px;
-            text-align: center;
-        }
-
-        .container {
-            width: 90%;
-            max-width: 1100px;
-            margin: 25px auto;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            margin: 20px;
+            background-color: #fcfcfc;
+            color: var(--text-dark);
         }
 
         h2 {
-            color: #2e7d32;
-        }
-
-        .vegetables {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 15px;
-        }
-
-        .vegetable-card {
-            background: white;
-            padding: 18px;
-            border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-        }
-
-        .vegetable-card h3 {
-            margin-top: 0;
-        }
-
-        .price {
-            color: #2e7d32;
-            font-weight: bold;
-        }
-
-        .quantity {
-            width: 80px;
-            padding: 8px;
-            margin: 8px 0;
-        }
-
-        .add-btn {
-            background: #4caf50;
-            color: white;
-            border: none;
-            padding: 9px 14px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .add-btn:hover {
-            background: #388e3c;
-        }
-
-        .cart {
-            background: white;
-            padding: 20px;
-            margin-top: 30px;
-            border-radius: 8px;
-        }
-
-        .cart-item {
-            background: #fafafa;
-            padding: 14px;
-            border-left: 5px solid #ff9800;
-            border-radius: 5px;
-            margin-top: 10px;
-        }
-
-        .cart-header {
+            color: var(--primary-green);
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            gap: 10px;
+            font-size: 22px;
+            margin-bottom: 20px;
         }
 
-        .remove-btn {
-            background: #f44336;
+        /* Grid Layout for Veggie Cards */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            max-width: 1200px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 900px) { .grid-container { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 600px) { .grid-container { grid-template-columns: 1fr; } }
+
+        /* Card Styling */
+        .veg-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            border: 1px solid #f0f0f0;
+        }
+
+        .veg-name {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .veg-price {
+            color: var(--primary-green);
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 15px;
+        }
+
+        .qty-input {
+            width: 80%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .btn-add {
+            background-color: var(--primary-green);
             color: white;
             border: none;
-            padding: 7px 10px;
+            padding: 8px 14px;
+            width: 100%;
             border-radius: 4px;
             cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .btn-add:hover {
+            background-color: #1b5e20;
+        }
+
+        /* Live Orders Container Layout from Image 2 */
+        .orders-panel {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            border: 1px solid #f0f0f0;
+            max-width: 1200px;
+            margin-top: 30px;
+        }
+
+        .orders-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            font-weight: bold;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .orders-content {
+            padding: 20px;
+        }
+
+        /* Success Status Message Box */
+        .status-msg {
+            background-color: var(--light-green);
+            color: #1b5e20;
+            padding: 12px 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            display: none; /* Hidden until item is added */
+        }
+
+        /* Data Rendering Table */
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .orders-table th, .orders-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .orders-table th {
+            background-color: #f9f9f9;
+            color: #666;
+            font-weight: 600;
         }
 
         .grand-total {
-            background: #e8f5e9;
-            border: 2px solid #4caf50;
-            padding: 15px;
-            border-radius: 6px;
-            margin-top: 15px;
-            font-size: 20px;
             font-weight: bold;
-            color: #2e7d32;
-        }
-
-        .place-order {
-            width: 100%;
-            margin-top: 15px;
-            padding: 14px;
-            background: #ff9800;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 18px;
-            cursor: pointer;
-        }
-
-        .empty {
-            color: #999;
-            font-style: italic;
+            text-align: right;
+            font-size: 16px;
+            color: var(--primary-green);
+            padding-top: 15px;
         }
     </style>
 </head>
-
 <body>
 
-<!-- NAVBAR -->
-<div class="navbar">
-    <h1>🌱 FreshFarm</h1>
-    <p>Customer Dashboard</p>
-</div>
+    <h2>🍏 Available Vegetables</h2>
+    
+    <!-- Vegetables Product Grid Layout -->
+    <div class="grid-container" id="veggie-grid"></div>
 
-
-<div class="container">
-
-    <!-- AVAILABLE VEGETABLES -->
-    <h2>🥕 Available Vegetables</h2>
-
-    <div class="vegetables">
-
-        <!-- 1 Tomato -->
-        <div class="vegetable-card">
-            <h3>🍅 Tomato</h3>
-            <p class="price">₹40 / kg</p>
-
-            <input
-                type="number"
-                id="qtyTomato"
-                class="quantity"
-                value="1"
-                min="0.1"
-                step="0.1"
-            >
-
-            <button
-                class="add-btn"
-                onclick="addToCart('Tomato', 40, 'qtyTomato')">
-                🛒 Add to Cart
-            </button>
+    <!-- Live Customer Orders Section (Fixing the blank container data) -->
+    <div class="orders-panel">
+        <div class="orders-header">
+            📋 Live Customer Orders
         </div>
-
-
-        <!-- 2 Potato -->
-        <div class="vegetable-card">
-            <h3>🥔 Potato</h3>
-            <p class="price">₹35 / kg</p>
-
-            <input
-                type="number"
-                id="qtyPotato"
-                class="quantity"
-                value="1"
-                min="0.1"
-                step="0.1"
-            >
-
-            <button
-                class="add-btn"
-                onclick="addToCart('Potato', 35, 'qtyPotato')">
-                🛒 Add to Cart
-            </button>
+        <div class="orders-content">
+            <!-- Dynamic Success Box from Image 2 -->
+            <div class="status-msg" id="success-banner">
+                ✅ Last order accepted successfully. SMS Bill Sent!
+            </div>
+            
+            <!-- Where your missing dynamic order table data renders -->
+            <div id="order-data-view">
+                <p style="color: #888; font-style: italic;">No items added to current order list yet.</p>
+            </div>
         </div>
-
-
-        <!-- 3 Carrot -->
-        <div class="vegetable-card">
-            <h3>🥕 Carrot</h3>
-            <p class="price">₹60 / kg</p>
-
-            <input
-                type="number"
-                id="qtyCarrot"
-                class="quantity"
-                value="1"
-                min="0.1"
-                step="0.1"
-            >
-
-            <button
-                class="add-btn"
-                onclick="addToCart('Carrot', 60, 'qtyCarrot')">
-                🛒 Add to Cart
-            </button>
-        </div>
-
-
-        <!-- 4 Onion -->
-        <div class="vegetable-card">
-            <h3>🧅 Onion</h3>
-            <p class="price">₹45 / kg</p>
-
-            <input
-                type="number"
-                id="qtyOnion"
-                class="quantity"
-                value="1"
-                min="0.1"
-                step="0.1"
-            >
-
-            <button
-                class="add-btn"
-                onclick="addToCart('Onion', 45, 'qtyOnion')">
-                🛒 Add to Cart
-            </button>
-        </div>
-
-
-        <!-- 5 Cabbage -->
-        <div class="vegetable-card">
-            <h3>🥬 Cabbage</h3>
-            <p class="price">₹30 / kg</p>
-
-            <input
-                type="number"
-                id="qtyCabbage"
-                class="quantity"
-                value="1"
-                min="0.1"
-                step="0.1"
-            >
-
-            <button
-                class="add-btn"
-                onclick="addToCart('Cabbage', 30, 'qtyCabbage')">
-                🛒 Add to Cart
-            </button>
-        </div>
-
-
-        <!-- 6 Brinjal -->
-        <div class="vegetable-card">
-            <h3>🍆 Brinjal</h3>
-            <p class="price">₹50 / kg</p>
-
-            <input
-                type="number"
-                id="qtyBrinjal"
-                class="quantity"
-                value="1"
-                min="0.1"
-                step="0.1"
-            >
-
-            <button
-                class="add-btn"
-                onclick="addToCart('Brinjal', 50, 'qtyBrinjal')">
-                🛒 Add to Cart
-            </button>
-        </div>
-
-
-        <!-- 7 Beans -->
-        <div class="vegetable-card">
-            <h3>🫘 Beans</h3>
-            <p class="price">₹70 / kg</p>
-
-            <input
-                type="number"
-                id="qtyBeans"
-                class="quantity"
-                value="1"
-                min="0.1"
-                step="0.1"
-            >
-
-            <button
-                class="add-btn"
-                onclick="addToCart('Beans', 70, 'qtyBeans')">
-                🛒 Add to Cart
-            </button>
-        </div>
-
-
-        <!-- 8 Beetroot -->
-        <div class="vegetable-card">
-            <h3>🟣 Beetroot</h3>
-            <p class="price">₹55 / kg</p>
-
-            <input
-                type="number"
-                id="qtyBeetroot"
-                class="quantity"
-                value="1"
-                min="0.1"
-                step="0.1"
-            >
-
-            <button
-                class="add-btn"
-                onclick="addToCart('Beetroot', 55, 'qtyBeetroot')">
-                🛒 Add to Cart
-            </button>
-        </div>
-
-
-        <!-- 9 Spinach -->
-        <div class="vegetable-card">
-            <h3>🥬 Spinach</h3>
-            <p class="price">₹25 / kg</p>
-
-            <input
-                type="number"
-                id="qtySpinach"
-                class="quantity"
-                value="0.5"
-                min="0.1"
-                step="0.1"
-            >
-
-            <button
-                class="add-btn"
-                onclick="addToCart('Spinach', 25, 'qtySpinach')">
-                🛒 Add to Cart
-            </button>
-        </div>
-
-
-        <!-- 10 Cucumber -->
-        <div class="vegetable-card">
-            <h3>🥒 Cucumber</h3>
-            <p class="price">₹40 / kg</p>
-
-            <input
-                type="number"
-                id="qtyCucumber"
-                class="quantity"
-                value="1"
-                min="0.1"
-                step="0.1"
-            >
-
-            <button
-                class="add-btn"
-                onclick="addToCart('Cucumber', 40, 'qtyCucumber')">
-                🛒 Add to Cart
-            </button>
-        </div>
-
     </div>
 
-
-    <!-- CART -->
-    <div class="cart">
-
-        <h2>🛒 My Cart</h2>
-
-        <div id="cartSection">
-            <p class="empty">
-                Your Cart is Empty.
-            </p>
-        </div>
-
-        <div id="cartTotal"></div>
-
-        <button
-            id="placeOrderButton"
-            class="place-order"
-            style="display:none;"
-            onclick="placeOrder()">
-
-            🛒 Place Order
-
-        </button>
-
-    </div>
-
-</div>
-
-
-<!-- ================================================= -->
-<!-- JAVASCRIPT MUST BE INSIDE THIS SCRIPT TAG -->
-<!-- ================================================= -->
-
-<script>
-
-let customerCart =
-    JSON.parse(
-        localStorage.getItem("customerCart")
-    ) || [];
-
-
-// ===============================
-// ADD TO CART
-// ===============================
-function addToCart(name, pricePerKg, quantityId) {
-
-    // Maximum 10 vegetables
-    if (customerCart.length >= 10) {
-
-        alert(
-            "⚠️ Maximum 10 vegetables allowed in the cart."
-        );
-
-        return;
-    }
-
-
-    // Get quantity
-    let quantity =
-        Number(
-            document.getElementById(quantityId).value
-        );
-
-
-    // Check quantity
-    if (!quantity || quantity <= 0) {
-
-        alert(
-            "⚠️ Please enter a valid quantity."
-        );
-
-        return;
-    }
-
-
-    // Check duplicate
-    let existingVegetable =
-        customerCart.find(
-            function(item) {
-                return item.name === name;
-            }
-        );
-
-
-    if (existingVegetable) {
-
-        alert(
-            "⚠️ " + name +
-            " is already in your cart."
-        );
-
-        return;
-    }
-
-
-    // Add vegetable
-    customerCart.push({
-
-        name: name,
-
-        pricePerKg:
-            Number(pricePerKg),
-
-        quantityKg:
-            Number(quantity)
-
-    });
-
-
-    saveCart();
-
-    displayCart();
-
-    alert(
-        "✅ " + name +
-        " added to cart!\n\n" +
-        customerCart.length +
-        "/10 vegetables added."
-    );
-}
-
-
-// ===============================
-// SAVE CART
-// ===============================
-function saveCart() {
-
-    localStorage.setItem(
-        "customerCart",
-        JSON.stringify(customerCart)
-    );
-
-}
-
-
-// ===============================
-// DISPLAY CART
-// ===============================
-function displayCart() {
-
-    let cartSection =
-        document.getElementById("cartSection");
-
-    let cartTotal =
-        document.getElementById("cartTotal");
-
-    let orderButton =
-        document.getElementById("placeOrderButton");
-
-
-    // Empty cart
-    if (customerCart.length === 0) {
-
-        cartSection.innerHTML = `
-            <p class="empty">
-                Your Cart is Empty.
-            </p>
-        `;
-
-        cartTotal.innerHTML = "";
-
-        orderButton.style.display = "none";
-
-        return;
-    }
-
-
-    cartSection.innerHTML = "";
-
-    let grandTotal = 0;
-
-
-    // Display vegetables
-    customerCart.forEach(
-        function(item, index) {
-
-            let subtotal =
-                Number(item.quantityKg) *
-                Number(item.pricePerKg);
-
-
-            grandTotal += subtotal;
-
-
-            let quantityText;
-
-
-            // Display grams if less than 1 KG
-            if (Number(item.quantityKg) < 1) {
-
-                quantityText =
-                    (
-                        Number(item.quantityKg) *
-                        1000
-                    ).toFixed(0) + " g";
-
-            } else {
-
-                quantityText =
-                    Number(item.quantityKg)
-                    .toFixed(3) + " KG";
-            }
-
-
-            cartSection.innerHTML += `
-
-                <div class="cart-item">
-
-                    <div class="cart-header">
-
-                        <strong style="font-size:18px;">
-
-                            ${index + 1}.
-                            🥦 ${item.name}
-
-                        </strong>
-
-
-                        <button
-                            class="remove-btn"
-                            onclick="removeFromCart(${index})">
-
-                            ❌ Remove
-
-                        </button>
-
-                    </div>
-
-
-                    <p>
-                        <strong>Quantity:</strong>
-                        ${quantityText}
-                    </p>
-
-
-                    <p>
-                        <strong>Price:</strong>
-                        ₹${Number(
-                            item.pricePerKg
-                        ).toFixed(2)} / kg
-                    </p>
-
-
-                    <p>
-                        <strong>Subtotal:</strong>
-                        ₹${subtotal.toFixed(2)}
-                    </p>
-
+    <script>
+        // complete configuration dataset reflecting Image 1 prices and quantities
+        const vegetables = [
+            { id: 'tomato', name: 'Tomato', price: 40, qty: 1 },
+            { id: 'potato', name: 'Potato', price: 35, qty: 1 },
+            { id: 'carrot', name: 'Carrot', price: 60, qty: 1 },
+            { id: 'onion', name: 'Onion', price: 45, qty: 1 },
+            { id: 'cabbage', name: 'Cabbage', price: 30, qty: 1 },
+            { id: 'brinjal', name: 'Brinjal', price: 50, qty: 1 },
+            { id: 'beans', name: 'Beans', price: 70, qty: 1 },
+            { id: 'beetroot', name: 'Beetroot', price: 55, qty: 1 },
+            { id: 'spinach', name: 'Spinach', price: 25, qty: 0.5 },
+            { id: 'cucumber', name: 'Cucumber', price: 40, qty: 1 }
+        ];
+
+        let activeCart = [];
+
+        // Dynamic generation template mapping properties onto HTML blocks
+        function renderStorefront() {
+            const grid = document.getElementById('veggie-grid');
+            grid.innerHTML = vegetables.map(veg => `
+                <div class="veg-card">
+                    <div class="veg-name">${veg.name}</div>
+                    <div class="veg-price">₹${veg.price} / kg</div>
+                    <input type="number" step="0.1" class="qty-input" id="input-${veg.id}" value="${veg.qty}">
+                    <button class="btn-add" onclick="addToCart('${veg.id}', '${veg.name}', ${veg.price})">
+                        🛒 Add to Cart
+                    </button>
                 </div>
+            `).join('');
+        }
 
+        // Action workflow mapping to show status and build the dynamic customer summary table
+        function addToCart(id, name, price) {
+            const quantityInput = document.getElementById(`input-${id}`).value;
+            const quantity = parseFloat(quantityInput);
+
+            if (isNaN(quantity) || quantity <= 0) {
+                alert("Please enter a valid quantity amount");
+                return;
+            }
+
+            // Check if item already exists in cart, if yes update quantity, else push new item
+            const existingItem = activeCart.find(item => item.id === id);
+            if (existingItem) {
+                existingItem.quantity = quantity;
+            } else {
+                activeCart.push({ id, name, price, quantity });
+            }
+
+            // Show confirmation alert block
+            document.getElementById('success-banner').style.display = 'block';
+
+            // Re-render and populate live table calculation list
+            updateLiveOrdersView();
+        }
+
+        function updateLiveOrdersView() {
+            const container = document.getElementById('order-data-view');
+            
+            if (activeCart.length === 0) {
+                container.innerHTML = `<p style="color: #888; font-style: italic;">No items added to current order list yet.</p>`;
+                return;
+            }
+
+            let totalBill = 0;
+            let tableHTML = `
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>Item Name</th>
+                            <th>Unit Rate</th>
+                            <th>Weight Selected</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
             `;
+
+            activeCart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                totalBill += itemTotal;
+                tableHTML += `
+                    <tr>
+                        <td><strong>${item.name}</strong></td>
+                        <td>₹${item.price} / kg</td>
+                        <td>${item.quantity} kg</td>
+                        <td>₹${itemTotal.toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += `
+                    </tbody>
+                </table>
+                <div class="grand-total">Grand Total Bill: ₹${totalBill.toFixed(2)}</div>
+            `;
+
+            container.innerHTML = tableHTML;
         }
-    );
 
-
-    // GRAND TOTAL
-    cartTotal.innerHTML = `
-
-        <div class="grand-total">
-
-            🧾 GRAND TOTAL:
-            ₹${grandTotal.toFixed(2)}
-
-            <br>
-
-            <span style="
-                font-size:14px;
-                color:#555;
-            ">
-
-                ${customerCart.length}/10
-                vegetables in cart
-
-            </span>
-
-        </div>
-
-    `;
-
-
-    // Show Place Order button
-    orderButton.style.display = "block";
-}
-
-
-// ===============================
-// REMOVE FROM CART
-// ===============================
-function removeFromCart(index) {
-
-    customerCart.splice(index, 1);
-
-    saveCart();
-
-    displayCart();
-
-}
-
-
-// ===============================
-// PLACE ORDER
-// ===============================
-function placeOrder() {
-
-    if (customerCart.length === 0) {
-
-        alert(
-            "⚠️ Your cart is empty."
-        );
-
-        return;
-    }
-
-
-    let grandTotal = 0;
-
-
-    customerCart.forEach(
-        function(item) {
-
-            grandTotal +=
-                Number(item.quantityKg) *
-                Number(item.pricePerKg);
-
-        }
-    );
-
-
-    alert(
-        "✅ ORDER PLACED SUCCESSFULLY!\n\n" +
-
-        "🥕 Vegetables: " +
-        customerCart.length +
-
-        "\n💰 Total Amount: ₹" +
-        grandTotal.toFixed(2)
-    );
-
-
-    // Clear cart after order
-    customerCart = [];
-
-    saveCart();
-
-    displayCart();
-}
-
-
-// ===============================
-// DISPLAY CART WHEN PAGE OPENS
-// ===============================
-displayCart();
-
-</script>
-
+        // Initial setup load
+        renderStorefront();
+    </script>
 </body>
 </html>
