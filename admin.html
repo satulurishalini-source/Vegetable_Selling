@@ -3,203 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Marketplace Control Center - Admin Panel</title>
+    <title>Admin Dashboard - Secure Single Table</title>
     <style>
-        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #f0f4f8; margin: 0; padding: 20px; color: #334e68; }
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 80vh; }
+        .container { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); margin-bottom: 20px; width: 100%; max-width: 950px; }
         
-        .admin-wrapper { max-width: 1200px; margin: 0 auto; }
+        /* 🔒 Login Form Styling */
+        .login-box { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 320px; text-align: center; }
+        .login-box h2 { margin-bottom: 20px; color: #333; }
+        .login-box input { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; }
+        .login-box button { width: 97%; padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; font-weight: bold; }
+        .login-box button:hover { background-color: #45a049; }
+        .error-msg { color: red; font-size: 14px; margin-top: 10px; display: none; }
+
+        /* 📊 Table Styling */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #2E7D32; color: white; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .logout-btn { background-color: #f44336; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; float: right; font-weight: bold; }
         
-        /* Dashboard Header */
-        .admin-header { display: flex; justify-content: space-between; align-items: center; background: #102a43; color: white; padding: 15px 25px; border-radius: 8px; margin-bottom: 25px; }
-        .admin-header h1 { margin: 0; font-size: 22px; display: flex; align-items: center; gap: 10px; }
-        .status-badge { background: #48bb78; color: white; font-size: 12px; padding: 4px 10px; border-radius: 12px; font-weight: bold; }
+        /* Roles Style */
+        .badge-farmer { background-color: #E8F5E9; color: #2E7D32; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 13px; }
+        .badge-customer { background-color: #E3F2FD; color: #1565C0; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 13px; }
+        .badge-pending { background-color: #FFF3E0; color: #E65100; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 13px; }
+        .badge-accepted { background-color: #E8F5E9; color: #1B5E20; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 13px; }
 
-        /* Metric Cards Grid */
-        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 25px; }
-        .metric-card { background: white; border: 1px solid #d9e2ec; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
-        .metric-card h3 { margin: 0 0 5px 0; font-size: 13px; color: #627d98; text-transform: uppercase; letter-spacing: 0.5px; }
-        .metric-card .value { font-size: 24px; font-weight: bold; color: #102a43; }
-
-        /* Control Panel Layout Sections */
-        .dashboard-sections { display: grid; grid-template-columns: 1.4fr 1fr; gap: 25px; }
-        @media (max-width: 900px) { .dashboard-sections { grid-template-columns: 1fr; } }
-        
-        .panel { background: white; border: 1px solid #d9e2ec; border-radius: 8px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
-        .panel h2 { margin-top: 0; font-size: 16px; color: #102a43; border-bottom: 2px solid #bcccdc; padding-bottom: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
-
-        /* Data Tables Styling */
-        .admin-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
-        .admin-table th, .admin-table td { padding: 10px 12px; border-bottom: 1px solid #e2e8f0; }
-        .admin-table th { background-color: #f0f4f8; color: #486581; font-weight: 600; }
-        .admin-table tr:hover { background-color: #f8fafc; }
-        
-        /* Action Buttons */
-        .btn-edit { background: #3b82f6; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600; }
-        .btn-edit:hover { background: #2563eb; }
-        .btn-refresh { background: #486581; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
-        .btn-refresh:hover { background: #334e68; }
-
-        /* Alerts for Low Stock */
-        .low-stock { background-color: #fed7d7 !important; color: #c53030; font-weight: bold; }
-        .badge-low { background: #e53e3e; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
+        #adminContent { display: none; width: 100%; max-width: 950px; }
     </style>
 </head>
 <body>
 
-<div class="admin-wrapper">
-    
-    <!-- DASHBOARD BANNER HEADER -->
-    <div class="admin-header">
-        <h1>⚙️ Market Administration System</h1>
-        <div style="display: flex; align-items: center; gap: 15px;">
-            <span class="status-badge">System Live</span>
-            <button class="btn-refresh" onclick="refreshDashboardAnalytics()">🔄 Refresh Analytics</button>
-        </div>
+    <!-- 🔒 1. Admin Login Box -->
+    <div class="login-box" id="loginBox">
+        <h2>Admin Login 🔐</h2>
+        <input type="text" id="adminUser" placeholder="Username">
+        <input type="password" id="adminPass" placeholder="Password">
+        <button onclick="checkAdminLogin()">Login</button>
+        <p class="error-msg" id="errorMsg">తప్పుడు యూజర్‌నేమ్ లేదా పాస్‌వర్డ్!</p>
     </div>
 
-    <!-- AGGREGATED METRICS ROW PLATFORM COUNTERS -->
-    <div class="metrics-grid">
-        <div class="metric-card">
-            <h3>Total Tracked Crops</h3>
-            <div class="value" id="totalCropsCount">10</div>
-        </div>
-        <div class="metric-card">
-            <h3>Total Stock Weight</h3>
-            <div class="value" id="totalStockWeight">302 KG</div>
-        </div>
-        <div class="metric-card">
-            <h3>Est. Market Value</h3>
-            <div class="value" id="totalMarketValue">₹10,545.00</div>
-        </div>
-        <div class="metric-card">
-            <h3>Simulated Incoming Orders</h3>
-            <div class="value" id="totalOrdersCount">3</div>
-        </div>
-    </div>
+    <!-- 📊 2. Master Dashboard (Single Table) -->
+    <div id="adminContent">
+        <button class="logout-btn" onclick="adminLogout()">Logout</button>
+        <h1>Admin Master Dashboard 📊</h1>
 
-    <!-- CORE ADMIN WORKFLOW DATA TABLES -->
-    <div class="dashboard-sections">
-        
-        <!-- LEFT PANEL: VEGETABLE STOCK MONITOR & PRICING CONTROLS -->
-        <div class="panel">
-            <h2>📦 Live Inventory Stock Ledger <span style="font-size:12px; color:#627d98;">(Farmer Data Feed)</span></h2>
-            <table class="admin-table">
+        <div class="container">
+            <h2>All Market Transactions & Users (మొత్తం డేటా ఒకే పట్టికలో)</h2>
+            <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Vegetable Item</th>
-                        <th>Price/KG</th>
-                        <th>Stock Status</th>
-                        <th>Assigned Farmer</th>
-                        <th>Action</th>
+                        <th>S.No</th>
+                        <th>User Name (పేరు)</th>
+                        <th>Mobile Number</th>
+                        <th>Role (బాధ్యత)</th>
+                        <th>Wallet Balance</th>
+                        <th>Activity & SMS Bill Details (కూరగాయలు / ధర / ఆర్డర్ వివరాలు)</th>
                     </tr>
                 </thead>
-                <tbody id="adminInventoryTableBody">
-                    <!-- Dynamic rendering loop outputs rows here -->
+                <tbody id="masterTableBody">
+                    <!-- Data here -->
                 </tbody>
             </table>
         </div>
-
-        <!-- RIGHT PANEL: CUSTOMER INCOMING ORDER QUEUE MONITOR -->
-        <div class="panel">
-            <h2>📋 Recent Customer Activity Log</h2>
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th>Bill ID</th>
-                        <th>Items Ordered</th>
-                        <th style="text-align: right;">Total Bill (₹)</th>
-                    </tr>
-                </thead>
-                <tbody id="adminOrdersTableBody">
-                    <!-- Dynamic order mock tracking loads here -->
-                </tbody>
-            </table>
-        </div>
-
     </div>
-</div>
 
-<script>
-    // 1. Core Global Admin Data States representing the 10 vegetables linked to farmers
-    let adminInventory = [
-        { id: 1, name: "Tomatoes", pricePerKg: 25, stock: 40, farmer: "shalini" },
-        { id: 2, name: "Potatoes", pricePerKg: 49, stock: 60, farmer: "shalini" },
-        { id: 3, name: "Carrots", pricePerKg: 20, stock: 35, farmer: "shalini" },
-        { id: 4, name: "Onions", pricePerKg: 35, stock: 80, farmer: "shalini" },
-        { id: 5, name: "Cabbage", pricePerKg: 30, stock: 25, farmer: "ramesh" },
-        { id: 6, name: "Green Chillies", pricePerKg: 40, stock: 4, farmer: "ramesh" }, // Setup intentional low stock alert
-        { id: 7, name: "Brinjal", pricePerKg: 35, stock: 20, farmer: "shalini" },
-        { id: 8, name: "Cucumber", pricePerKg: 30, stock: 30, farmer: "kumar" },
-        { id: 9, name: "Lady Finger", pricePerKg: 45, stock: 6, farmer: "kumar" },   // Setup intentional low stock alert
-        { id: 10, name: "Capsicum", pricePerKg: 60, stock: 12, farmer: "shalini" }
-    ];
+    <script>
+        // 🔑 1. లాగిన్ వివరాలు మీ పేరుతో మార్చబడ్డాయి (Username: shalini, Password: shalini123)
+        const CORRECT_USER = "shalini";
+        const CORRECT_PASS = "shalini123";
 
-    // Mock incoming transactional data entries from customer checkouts
-    let mockCustomerBills = [
-        { billId: "TXN-901A", items: "Tomatoes (500g), Potatoes (1kg)", grandTotal: 61.50 },
-        { billId: "TXN-902B", items: "Onions (2kg), Capsicum (250g)", grandTotal: 85.00 },
-        { billId: "TXN-903C", items: "Green Chillies (500g)", grandTotal: 20.00 }
-    ];
+        function checkAdminLogin() {
+            var inputUser = document.getElementById('adminUser').value.trim();
+            var inputPass = document.getElementById('adminPass').value.trim();
+            var errorMsg = document.getElementById('errorMsg');
 
-    // 2. Main interface parser printing standard system rows into views
-    function renderAdminDashboard() {
-        const tableBody = document.getElementById('adminInventoryTableBody');
-        tableBody.innerHTML = "";
+            if (inputUser === CORRECT_USER && inputPass === CORRECT_PASS) {
+                document.getElementById('loginBox').style.display = 'none';
+                document.getElementById('adminContent').style.display = 'block';
+                document.body.style.justifyContent = 'flex-start';
+                loadSingleTableData();
+            } else {
+                errorMsg.style.display = 'block';
+            }
+        }
 
-        adminInventory.forEach(item => {
-            const tr = document.createElement('tr');
-            
-            // Check if stock dips below critical levels (e.g., less than 8 KG) for safety highlighting alert markers
-            const isLowStock = item.stock < 8;
-            if (isLowStock) {
-                tr.className = "low-stock";
+        function adminLogout() {
+            document.getElementById('loginBox').style.display = 'block';
+            document.getElementById('adminContent').style.display = 'none';
+            document.body.style.justifyContent = 'center';
+            document.getElementById('adminUser').value = '';
+            document.getElementById('adminPass').value = '';
+            document.getElementById('errorMsg').style.display = 'none';
+        }
+
+        // 🔄 లూప్స్ ఉపయోగించి మొత్తం డేటాని ఒకే టేబుల్‌లోకి తీసుకురావడం
+        function loadSingleTableData() {
+            var tableBody = document.getElementById('masterTableBody');
+            tableBody.innerHTML = ''; 
+            var serialNumber = 1;
+
+            // 1. లోకల్ స్టోరేజ్ నుండి యూజర్ల లిస్ట్ లూప్ చేయడం
+            var usersList = JSON.parse(localStorage.getItem('veg_market_users')) || [];
+            for (var i = 0; i < usersList.length; i++) {
+                var roleClass = usersList[i].role === 'FARMER' ? 'badge-farmer' : 'badge-customer';
+                
+                var row = '<tr>' +
+                    '<td>' + (serialNumber++) + '</td>' +
+                    '<td><strong>' + (usersList[i].name || 'N/A') + '</strong></td>' +
+                    '<td>' + (usersList[i].mobile || 'N/A') + '</td>' +
+                    '<td><span class="' + roleClass + '">' + (usersList[i].role || 'USER') + '</span></td>' +
+                    '<td>₹' + (usersList[i].balance || '0.00') + '</td>' +
+                    '<td><em style="color: #666;">Registered profile</em></td>' +
+                '</tr>';
+                tableBody.innerHTML += row;
             }
 
-            tr.innerHTML = `
-                <td><strong>#${item.id.toString().padStart(2, '0')}</strong></td>
-                <td>font-weight:600; text-transform:capitalize;">${item.name}</td>
-                <td>₹${item.pricePerKg}</td>
-                <td>
-                    ${item.stock} KG 
-                    ${isLowStock ? '<span class="badge-low">LOW STOCK</span>' : ''}
-                </td>
-                <td style="color:#627d98; font-style:italic;">${item.farmer}</td>
-                <td><button class="btn-edit" onclick="modifyPricePrompt(${item.id})">Edit Price</button></td>
-            `;
-            tableBody.appendChild(tr);
-        });
+            // 2. లోకల్ స్టోరేజ్ నుండి కూరగాయల లిస్ట్ లూప్ చేయడం
+            var vegList = JSON.parse(localStorage.getItem('veg_market_items')) || [];
+            for (var j = 0; j < vegList.length; j++) {
+                var rowVeg = '<tr>' +
+                    '<td>' + (serialNumber++) + '</td>' +
+                    '<td><strong>' + (vegList[j].farmer || 'N/A') + '</strong></td>' +
+                    '<td>--</td>' +
+                    '<td><span class="badge-farmer">FARMER STOCK</span></td>' +
+                    '<td>--</td>' +
+                    '<td>Added: <strong>' + (vegList[j].name || 'N/A') + '</strong> (' + (vegList[j].quantity || '0') + ' KG) @ ₹' + (vegList[j].price || '0') + '/kg</td>' +
+                '</tr>';
+                tableBody.innerHTML += rowVeg;
+            }
 
-        // Load customer invoice logs into visual panels
-        const ordersBody = document.getElementById('adminOrdersTableBody');
-        ordersBody.innerHTML = "";
-        mockCustomerBills.forEach(bill => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td><code>${bill.billId}</code></td>
-                <td style="color:#486581;">${bill.items}</td>
-                <td style="text-align: right; font-weight:bold; color:#102a43;">₹${bill.grandTotal.toFixed(2)}</td>
-            `;
-            ordersBody.appendChild(tr);
-        });
+            // 3. 🛒 కస్టమర్ కార్ట్ ఆర్డర్ మరియు లైవ్ SMS బిల్లు ట్రాకింగ్ వివరాలను లూప్ చేయడం
+            var orderStatus = localStorage.getItem('current_order_status');
+            if (orderStatus && orderStatus !== 'Empty') {
+                var lastCode = localStorage.getItem('last_generated_code') || 'FF-PEND-1122';
+                var vegName = localStorage.getItem('ordered_vegetable') || 'Fresh Tomatoes';
+                var vegQty = localStorage.getItem('ordered_quantity') || '2';
+                var vegPrice = localStorage.getItem('ordered_price') || '30';
+                var totalAmount = vegQty * vegPrice;
+                var acceptedTime = localStorage.getItem('order_accepted_time') || 'Waiting...';
+                
+                var statusBadge = orderStatus === 'Pending' ? 'badge-pending' : 'badge-accepted';
+                var activityText = orderStatus === 'Pending' ? 
+                    'Ordered: <strong>' + vegName + '</strong> (' + vegQty + ' KG) - Total: ₹' + totalAmount + '.00 | Status: ⏳ Pending Farmer Acceptance' :
+                    'Ordered: <strong>' + vegName + '</strong> (' + vegQty + ' KG) - Total: ₹' + totalAmount + '.00 | 📬 <strong>SMS Bill Dispatched</strong> at ' + acceptedTime;
 
-        calculateMetrics();
-    }
-
-    // 3. Mathematical calculation logic processor mapping KPIs metrics directly
-    function calculateMetrics() {
-        let totalWeight = 0;
-        let totalValue = 0;
-
-        adminInventory.forEach(item => {
-            totalWeight += item.stock;
-            totalValue += (item.stock * item.pricePerKg);
-        });
-
-        document.getElementById('totalCropsCount').innerText = adminInventory.length;
-        document.getElementById('totalStockWeight').innerText = totalWeight + " KG";
-        document.getElementById('totalMarketValue').innerText = "₹" + totalValue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        document.getElementById('totalOrdersCount').innerText = mockCustomerBills.length;
-    }
-
+                var rowOrder = '<tr>' +
+                    '<td>' + (serialNumber++) + '</td>' +
+                    '<td><strong>' + (localStorage.getItem('customer_name') || 'shalini') + '</strong></td>' +
+                    '<td>--</td>' +
+                    '<td><span class="' + statusBadge + '">CART ORDER (' + orderStatus.toUpperCase() + ')</span></td>' +
+                    '<td>--</td>' +
+                    '<td>Code: <strong>' + lastCode + '</strong> | ' + activityText + '</td>' +
+                '</tr>';
+                tableBody.innerHTML += rowOrder;
+            }
+        }
+    </script>
+</body>
+</html>
