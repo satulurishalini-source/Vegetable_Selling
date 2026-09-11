@@ -4,26 +4,156 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Dashboard - FreshFarm</title>
+
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; background-color: #f4f4f4; }
-        .navbar { background-color: #ffffff; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .logo { color: #2e7d32; font-size: 24px; font-weight: bold; }
-        .logout-btn { background-color: #f44336; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .main-container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
-        .welcome-text { color: #2e7d32; font-size: 22px; margin-bottom: 20px; font-weight: bold; }
-        .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        .card h3 { margin-top: 0; color: #2e7d32; border-bottom: 2px solid #e0e0e0; padding-bottom: 8px; font-size: 18px; }
-        .market-item { background: #fff; padding: 15px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 15px; }
-        .cart-item { background: #fafafa; padding: 12px; border-left: 4px solid #ff9800; border-radius: 4px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .quantity-input { width: 70px; padding: 7px; margin-right: 6px; border: 1px solid #ccc; border-radius: 4px; }
-        .buy-btn, .checkout-btn { background-color: #2e7d32; color: white; border: none; padding: 10px 18px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 14px; }
-        .checkout-btn { width: 100%; margin-top: 15px; font-size: 16px; }
-        .buy-btn:hover, .checkout-btn:hover { background-color: #1b5e20; }
-        .remove-btn { background: #f44336; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; }
-        .bill-box { background: #e8f5e9; padding: 20px; border: 2px dashed #4caf50; border-radius: 8px; margin-top: 20px; font-family: monospace; line-height: 1.5; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        .navbar {
+            background-color: #ffffff;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            color: #2e7d32;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .main-container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .welcome-text {
+            color: #2e7d32;
+            font-size: 22px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: #2e7d32;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 8px;
+            font-size: 18px;
+        }
+
+        .market-item {
+            background: #fff;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .cart-item {
+            background: #fafafa;
+            padding: 12px;
+            border-left: 4px solid #ff9800;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        .quantity-input {
+            width: 70px;
+            padding: 7px;
+            margin-right: 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .buy-btn,
+        .order-btn {
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .buy-btn:hover,
+        .order-btn:hover {
+            background-color: #1b5e20;
+        }
+
+        .remove-btn {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .cart-summary {
+            margin-top: 15px;
+            padding-top: 12px;
+            border-top: 1px solid #ddd;
+        }
+
+        .bill-box {
+            background: #e8f5e9;
+            padding: 20px;
+            border: 2px dashed #4caf50;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-family: monospace;
+        }
+
+        @media (max-width: 700px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+
+            .market-item {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
     </style>
 </head>
+
 <body>
 
 <div class="navbar">
@@ -32,6 +162,7 @@
 </div>
 
 <div class="main-container">
+
     <div class="welcome-text">
         Welcome, <span id="custNameDisplay">Customer</span> (Customer)
     </div>
@@ -39,216 +170,1110 @@
     <!-- AVAILABLE VEGETABLES -->
     <div class="card">
         <h3>🥦 Available Market Vegetables</h3>
-        <div id="availableVegetablesSection">
-            <p style="color:#999;font-style:italic;">Loading vegetables...</p>
-        </div>
+        <div id="availableVegetablesSection"></div>
     </div>
 
     <div class="grid-container">
+
         <!-- CART -->
         <div class="card">
             <h3>🛒 Vegetables in Your Cart</h3>
             <div id="cartSection">
-                <p style="color:#999;font-style:italic;">Your Cart is Empty.</p>
-            </div>
-            <div id="cartActionWrapper" style="display:none;">
-                <button class="checkout-btn" onclick="checkoutCart()">Place Order & Checkout 🛒</button>
+                <p style="color:#999;font-style:italic;">
+                    Your Cart is Empty.
+                </p>
             </div>
         </div>
 
         <!-- BILL -->
         <div class="card">
             <h3>📄 Live SMS Bill Invoice</h3>
+
             <div id="billSection" style="display:none;"></div>
-            <p id="noBillText" style="color:#999;font-style:italic;">Waiting for confirmation...</p>
+
+            <p
+                id="noBillText"
+                style="color:#999;font-style:italic;"
+            >
+                Waiting for confirmation...
+            </p>
         </div>
+
     </div>
 </div>
 
-<script>
-const CART_KEY_PREFIX = "freshfarm_cart_";
-let custUser = { name: "shalini", mobile: "9492465688" };
+<script src="app.js"></script>
 
-document.getElementById("custNameDisplay").innerText = custUser.name;
+<script>
+
+const CART_KEY_PREFIX = "freshfarm_cart_";
+
+let custUser = getCurrentUser();
+
+if (!custUser) {
+    window.location.href = "login.html";
+} else {
+    document.getElementById("custNameDisplay").innerText = custUser.name;
+}
+
+
+/* =========================================================
+   CART FUNCTIONS
+========================================================= */
 
 function getCartKey() {
     return CART_KEY_PREFIX + custUser.mobile;
 }
 
+
 function getCart() {
+
     try {
-        let cartData = localStorage.getItem(getCartKey());
-        return (cartData && cartData.startsWith('[')) ? JSON.parse(cartData) : [];
+        return JSON.parse(
+            localStorage.getItem(getCartKey())
+        ) || [];
+
     } catch (error) {
         return [];
     }
 }
 
+
 function saveCart(cart) {
-    localStorage.setItem(getCartKey(), JSON.stringify(cart));
+
+    localStorage.setItem(
+        getCartKey(),
+        JSON.stringify(cart)
+    );
 }
 
-/* =========================================================
-   🔄 FIXED INITIALIZER: Clears Corrupt Keys Forcefully
-========================================================= */
-function initializeMarketVegetables() {
-    try {
-        let currentStock = localStorage.getItem("veg_market_items");
-        
-        // Force reset if the entry is missing, blank, or isn't structured as a JSON Array
-        if (!currentStock || !currentStock.startsWith('[')) {
-            const defaultVegetables = [
-                { id: 1, name: "Tomatoes", price: 25, quantity: 100, farmer: "shalini" },
-                { id: 2, name: "Onions", price: 40, quantity: 60, farmer: "shalini" },
-                { id: 3, name: "Potatoes", price: 49, quantity: 10, farmer: "shalini" }
-            ];
-            localStorage.setItem("veg_market_items", JSON.stringify(defaultVegetables));
-        }
-    } catch (e) {
-        // Fallback clear if local memory allocation state breaks completely
-        localStorage.removeItem("veg_market_items");
-    }
-}
 
 /* =========================================================
-   🔄 SAFE RENDERING PREVIEW ENGINE
+   ADD VEGETABLE TO CART
 ========================================================= */
-function displayMarketVegetables() {
-    const displayContainer = document.getElementById("availableVegetablesSection");
-    let itemsList = [];
-    
-    try {
-        let rawData = localStorage.getItem("veg_market_items");
-        itemsList = JSON.parse(rawData) || [];
-    } catch (err) {
-        itemsList = [];
-    }
 
-    if (!Array.isArray(itemsList) || itemsList.length === 0) {
-        displayContainer.innerHTML = '<p style="color:#999;font-style:italic;">No vegetables available in the inventory. Try refreshing.</p>';
+function addToCart(vegId) {
+
+    const vegetables =
+        JSON.parse(
+            localStorage.getItem("veg_market_vegetables")
+        ) || [];
+
+    const vegetable =
+        vegetables.find(
+            v => Number(v.id) === Number(vegId)
+        );
+
+    if (!vegetable) {
+        alert("Vegetable not found.");
         return;
     }
 
-    displayContainer.innerHTML = "";
-    itemsList.forEach((veg, index) => {
-        let vegId = veg.id || index;
-        let name = veg.name || "Unknown Item";
-        let price = veg.price || 0;
-        let qty = veg.quantity || 0;
+    if (Number(vegetable.quantityKg) <= 0) {
+        alert("This vegetable is out of stock.");
+        displayMarketVegetables();
+        return;
+    }
 
-        displayContainer.innerHTML += `
-            <div class="market-item">
-                <span>
-                    <strong>${name}</strong> - ₹${price}/KG 
-                    <small style="color: #666; margin-left: 10px;">(Available: ${qty} KG)</small>
-                </span>
-                <div>
-                    <input type="number" id="qty-${vegId}" class="quantity-input" value="1" min="1" max="${qty}">
-                    <button class="buy-btn" onclick="addToCart(${vegId}, '${name}', ${price}, ${qty})">Add To Cart</button>
-                </div>
-            </div>
-        `;
-    });
-}
 
-function addToCart(vegId, name, price, maxQty) {
-    const quantityInput = document.getElementById("qty-" + vegId);
-    const quantity = parseFloat(quantityInput.value);
+    const quantityInput =
+        document.getElementById("qty-" + vegId);
+
+    const quantity =
+        parseFloat(quantityInput.value);
+
 
     if (isNaN(quantity) || quantity <= 0) {
         alert("Please enter a valid quantity.");
         return;
     }
 
-    if (quantity > maxQty) {
-        alert("Requested quantity is greater than available stock.");
+
+    if (quantity > Number(vegetable.quantityKg)) {
+        alert(
+            "Requested quantity is greater than available stock."
+        );
         return;
     }
 
+
     let cart = getCart();
-    const existingItem = cart.find(item => Number(item.vegId) === Number(vegId));
+
+
+    /*
+        IMPORTANT FIX:
+
+        Instead of storing only ONE vegetable,
+        we keep every vegetable inside the cart array.
+    */
+
+    const existingItem =
+        cart.find(
+            item =>
+                Number(item.vegId) === Number(vegetable.id)
+        );
+
 
     if (existingItem) {
-        existingItem.quantity = Number(existingItem.quantity) + quantity;
+
+        const newQuantity =
+            Number(existingItem.quantity) + quantity;
+
+
+        if (
+            newQuantity >
+            Number(vegetable.quantityKg)
+        ) {
+            alert(
+                "Cart quantity cannot exceed available stock."
+            );
+            return;
+        }
+
+
+        existingItem.quantity = newQuantity;
+
     } else {
+
         cart.push({
-            vegId: vegId,
-            name: name,
-            price: Number(price),
-            quantity: quantity
+
+            vegId: vegetable.id,
+
+            name: vegetable.name,
+
+            price: Number(
+                vegetable.pricePerKg
+            ),
+
+            quantity: quantity,
+
+            farmerName: vegetable.farmerName,
+
+            farmerMobile: vegetable.farmerMobile
+
         });
+
     }
+
 
     saveCart(cart);
+
     quantityInput.value = 1;
+
     renderCart();
-    alert(name + " added to cart!");
+
+    alert(
+        vegetable.name +
+        " added to cart."
+    );
 }
 
-function renderCart() {
-    let cart = getCart();
-    let cartSection = document.getElementById("cartSection");
-    let cartActionWrapper = document.getElementById("cartActionWrapper");
 
-    if (!Array.isArray(cart) || cart.length === 0) {
-        cartSection.innerHTML = '<p style="color:#999;font-style:italic;">Your Cart is Empty.</p>';
-        cartActionWrapper.style.display = "none";
-        return;
-    }
-
-    cartActionWrapper.style.display = "block";
-    cartSection.innerHTML = "";
-    cart.forEach(item => {
-        cartSection.innerHTML += `
-            <div class="cart-item">
-                <span><strong>${item.name}</strong> - ${item.quantity} KG (@ ₹${item.price}/kg)</span>
-                <button class="remove-btn" onclick="removeFromCart(${item.vegId})">Remove</button>
-            </div>
-        `;
-    });
-}
+/* =========================================================
+   REMOVE ITEM
+========================================================= */
 
 function removeFromCart(vegId) {
+
     let cart = getCart();
-    cart = cart.filter(item => Number(item.vegId) !== Number(vegId));
+
+    cart =
+        cart.filter(
+            item =>
+                Number(item.vegId) !== Number(vegId)
+        );
+
     saveCart(cart);
+
     renderCart();
 }
 
-function checkoutCart() {
-    let cart = getCart();
-    if (cart.length === 0) {
-        alert("Your cart is empty!");
+
+/* =========================================================
+   UPDATE QUANTITY
+========================================================= */
+
+function updateCartQuantity(
+    vegId,
+    quantity
+) {
+
+    const vegetables =
+        JSON.parse(
+            localStorage.getItem(
+                "veg_market_vegetables"
+            )
+        ) || [];
+
+
+    const vegetable =
+        vegetables.find(
+            v =>
+                Number(v.id) === Number(vegId)
+        );
+
+
+    const newQuantity =
+        parseFloat(quantity);
+
+
+    if (
+        !vegetable ||
+        isNaN(newQuantity) ||
+        newQuantity <= 0
+    ) {
+        renderCart();
         return;
     }
 
-    let totalQty = 0;
-    let totalPrice = 0;
-    let itemsDescriptionArray = [];
-    
-    cart.forEach(item => {
-        totalQty += Number(item.quantity);
-        totalPrice += (Number(item.quantity) * Number(item.price));
-        itemsDescriptionArray.push(`${item.name} (${item.quantity} KG)`);
-    });
-    
-    let itemsText = itemsDescriptionArray.join(", ");
-    let dynamicOrderCode = "FF-APRV-" + Math.floor(1000 + Math.random() * 9000);
-    let now = new Date();
-    let formattedTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-    let existingOrders = JSON.parse(localStorage.getItem('veg_market_orders')) || [];
-    let newOrderReceipt = {
-        code: dynamicOrderCode,
-        name: itemsText,
-        quantity: totalQty,
-        price: totalPrice, 
-        status: "Accepted",
-        time: formattedTime
+    if (
+        newQuantity >
+        Number(vegetable.quantityKg)
+    ) {
+        alert(
+            "Quantity cannot exceed available stock."
+        );
+
+        renderCart();
+        return;
+    }
+
+
+    let cart = getCart();
+
+    const item =
+        cart.find(
+            i =>
+                Number(i.vegId) === Number(vegId)
+        );
+
+
+    if (item) {
+        item.quantity = newQuantity;
+    }
+
+
+    saveCart(cart);
+
+    renderCart();
+}
+
+
+/* =========================================================
+   PLACE ORDER FOR ALL CART ITEMS
+========================================================= */
+
+function placeCartOrder() {
+
+    const cart = getCart();
+
+
+    if (cart.length === 0) {
+
+        alert(
+            "Your cart is empty. Add at least one vegetable."
+        );
+
+        return;
+    }
+
+
+    const vegetables =
+        JSON.parse(
+            localStorage.getItem(
+                "veg_market_vegetables"
+            )
+        ) || [];
+
+
+    /*
+        Check stock again before placing order.
+    */
+
+    for (const item of cart) {
+
+        const vegetable =
+            vegetables.find(
+                v =>
+                    Number(v.id) ===
+                    Number(item.vegId)
+            );
+
+
+        if (
+            !vegetable ||
+            Number(vegetable.quantityKg) <
+                Number(item.quantity)
+        ) {
+
+            alert(
+                item.name +
+                " does not have enough stock."
+            );
+
+            displayMarketVegetables();
+
+            renderCart();
+
+            return;
+        }
+    }
+
+
+    /*
+        Calculate complete cart total.
+    */
+
+    const totalAmount =
+        cart.reduce(
+            (total, item) => {
+
+                return (
+                    total +
+                    Number(item.price) *
+                    Number(item.quantity)
+                );
+
+            },
+            0
+        );
+
+
+    const randomNumber =
+        Math.floor(
+            1000 +
+            Math.random() * 9000
+        );
+
+
+    const pendingCode =
+        "FF-PEND-" +
+        randomNumber;
+
+
+    /*
+        IMPORTANT FIX:
+
+        Store ALL vegetables in one order.
+    */
+
+    const order = {
+
+        id: Date.now(),
+
+        customerMobile:
+            custUser.mobile,
+
+        status: "Pending",
+
+        code:
+            pendingCode,
+
+        items:
+            cart.map(item => ({
+
+                vegId:
+                    item.vegId,
+
+                name:
+                    item.name,
+
+                quantity:
+                    Number(item.quantity),
+
+                price:
+                    Number(item.price),
+
+                farmerName:
+                    item.farmerName,
+
+                farmerMobile:
+                    item.farmerMobile
+
+            })),
+
+        totalAmount:
+            totalAmount,
+
+        createdAt:
+            Date.now()
     };
 
-    existingOrders.push(newOrderReceipt);
-    localStorage.setItem('veg_market_orders', JSON.stringify(existingOrders));
+
+    /*
+        IMPORTANT:
+        Save the new order into the permanent order history FIRST.
+        Do NOT replace the order history with the current order.
+    */
+
+    let allOrders = [];
+
+    try {
+        allOrders = JSON.parse(
+            localStorage.getItem("freshfarm_orders")
+        ) || [];
+    } catch (error) {
+        allOrders = [];
+    }
+
+    // Make sure old/broken data cannot crash the order history.
+    if (!Array.isArray(allOrders)) {
+        allOrders = [];
+    }
+
+    // Add this order without deleting previous orders.
+    allOrders.push(order);
+
+    // Save the complete order history.
+    localStorage.setItem(
+        "freshfarm_orders",
+        JSON.stringify(allOrders)
+    );
+
+    /*
+        Keep the latest order separately.
+        This is only for the live bill/status section.
+        It is NOT the permanent order history.
+    */
+    localStorage.setItem(
+        "freshfarm_current_order",
+        JSON.stringify(order)
+    );
+
+
+    localStorage.setItem(
+        "current_order_status",
+        "Pending"
+    );
+
+
+    localStorage.setItem(
+        "last_generated_code",
+        pendingCode
+    );
+
+
+    /*
+        Keep old keys for compatibility
+        with the existing farmer page.
+    */
+
+    localStorage.setItem(
+        "ordered_vegetable",
+        cart
+            .map(item => item.name)
+            .join(", ")
+    );
+
+
+    localStorage.setItem(
+        "ordered_quantity",
+        cart.reduce(
+            (total, item) =>
+                total +
+                Number(item.quantity),
+            0
+        )
+    );
+
+
+    localStorage.setItem(
+        "ordered_price",
+        totalAmount
+    );
+
+
+    /*
+        Clear cart after placing order.
+    */
 
     saveCart([]);
+
+
+    alert(
+        "🛒 Order placed for " +
+        order.items.length +
+        " vegetable(s)!\n\n" +
+        "Code: " +
+        pendingCode +
+        "\n\n" +
+        "Go to Farmer Dashboard and accept this order."
+    );
+
+
     renderCart();
+
+    displayMarketVegetables();
+
+    viewCartAndLiveBill();
+}
+
+
+/* =========================================================
+   DISPLAY MARKET VEGETABLES
+========================================================= */
+
+function displayMarketVegetables() {
+
+    const vegetables =
+        JSON.parse(
+            localStorage.getItem(
+                "veg_market_vegetables"
+            )
+        ) || [];
+
+
+    const section =
+        document.getElementById(
+            "availableVegetablesSection"
+        );
+
+
+    const available =
+        vegetables.filter(
+            v =>
+                Number(v.quantityKg) > 0
+        );
+
+
+    if (available.length === 0) {
+
+        section.innerHTML = `
+            <p style="color:#777;">
+                No vegetables are currently available.
+            </p>
+        `;
+
+        return;
+    }
+
+
+    section.innerHTML =
+        available
+        .map(v => `
+
+            <div class="market-item">
+
+                <div>
+
+                    <h4
+                        style="
+                            margin:0;
+                            color:#2e7d32;
+                        "
+                    >
+                        🥦 ${v.name}
+                    </h4>
+
+                    <p
+                        style="
+                            margin:5px 0 0 0;
+                            font-size:14px;
+                            color:#555;
+                        "
+                    >
+
+                        Price:
+                        <strong>
+                            ₹${Number(
+                                v.pricePerKg
+                            ).toFixed(2)}
+                            / KG
+                        </strong>
+
+                        |
+
+                        Stock:
+                        <strong>
+                            ${Number(
+                                v.quantityKg
+                            ).toFixed(2)}
+                            KG
+                        </strong>
+
+                        <br>
+
+                        Farmer:
+                        ${v.farmerName}
+
+                    </p>
+
+                </div>
+
+
+                <div>
+
+                    <input
+                        type="number"
+                        id="qty-${v.id}"
+                        class="quantity-input"
+                        min="0.1"
+                        max="${Number(
+                            v.quantityKg
+                        )}"
+                        step="0.1"
+                        value="1"
+                    >
+
+
+                    <button
+                        class="buy-btn"
+                        onclick="addToCart(${v.id})"
+                    >
+                        Add to Cart 🛒
+                    </button>
+
+                </div>
+
+            </div>
+
+        `)
+        .join("");
+}
+
+
+/* =========================================================
+   DISPLAY CART
+========================================================= */
+
+function renderCart() {
+
+    const cartSection =
+        document.getElementById(
+            "cartSection"
+        );
+
+
+    const cart =
+        getCart();
+
+
+    if (cart.length === 0) {
+
+        cartSection.innerHTML = `
+            <p
+                style="
+                    color:#999;
+                    font-style:italic;
+                "
+            >
+                Your Cart is Empty.
+            </p>
+        `;
+
+        return;
+    }
+
+
+    let total = 0;
+
+
+    const itemsHTML =
+        cart.map(item => {
+
+            const subtotal =
+                Number(item.price) *
+                Number(item.quantity);
+
+
+            total += subtotal;
+
+
+            return `
+
+                <div class="cart-item">
+
+                    <p>
+                        <strong>
+                            ${item.name}
+                        </strong>
+                    </p>
+
+                    <p>
+                        Farmer:
+                        ${item.farmerName}
+                    </p>
+
+                    <p>
+                        ₹${Number(
+                            item.price
+                        ).toFixed(2)}
+                        / KG
+                    </p>
+
+
+                    <label>
+                        Quantity:
+                    </label>
+
+
+                    <input
+                        type="number"
+                        class="quantity-input"
+                        min="0.1"
+                        step="0.1"
+                        value="${Number(
+                            item.quantity
+                        )}"
+                        onchange="
+                            updateCartQuantity(
+                                ${item.vegId},
+                                this.value
+                            )
+                        "
+                    >
+
+
+                    <button
+                        class="remove-btn"
+                        onclick="
+                            removeFromCart(
+                                ${item.vegId}
+                            )
+                        "
+                    >
+                        Remove
+                    </button>
+
+
+                    <p>
+                        <strong>
+                            Subtotal:
+                            ₹${subtotal.toFixed(2)}
+                        </strong>
+                    </p>
+
+                </div>
+
+            `;
+
+        })
+        .join("");
+
+
+    cartSection.innerHTML = `
+
+        ${itemsHTML}
+
+        <div class="cart-summary">
+
+            <p
+                style="
+                    font-size:18px;
+                "
+            >
+                <strong>
+                    Cart Total:
+                    ₹${total.toFixed(2)}
+                </strong>
+            </p>
+
+
+            <button
+                class="order-btn"
+                onclick="placeCartOrder()"
+            >
+                Place Order for All Items ✅
+            </button>
+
+        </div>
+
+    `;
+}
+
+
+/* =========================================================
+   LIVE BILL
+========================================================= */
+
+function viewCartAndLiveBill() {
+
+    const status =
+        localStorage.getItem(
+            "current_order_status"
+        ) || "Empty";
+
+
+    const orderRaw =
+        localStorage.getItem(
+            "freshfarm_current_order"
+        );
+
+
+    const order =
+        orderRaw
+            ? JSON.parse(orderRaw)
+            : null;
+
+
+    const billSection =
+        document.getElementById(
+            "billSection"
+        );
+
+
+    const noBillText =
+        document.getElementById(
+            "noBillText"
+        );
+
+
+    if (!order || status === "Empty") {
+
+        billSection.style.display =
+            "none";
+
+        noBillText.style.display =
+            "block";
+
+        return;
+    }
+
+
+    const items =
+        Array.isArray(order.items)
+            ? order.items
+            : [];
+
+
+    const itemLines =
+        items.map(item => `
+
+            <p
+                style="
+                    margin:5px 0;
+                "
+            >
+                <strong>
+                    ${item.name}
+                </strong>
+
+                —
+
+                ${Number(
+                    item.quantity
+                )} KG
+
+                ×
+
+                ₹${Number(
+                    item.price
+                ).toFixed(2)}
+
+                =
+
+                ₹${(
+                    Number(item.quantity) *
+                    Number(item.price)
+                ).toFixed(2)}
+
+            </p>
+
+        `)
+        .join("");
+
+
+    if (status === "Pending") {
+
+        billSection.innerHTML = `
+
+            <div class="bill-box">
+
+                <h4
+                    style="
+                        text-align:center;
+                        color:#e65100;
+                    "
+                >
+                    🛒 Order Pending
+                </h4>
+
+                <p>
+                    <strong>
+                        Code:
+                    </strong>
+
+                    ${order.code}
+                </p>
+
+                ${itemLines}
+
+                <p>
+                    <strong>
+                        Total:
+                    </strong>
+
+                    ₹${Number(
+                        order.totalAmount
+                    ).toFixed(2)}
+                </p>
+
+                <p>
+                    <strong>
+                        Status:
+                    </strong>
+
+                    PENDING
+                </p>
+
+            </div>
+
+        `;
+
+
+        billSection.style.display =
+            "block";
+
+        noBillText.style.display =
+            "none";
+
+        return;
+    }
+
+
+    if (status === "Accepted") {
+
+        const approvedCode =
+            localStorage.getItem(
+                "last_generated_code"
+            ) || order.code;
+
+
+        const acceptTime =
+            localStorage.getItem(
+                "order_accepted_time"
+            ) || "Just Now";
+
+
+        billSection.innerHTML = `
+
+            <div class="bill-box">
+
+                <h4
+                    style="
+                        text-align:center;
+                        color:#2e7d32;
+                    "
+                >
+                    🥦 FreshFarm Invoice
+                </h4>
+
+
+                <p
+                    style="
+                        text-align:center;
+                        font-weight:bold;
+                        color:#4CAF50;
+                    "
+                >
+                    ✔ ORDER APPROVED
+                </p>
+
+
+                <p>
+                    <strong>
+                        Code:
+                    </strong>
+
+                    ${approvedCode}
+                </p>
+
+
+                ${itemLines}
+
+
+                <p>
+                    <strong>
+                        Total Bill:
+                    </strong>
+
+                    ₹${Number(
+                        order.totalAmount
+                    ).toFixed(2)}
+                </p>
+
+
+                <p>
+                    <strong>
+                        Time:
+                    </strong>
+
+                    ${acceptTime}
+                </p>
+
+            </div>
+
+        `;
+
+
+        billSection.style.display =
+            "block";
+
+        noBillText.style.display =
+            "none";
+    }
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+function logoutUser() {
+    logout();
+}
+
+
+/* =========================================================
+   INITIAL LOAD
+========================================================= */
+
+renderCart();
+
+displayMarketVegetables();
+
+viewCartAndLiveBill();
+
+
+/*
+    Refresh the page data periodically
+    so farmer/customer changes appear.
+*/
+
+setInterval(
+    viewCartAndLiveBill,
+    1000
+);
+
+setInterval(
+    displayMarketVegetables,
+    2000
+);
+
+setInterval(
+    renderCart,
+    2000
+);
+
+/*
+    Keep the customer page synchronized when order data
+    changes in another browser tab/window.
+*/
+window.addEventListener("storage", function(event) {
+    if (
+        event.key === "freshfarm_orders" ||
+        event.key === "freshfarm_current_order" ||
+        event.key === "current_order_status" ||
+        event.key === "last_generated_code"
+    ) {
+        viewCartAndLiveBill();
+        renderCart();
+    }
+});
+
+</script>
+
+</body>
+</html>
+```
