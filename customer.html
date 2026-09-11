@@ -72,45 +72,68 @@
             </div>
         </div>
     </div>
+<script>
+    function sendOrderToFarmer() {
+        const order = {
+            code: 'FF-APRV-9376',
+            items: 'cabbage, chilli, brinjal, cucumber, lady finger, onion',
+            total: '223.00',
+            status: 'PENDING',
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+        localStorage.setItem('freshfarm_order', JSON.stringify(order));
+        alert('Order sent! Switch to farmer tab to Accept.');
+    }
 
-    <script>
-        function sendOrderToFarmer() {
-            const order = {
-                code: 'FF-APRV-9376',
-                items: 'cabbage, chilli, brinjal, cucumber, lady finger, onion',
-                total: '223.00',
-                status: 'PENDING',
-                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            };
-            localStorage.setItem('freshfarm_order', JSON.stringify(order));
-            alert('Order sent! Now open farmer.html and click Accept.');
+    function updateSMSInvoice(savedOrder) {
+        if (!savedOrder || savedOrder.status !== 'ACCEPTED') return;
+
+        // 1. Update Cart Status Badge
+        const badge = document.getElementById('status-badge');
+        if (badge) {
+            badge.className = 'badge-accepted';
+            badge.innerText = 'STATUS: Accepted';
         }
 
-        function checkOrderStatus() {
-            const savedOrder = JSON.parse(localStorage.getItem('freshfarm_order'));
+        // 2. Render SMS Bill Instantly
+        const placeholder = document.getElementById('invoice-placeholder');
+        const content = document.getElementById('invoice-content');
+        
+        if (placeholder) placeholder.style.display = 'none';
+        if (content) content.style.display = 'block';
 
-            if (savedOrder && savedOrder.status === 'ACCEPTED') {
-                // 1. Update Badge
-                const badge = document.getElementById('status-badge');
-                badge.className = 'badge-accepted';
-                badge.innerText = 'STATUS: Accepted';
+        document.getElementById('inv-code').innerText = 'Invoice Code: ' + savedOrder.code;
+        document.getElementById('inv-items').innerText = 'Items: ' + savedOrder.items;
+        document.getElementById('inv-total').innerText = 'Total Bill: ₹' + savedOrder.total;
+        document.getElementById('inv-time').innerText = 'Time: ' + savedOrder.time;
+    }
 
-                // 2. Display the SMS Invoice
-                document.getElementById('invoice-placeholder').style.display = 'none';
-                document.getElementById('invoice-content').style.display = 'block';
+    function checkOrderStatus() {
+        const savedOrder = JSON.parse(localStorage.getItem('freshfarm_order'));
+        updateSMSInvoice(savedOrder);
+    }
 
-                document.getElementById('inv-code').innerText = 'Invoice Code: ' + savedOrder.code;
-                document.getElementById('inv-items').innerText = 'Items: ' + savedOrder.items;
-                document.getElementById('inv-total').innerText = 'Total Bill: ₹' + savedOrder.total;
-                document.getElementById('inv-time').innerText = 'Time: ' + savedOrder.time;
-            }
+    // ⚡ Instant Cross-Tab Event Listener (Triggers the exact millisecond farmer clicks Accept)
+    window.addEventListener('storage', (event) => {
+        if (event.key === 'freshfarm_order') {
+            const updatedOrder = JSON.parse(event.newValue);
+            updateSMSInvoice(updatedOrder);
         }
+    });
 
-        // Listen for storage changes from farmer.html tab
-        window.addEventListener('storage', checkOrderStatus);
+    // ⚡ Instant Focus Listener (Triggers immediately when customer clicks back onto this tab)
+    window.addEventListener('focus', checkOrderStatus);
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+            checkOrderStatus();
+        }
+    });
 
-        // Check continuously every 1 second in case window events are blocked locally
-        setInterval(checkOrderStatus, 1000);
-    </script>
+    // Fast backup check (200ms instead of 1000ms)
+    setInterval(checkOrderStatus, 200);
+
+    // Initial check on load
+    checkOrderStatus();
+</script>
 </body>
 </html>
