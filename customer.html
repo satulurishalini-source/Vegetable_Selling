@@ -3,236 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Vegetables to Market</title>
+    <title>Farmer Inventory Portal - 10 Vegetables</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f7f7f7;
-            padding: 20px;
-            display: flex;
-            justify-content: flex-start;
-        }
-        .form-container {
-            width: 100%;
-            max-width: 450px;
-            background: #ffffff;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            padding: 15px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-        }
-        .main-title {
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 8px;
-        }
-        .veg-card {
-            border: 1px solid #e6e6e6;
-            border-radius: 4px;
-            padding: 12px;
-            margin-bottom: 12px;
-            background-color: #fff;
-        }
-        .veg-header {
-            font-size: 13px;
-            font-weight: bold;
-            color: #2e7d32;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .input-group {
-            margin-bottom: 8px;
-        }
-        .input-group:last-child {
-            margin-bottom: 0;
-        }
-        label {
-            display: block;
-            font-size: 11px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 3px;
-        }
-        input {
-            width: 100%;
-            box-sizing: border-box;
-            padding: 6px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 13px;
-        }
-        input::placeholder {
-            color: #aaa;
-            font-style: italic;
-        }
-        .submit-btn {
-            width: 100%;
-            background-color: #2e7d32;
-            color: white;
-            border: none;
-            padding: 10px;
-            font-size: 14px;
-            font-weight: bold;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 5px;
-        }
-        .submit-btn:hover {
-            background-color: #1b5e20;
-        }
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f2f7f2; margin: 0; padding: 20px; color: #2c3e50; }
+        
+        .farmer-container { max-width: 700px; margin: 0 auto; background: #ffffff; border: 1px solid #d0dfd0; border-radius: 10px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .main-title { font-size: 20px; font-weight: bold; color: #1b5e20; margin-bottom: 5px; display: flex; align-items: center; gap: 8px; }
+        .subtitle { font-size: 13px; color: #666; margin-bottom: 20px; border-bottom: 2px solid #a5d6a7; padding-bottom: 8px; }
+        
+        .scroll-zone { max-height: 68vh; overflow-y: auto; padding-right: 8px; margin-bottom: 15px; }
+        
+        /* Compact Form Grid Card Styling */
+        .veg-form-card { background: #fafafa; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; margin-bottom: 12px; }
+        .veg-form-card:hover { border-color: #a5d6a7; background: #fff; }
+        .card-header { font-size: 13px; font-weight: bold; color: #2e7d32; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        
+        .grid-row { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 10px; }
+        .field-group { display: flex; flex-direction: column; }
+        
+        label { font-size: 11px; font-weight: 600; color: #555; margin-bottom: 4px; }
+        input { padding: 7px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px; width: 100%; }
+        input:focus { outline: none; border-color: #2e7d32; box-shadow: 0 0 3px rgba(46,125,50,0.2); }
+        input::placeholder { color: #ccc; font-style: italic; font-size: 12px; }
+
+        .submit-bar { position: sticky; bottom: 0; background: #fff; padding-top: 10px; border-top: 1px solid #eee; }
+        .master-submit-btn { width: 100%; background: #1b5e20; color: white; border: none; padding: 12px; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: background 0.2s; }
+        .master-submit-btn:hover { background: #0d3c0e; }
     </style>
 </head>
 <body>
 
-<div class="form-container">
-    <div class="main-title">🚜 Add Vegetables to Market</div>
+<div class="farmer-container">
+    <div class="main-title">🚜 Farmer Dashboard: Bulk Stock Updates</div>
+    <div class="subtitle">Set up, change pricing structures, and fill live stock tracking indicators for up to 10 vegetables simultaneously.</div>
     
-    <form id="vegetableMarketForm" onsubmit="submitForm(event)">
-        
-        <!-- Vegetable 1 -->
-        <div class="veg-card" data-index="1">
-            <div class="veg-header">🥔 Vegetable 1</div>
-            <div class="input-group">
-                <label>Vegetable Name:</label>
-                <input type="text" class="veg-name" placeholder="e.g., Tomato">
-            </div>
-            <div class="input-group">
-                <label>Price per KG (₹):</label>
-                <input type="number" class="veg-price" placeholder="e.g., 20" min="0">
-            </div>
-            <div class="input-group">
-                <label>Quantity Available (KG):</label>
-                <input type="number" class="veg-qty" placeholder="e.g., 10" min="0">
-            </div>
+    <form id="farmerBulkInventoryForm" onsubmit="captureFarmerSubmission(event)">
+        <div class="scroll-zone" id="farmerFormInputsContainer">
+            <!-- 10 Form card structures render dynamically via execution loops -->
         </div>
 
-        <!-- Vegetable 2 -->
-        <div class="veg-card" data-index="2">
-            <div class="veg-header">🧅 Vegetable 2</div>
-            <div class="input-group">
-                <label>Vegetable Name:</label>
-                <input type="text" class="veg-name" placeholder="e.g., Potato">
-            </div>
-            <div class="input-group">
-                <label>Price per KG (₹):</label>
-                <input type="number" class="veg-price" placeholder="e.g., 30" min="0">
-            </div>
-            <div class="input-group">
-                <label>Quantity Available (KG):</label>
-                <input type="number" class="veg-qty" placeholder="e.g., 20" min="0">
-            </div>
+        <div class="submit-bar">
+            <button type="submit" class="master-submit-btn">Publish All 10 Veg Entries To Live Store Feed</button>
         </div>
-
-        <!-- Vegetable 3 -->
-        <div class="veg-card" data-index="3">
-            <div class="veg-header">🥦 Vegetable 3</div>
-            <div class="input-group">
-                <label>Vegetable Name:</label>
-                <input type="text" class="veg-name" placeholder="e.g., Cabbage">
-            </div>
-            <div class="input-group">
-                <label>Price per KG (₹):</label>
-                <input type="number" class="veg-price" placeholder="e.g., 20" min="0">
-            </div>
-            <div class="input-group">
-                <label>Quantity Available (KG):</label>
-                <input type="number" class="veg-qty" placeholder="e.g., 15" min="0">
-            </div>
-        </div>
-
-        <!-- Vegetable 4 -->
-        <div class="veg-card" data-index="4">
-            <div class="veg-header">🌶️ Vegetable 4</div>
-            <div class="input-group">
-                <label>Vegetable Name:</label>
-                <input type="text" class="veg-name" placeholder="e.g., Chili">
-            </div>
-            <div class="input-group">
-                <label>Price per KG (₹):</label>
-                <input type="number" class="veg-price" placeholder="e.g., 40" min="0">
-            </div>
-            <div class="input-group">
-                <label>Quantity Available (KG):</label>
-                <input type="number" class="veg-qty" placeholder="e.g., 5" min="0">
-            </div>
-        </div>
-
-        <!-- Vegetable 5 -->
-        <div class="veg-card" data-index="5">
-            <div class="veg-header">🍆 Vegetable 5</div>
-            <div class="input-group">
-                <label>Vegetable Name:</label>
-                <input type="text" class="veg-name" placeholder="e.g., Brinjal">
-            </div>
-            <div class="input-group">
-                <label>Price per KG (₹):</label>
-                <input type="number" class="veg-price" placeholder="e.g., 35" min="0">
-            </div>
-            <div class="input-group">
-                <label>Quantity Available (KG):</label>
-                <input type="number" class="veg-qty" placeholder="e.g., 12" min="0">
-            </div>
-        </div>
-
-        <!-- Vegetable 6 -->
-        <div class="veg-card" data-index="6">
-            <div class="veg-header">🥒 Vegetable 6</div>
-            <div class="input-group">
-                <label>Vegetable Name:</label>
-                <input type="text" class="veg-name" placeholder="e.g., Cucumber">
-            </div>
-            <div class="input-group">
-                <label>Price per KG (₹):</label>
-                <input type="number" class="veg-price" placeholder="e.g., 30" min="0">
-            </div>
-            <div class="input-group">
-                <label>Quantity Available (KG):</label>
-                <input type="number" class="veg-qty" placeholder="e.g., 10" min="0">
-            </div>
-        </div>
-
-        <!-- Master Submission Action Button -->
-        <button type="submit" class="submit-btn">➕ Add All Vegetables to Market</button>
     </form>
 </div>
 
 <script>
-function submitForm(event) {
-    event.preventDefault(); // Stop standard window page reload
-    
-    const vegetableCards = document.querySelectorAll('.veg-card');
-    const batchVegetablesList = [];
+    // 1. Initial configuration blueprint matrix mapping typical local veggie item properties
+    const standardPlaceholders = [
+        { label: "Vegetable 1", name: "Tomatoes", price: 25, stock: 40, icon: "🍅" },
+        { label: "Vegetable 2", name: "Potatoes", price: 49, stock: 60, icon: "🥔" },
+        { label: "Vegetable 3", name: "Carrots", price: 20, stock: 35, icon: "🥕" },
+        { label: "Vegetable 4", name: "Onions", price: 35, stock: 80, icon: "🧅" },
+        { label: "Vegetable 5", name: "Cabbage", price: 30, stock: 25, icon: "🥬" },
+        { label: "Vegetable 6", name: "Green Chillies", price: 40, stock: 15, icon: "🌶️" },
+        { label: "Vegetable 7", name: "Brinjal", price: 35, stock: 20, icon: "🍆" },
+        { label: "Vegetable 8", name: "Cucumber", price: 30, stock: 30, icon: "🥒" },
+        { label: "Vegetable 9", name: "Lady Finger", price: 45, stock: 18, icon: "🌱" },
+        { label: "Vegetable 10", name: "Capsicum", price: 60, stock: 12, icon: "🫑" }
+    ];
 
-    vegetableCards.forEach(card => {
-        const nameValue = card.querySelector('.veg-name').value.trim();
-        const priceValue = card.querySelector('.veg-price').value;
-        const qtyValue = card.querySelector('.veg-qty').value;
+    // 2. Programmatically generate the 10 data entry slots inside the scroll frame
+    function buildFarmerInterface() {
+        const targetContainer = document.getElementById('farmerFormInputsContainer');
+        targetContainer.innerHTML = "";
 
-        // Only pack the item row if the user actually typed a name entry
-        if (nameValue !== "") {
-            batchVegetablesList.push({
-                itemNumber: card.getAttribute('data-index'),
-                name: nameValue,
-                pricePerKg: parseFloat(priceValue) || 0,
-                stockAvailableKg: parseFloat(qtyValue) || 0
-            });
-        }
-    });
+        standardPlaceholders.forEach((config, idx) => {
+            const cardIndex = idx + 1;
+            const formCard = document.createElement('div');
+            formCard.className = 'veg-form-card';
+            formCard.setAttribute('data-card-id', cardIndex);
+            
+            formCard.innerHTML = `
+                <div class="card-header">${config.icon} ${config.label}</div>
+                <div class="grid-row">
+                    <div class="field-group">
+                        <label>Vegetable Name</label>
+                        <input type="text" class="v-name" placeholder="e.g., ${config.name}" value="${config.name}">
+                    </div>
+                    <div class="field-group">
+                        <label>Price per KG (₹)</label>
+                        <input type="number" class="v-price" placeholder="e.g., ${config.price}" value="${config.price}" min="0" step="any">
+                    </div>
+                    <div class="field-group">
+                        <label>Available Stock (KG)</label>
+                        <input type="number" class="v-stock" placeholder="e.g., ${config.stock}" value="${config.stock}" min="0" step="any">
+                    </div>
+                </div>
+            `;
+            targetContainer.appendChild(formCard);
+        });
+    }
 
-    console.log("Submitting Market List payload:", batchVegetablesList);
-    alert(`Successfully processed data entries for ${batchVegetablesList.length} vegetables! Check console logs for standard JSON payload format output.`);
-}
+    // 3. Collection aggregator parser script capturing all variables on single click
+    function captureFarmerSubmission(event) {
+        event.preventDefault(); // Stop standard form reloading page events
+        
+        const inventoryCards = document.querySelectorAll('.veg-form-card');
+        const compiledFarmerBatchPayload = [];
+
+        inventoryCards.forEach(card => {
+            const indexId = card.getAttribute('data-card-id');
+            const cleanName = card.querySelector('.v-name').value.trim();
+            const rawPrice = card.querySelector('.v-price').value;
+            const rawStock = card.querySelector('.v-stock').value;
+
+            // Only parse row records if the name isn't left empty by the farmer
+            if (cleanName !== "") {
+                compiledFarmerBatchPayload.push({
+                    slotNumber: parseInt(indexId),
+                    vegetableName: cleanName,
+                    pricePerKg: parseFloat(rawPrice) || 0,
+                    stockAvailableKg: parseFloat(rawStock) || 0,
+                    updatedTimestamp: new Date().toISOString()
+                });
+            }
+        });
+
+        // Output complete consolidated structural object data trace matching requirements
+        console.log("SUCCESS: Bulk Farmer Catalog Data Object:", compiledFarmerBatchPayload);
+        
+        alert(`📊 Inventory Sync Complete!\n----------------------------\nProcessed ${compiledFarmerBatchPayload.length} live vegetable listings successfully.\n\nOpen your developer console (F12) to inspect the structured batch data payload.`);
+    }
+
+    // Run layout injection logic safely on window frame setup cycles
+    window.onload = buildFarmerInterface;
 </script>
 
 </body>
