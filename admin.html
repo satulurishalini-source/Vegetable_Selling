@@ -3,162 +3,1411 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Secure Single Table</title>
+
+    <title>Admin Dashboard - FreshFarm</title>
+
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 80vh; }
-        .container { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); margin-bottom: 20px; width: 100%; max-width: 950px; }
-        
-        /* 🔒 Login Form Styling */
-        .login-box { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 320px; text-align: center; }
-        .login-box h2 { margin-bottom: 20px; color: #333; }
-        .login-box input { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; }
-        .login-box button { width: 97%; padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; font-weight: bold; }
-        .login-box button:hover { background-color: #45a049; }
-        .error-msg { color: red; font-size: 14px; margin-top: 10px; display: none; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f4f4f4;
+        }
 
-        /* 📊 Table Styling */
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-        th { background-color: #2E7D32; color: white; }
-        tr:nth-child(even) { background-color: #f9f9f9; }
-        .logout-btn { background-color: #f44336; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; float: right; font-weight: bold; }
-        
-        /* Roles Style */
-        .badge-farmer { background-color: #E8F5E9; color: #2E7D32; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 13px; }
-        .badge-customer { background-color: #E3F2FD; color: #1565C0; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 13px; }
-        .badge-pending { background-color: #FFF3E0; color: #E65100; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 13px; }
-        .badge-accepted { background-color: #E8F5E9; color: #1B5E20; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 13px; }
+        .login-box {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            width: 320px;
+            margin: 80px auto;
+            text-align: center;
+        }
 
-        #adminContent { display: none; width: 100%; max-width: 950px; }
+        .login-box h2 {
+            color: #333;
+        }
+
+        .login-box input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .login-box button {
+            width: 97%;
+            padding: 10px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .error-msg {
+            color: red;
+            display: none;
+        }
+
+        #adminContent {
+            display: none;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #2E7D32;
+            display: inline-block;
+        }
+
+        .logout-btn {
+            float: right;
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 9px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .refresh-btn {
+            background: #1976D2;
+            color: white;
+            border: none;
+            padding: 9px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .refresh-status {
+            color: #666;
+            font-size: 13px;
+            margin-left: 10px;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            min-width: 1000px;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background: #2E7D32;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background: #fafafa;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .farmer {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+
+        .customer {
+            background: #E3F2FD;
+            color: #1565C0;
+        }
+
+        .pending {
+            background: #FFF3E0;
+            color: #E65100;
+        }
+
+        .accepted {
+            background: #E8F5E9;
+            color: #1B5E20;
+        }
+
+        .order-item {
+            padding: 7px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-total {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 2px solid #2E7D32;
+            font-weight: bold;
+            color: #2E7D32;
+        }
+
+        .empty {
+            text-align: center;
+            color: #999;
+            padding: 25px;
+        }
     </style>
 </head>
+
 <body>
 
-    <!-- 🔒 1. Admin Login Box -->
-    <div class="login-box" id="loginBox">
-        <h2>Admin Login 🔐</h2>
-        <input type="text" id="adminUser" placeholder="Username">
-        <input type="password" id="adminPass" placeholder="Password">
-        <button onclick="checkAdminLogin()">Login</button>
-        <p class="error-msg" id="errorMsg">తప్పుడు యూజర్‌నేమ్ లేదా పాస్‌వర్డ్!</p>
+<!-- =====================================================
+     ADMIN LOGIN
+===================================================== -->
+
+<div class="login-box" id="loginBox">
+
+    <h2>Admin Login 🔐</h2>
+
+    <input
+        type="text"
+        id="adminUser"
+        placeholder="Username"
+    >
+
+    <input
+        type="password"
+        id="adminPass"
+        placeholder="Password"
+    >
+
+    <button onclick="checkAdminLogin()">
+        Login
+    </button>
+
+    <p
+        class="error-msg"
+        id="errorMsg"
+    >
+        Invalid username or password!
+    </p>
+
+</div>
+
+
+<!-- =====================================================
+     ADMIN CONTENT
+===================================================== -->
+
+<div id="adminContent">
+
+    <div class="header">
+
+        <button
+            class="logout-btn"
+            onclick="adminLogout()"
+        >
+            Logout
+        </button>
+
+        <h1>
+            Admin Master Dashboard 📊
+        </h1>
+
+        <br>
+
+        <button
+            class="refresh-btn"
+            onclick="loadAdminData()"
+        >
+            🔄 Refresh Data
+        </button>
+
+        <span
+            class="refresh-status"
+            id="refreshStatus"
+        >
+            Live
+        </span>
+
     </div>
 
-    <!-- 📊 2. Master Dashboard (Single Table) -->
-    <div id="adminContent">
-        <button class="logout-btn" onclick="adminLogout()">Logout</button>
-        <h1>Admin Master Dashboard 📊</h1>
 
-        <div class="container">
-            <h2>All Market Transactions & Users (మొత్తం డేటా ఒకే పట్టికలో)</h2>
+    <div class="container">
+
+        <h2>
+            All Market Transactions & Users
+        </h2>
+
+        <div class="table-wrapper">
+
             <table>
+
                 <thead>
+
                     <tr>
-                        <th>S.No</th>
-                        <th>User Name (పేరు)</th>
-                        <th>Mobile Number</th>
-                        <th>Role (బాధ్యత)</th>
-                        <th>Wallet Balance</th>
-                        <th>Activity & SMS Bill Details (కూరగాయలు / ధర / ఆర్డర్ వివరాలు)</th>
+
+                        <th>
+                            S.No
+                        </th>
+
+                        <th>
+                            User Name
+                        </th>
+
+                        <th>
+                            Mobile Number
+                        </th>
+
+                        <th>
+                            Role
+                        </th>
+
+                        <th>
+                            Wallet Balance
+                        </th>
+
+                        <th>
+                            Activity / Order Details
+                        </th>
+
                     </tr>
+
                 </thead>
-                <tbody id="masterTableBody">
-                    <!-- Data here -->
-                </tbody>
+
+                <tbody
+                    id="masterTableBody"
+                ></tbody>
+
             </table>
+
         </div>
+
     </div>
 
-    <script>
-        // 🔑 1. లాగిన్ వివరాలు మీ పేరుతో మార్చబడ్డాయి (Username: shalini, Password: shalini123)
-        const CORRECT_USER = "shalini";
-        const CORRECT_PASS = "shalini123";
+</div>
 
-        function checkAdminLogin() {
-            var inputUser = document.getElementById('adminUser').value.trim();
-            var inputPass = document.getElementById('adminPass').value.trim();
-            var errorMsg = document.getElementById('errorMsg');
 
-            if (inputUser === CORRECT_USER && inputPass === CORRECT_PASS) {
-                document.getElementById('loginBox').style.display = 'none';
-                document.getElementById('adminContent').style.display = 'block';
-                document.body.style.justifyContent = 'flex-start';
-                loadSingleTableData();
-            } else {
-                errorMsg.style.display = 'block';
-            }
+<script>
+
+/* =====================================================
+   ADMIN LOGIN
+===================================================== */
+
+const CORRECT_USER = "shalini";
+const CORRECT_PASS = "shalini123";
+
+
+function checkAdminLogin() {
+
+    const username =
+        document
+            .getElementById("adminUser")
+            .value
+            .trim();
+
+    const password =
+        document
+            .getElementById("adminPass")
+            .value
+            .trim();
+
+    if (
+        username === CORRECT_USER &&
+        password === CORRECT_PASS
+    ) {
+
+        document
+            .getElementById("loginBox")
+            .style.display = "none";
+
+        document
+            .getElementById("adminContent")
+            .style.display = "block";
+
+        loadAdminData();
+
+    } else {
+
+        document
+            .getElementById("errorMsg")
+            .style.display = "block";
+    }
+}
+
+
+function adminLogout() {
+
+    document
+        .getElementById("adminContent")
+        .style.display = "none";
+
+    document
+        .getElementById("loginBox")
+        .style.display = "block";
+
+    document
+        .getElementById("adminUser")
+        .value = "";
+
+    document
+        .getElementById("adminPass")
+        .value = "";
+
+    document
+        .getElementById("errorMsg")
+        .style.display = "none";
+}
+
+
+/* =====================================================
+   SAFE HTML
+===================================================== */
+
+function escapeHTML(value) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+        return "";
+    }
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+
+/* =====================================================
+   GET USERS
+===================================================== */
+
+function getUsers() {
+
+    try {
+
+        return JSON.parse(
+            localStorage.getItem(
+                "veg_market_users"
+            )
+        ) || [];
+
+    } catch (error) {
+
+        return [];
+    }
+}
+
+
+/* =====================================================
+   GET VEGETABLES
+
+   IMPORTANT:
+   Customer page uses:
+   veg_market_vegetables
+
+   Old admin page was using:
+   veg_market_items
+
+   This version supports both.
+===================================================== */
+
+function getVegetables() {
+
+    try {
+
+        let vegetables =
+            JSON.parse(
+                localStorage.getItem(
+                    "veg_market_vegetables"
+                )
+            );
+
+
+        if (
+            Array.isArray(vegetables) &&
+            vegetables.length > 0
+        ) {
+            return vegetables;
         }
 
-        function adminLogout() {
-            document.getElementById('loginBox').style.display = 'block';
-            document.getElementById('adminContent').style.display = 'none';
-            document.body.style.justifyContent = 'center';
-            document.getElementById('adminUser').value = '';
-            document.getElementById('adminPass').value = '';
-            document.getElementById('errorMsg').style.display = 'none';
+
+        vegetables =
+            JSON.parse(
+                localStorage.getItem(
+                    "veg_market_items"
+                )
+            );
+
+
+        return Array.isArray(vegetables)
+            ? vegetables
+            : [];
+
+    } catch (error) {
+
+        return [];
+    }
+}
+
+
+/* =====================================================
+   GET CUSTOMER NAME BY MOBILE
+   (was missing — caused order rows to fail silently)
+===================================================== */
+
+function getCustomerName(mobile) {
+
+    if (!mobile) {
+        return "Customer";
+    }
+
+    const users = getUsers();
+
+    const match = users.find(
+        u => String(u.mobile) === String(mobile)
+    );
+
+    return match && match.name
+        ? match.name
+        : "Customer";
+}
+
+
+/* =====================================================
+   GET ALL CUSTOMER ORDERS
+   ===================================================== */
+
+function getAllOrders() {
+    try {
+        const raw = localStorage.getItem("freshfarm_orders");
+
+        if (!raw) {
+            return [];
         }
 
-        // 🔄 లూప్స్ ఉపయోగించి మొత్తం డేటాని ఒకే టేబుల్‌లోకి తీసుకురావడం
-        function loadSingleTableData() {
-            var tableBody = document.getElementById('masterTableBody');
-            tableBody.innerHTML = ''; 
-            var serialNumber = 1;
+        const orders = JSON.parse(raw);
 
-            // 1. లోకల్ స్టోరేజ్ నుండి యూజర్ల లిస్ట్ లూప్ చేయడం
-            var usersList = JSON.parse(localStorage.getItem('veg_market_users')) || [];
-            for (var i = 0; i < usersList.length; i++) {
-                var roleClass = usersList[i].role === 'FARMER' ? 'badge-farmer' : 'badge-customer';
-                
-                var row = '<tr>' +
-                    '<td>' + (serialNumber++) + '</td>' +
-                    '<td><strong>' + (usersList[i].name || 'N/A') + '</strong></td>' +
-                    '<td>' + (usersList[i].mobile || 'N/A') + '</td>' +
-                    '<td><span class="' + roleClass + '">' + (usersList[i].role || 'USER') + '</span></td>' +
-                    '<td>₹' + (usersList[i].balance || '0.00') + '</td>' +
-                    '<td><em style="color: #666;">Registered profile</em></td>' +
-                '</tr>';
-                tableBody.innerHTML += row;
-            }
+        return Array.isArray(orders) ? orders : [];
+    } catch (error) {
+        console.error("Could not read all orders:", error);
+        return [];
+    }
+}
 
-            // 2. లోకల్ స్టోరేజ్ నుండి కూరగాయల లిస్ట్ లూప్ చేయడం
-            var vegList = JSON.parse(localStorage.getItem('veg_market_items')) || [];
-            for (var j = 0; j < vegList.length; j++) {
-                var rowVeg = '<tr>' +
-                    '<td>' + (serialNumber++) + '</td>' +
-                    '<td><strong>' + (vegList[j].farmer || 'N/A') + '</strong></td>' +
-                    '<td>--</td>' +
-                    '<td><span class="badge-farmer">FARMER STOCK</span></td>' +
-                    '<td>--</td>' +
-                    '<td>Added: <strong>' + (vegList[j].name || 'N/A') + '</strong> (' + (vegList[j].quantity || '0') + ' KG) @ ₹' + (vegList[j].price || '0') + '/kg</td>' +
-                '</tr>';
-                tableBody.innerHTML += rowVeg;
-            }
 
-            // 3. 🛒 కస్టమర్ కార్ట్ ఆర్డర్ మరియు లైవ్ SMS బిల్లు ట్రాకింగ్ వివరాలను లూప్ చేయడం
-            var orderStatus = localStorage.getItem('current_order_status');
-            if (orderStatus && orderStatus !== 'Empty') {
-                var lastCode = localStorage.getItem('last_generated_code') || 'FF-PEND-1122';
-                var vegName = localStorage.getItem('ordered_vegetable') || 'Fresh Tomatoes';
-                var vegQty = localStorage.getItem('ordered_quantity') || '2';
-                var vegPrice = localStorage.getItem('ordered_price') || '30';
-                var totalAmount = vegQty * vegPrice;
-                var acceptedTime = localStorage.getItem('order_accepted_time') || 'Waiting...';
-                
-                var statusBadge = orderStatus === 'Pending' ? 'badge-pending' : 'badge-accepted';
-                var activityText = orderStatus === 'Pending' ? 
-                    'Ordered: <strong>' + vegName + '</strong> (' + vegQty + ' KG) - Total: ₹' + totalAmount + '.00 | Status: ⏳ Pending Farmer Acceptance' :
-                    'Ordered: <strong>' + vegName + '</strong> (' + vegQty + ' KG) - Total: ₹' + totalAmount + '.00 | 📬 <strong>SMS Bill Dispatched</strong> at ' + acceptedTime;
+/* =====================================================
+   GET CURRENT/LATEST ORDER
+   Used for compatibility with the customer bill.
+   ===================================================== */
 
-                var rowOrder = '<tr>' +
-                    '<td>' + (serialNumber++) + '</td>' +
-                    '<td><strong>' + (localStorage.getItem('customer_name') || 'shalini') + '</strong></td>' +
-                    '<td>--</td>' +
-                    '<td><span class="' + statusBadge + '">CART ORDER (' + orderStatus.toUpperCase() + ')</span></td>' +
-                    '<td>--</td>' +
-                    '<td>Code: <strong>' + lastCode + '</strong> | ' + activityText + '</td>' +
-                '</tr>';
-                tableBody.innerHTML += rowOrder;
+function getCurrentOrder() {
+    try {
+        const raw = localStorage.getItem("freshfarm_current_order");
+
+        if (!raw) {
+            return null;
+        }
+
+        const order = JSON.parse(raw);
+
+        if (order && Array.isArray(order.items)) {
+            return order;
+        }
+
+        return null;
+    } catch (error) {
+        console.error("Could not read current order:", error);
+        return null;
+    }
+}
+
+
+/* =====================================================
+   LOAD ADMIN DATA
+===================================================== */
+
+function loadAdminData() {
+
+    const tableBody =
+        document.getElementById(
+            "masterTableBody"
+        );
+
+
+    if (!tableBody) {
+        return;
+    }
+
+
+    /*
+        Always completely rebuild the table.
+
+        This is important because the admin
+        must show the latest localStorage data.
+    */
+
+    tableBody.innerHTML = "";
+
+
+    let serialNumber = 1;
+
+
+    /* =================================================
+       USERS
+    ================================================= */
+
+    const users =
+        getUsers();
+
+
+    users.forEach(
+        user => {
+
+            const role =
+                user.role || "USER";
+
+
+            const roleClass =
+                role === "FARMER"
+                    ? "farmer"
+                    : "customer";
+
+
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            row.innerHTML = `
+
+                <td>
+                    ${serialNumber++}
+                </td>
+
+                <td>
+                    <strong>
+                        ${escapeHTML(
+                            user.name ||
+                            "N/A"
+                        )}
+                    </strong>
+                </td>
+
+                <td>
+                    ${escapeHTML(
+                        user.mobile ||
+                        "N/A"
+                    )}
+                </td>
+
+                <td>
+
+                    <span
+                        class="badge ${roleClass}"
+                    >
+                        ${escapeHTML(
+                            role
+                        )}
+                    </span>
+
+                </td>
+
+                <td>
+                    ₹${Number(
+                        user.balance || 0
+                    ).toFixed(2)}
+                </td>
+
+                <td>
+                    <em
+                        style="
+                            color:#777;
+                        "
+                    >
+                        Registered profile
+                    </em>
+                </td>
+
+            `;
+
+
+            tableBody.appendChild(row);
+
+        }
+    );
+
+
+    /* =================================================
+       VEGETABLE MARKET STOCK
+    ================================================= */
+
+    const vegetables =
+        getVegetables();
+
+
+    vegetables.forEach(
+        vegetable => {
+
+            const name =
+                vegetable.name ||
+                "Vegetable";
+
+
+            const farmerName =
+                vegetable.farmerName ||
+                vegetable.farmer ||
+                "N/A";
+
+
+            const quantity =
+                Number(
+                    vegetable.quantityKg ??
+                    vegetable.quantity ??
+                    0
+                );
+
+
+            const price =
+                Number(
+                    vegetable.pricePerKg ??
+                    vegetable.price ??
+                    0
+                );
+
+
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            row.innerHTML = `
+
+                <td>
+                    ${serialNumber++}
+                </td>
+
+                <td>
+                    <strong>
+                        ${escapeHTML(
+                            farmerName
+                        )}
+                    </strong>
+                </td>
+
+                <td>
+                    --
+                </td>
+
+                <td>
+
+                    <span
+                        class="badge farmer"
+                    >
+                        FARMER STOCK
+                    </span>
+
+                </td>
+
+                <td>
+                    --
+                </td>
+
+                <td>
+
+                    🥦
+                    <strong>
+                        ${escapeHTML(
+                            name
+                        )}
+                    </strong>
+
+                    <br>
+
+                    Stock:
+                    <strong>
+                        ${quantity.toFixed(2)}
+                        KG
+                    </strong>
+
+                    <br>
+
+                    Price:
+                    <strong>
+                        ₹${price.toFixed(2)}
+                        / KG
+                    </strong>
+
+                </td>
+
+            `;
+
+
+            tableBody.appendChild(row);
+
+        }
+    );
+
+
+    /* =================================================
+       ALL CUSTOMER ORDERS
+       ================================================= */
+
+    const allOrders = getAllOrders();
+
+    if (allOrders.length > 0) {
+
+        /*
+         * Display EVERY saved order.
+         * Oldest first, newest order shown last (at the bottom).
+         */
+        allOrders
+            .slice()
+            .forEach(function(order) {
+
+                if (
+                    order &&
+                    Array.isArray(order.items) &&
+                    order.items.length > 0
+                ) {
+                    addOrderToAdminTable(
+                        tableBody,
+                        order,
+                        serialNumber
+                    );
+
+                    serialNumber++;
+                }
+            });
+
+    } else {
+
+        /*
+         * Compatibility fallback:
+         * If customer.html is still using the old version,
+         * it may have only saved freshfarm_current_order.
+         * Show that order too instead of showing nothing.
+         */
+        const currentOrder = getCurrentOrder();
+
+        if (
+            currentOrder &&
+            Array.isArray(currentOrder.items) &&
+            currentOrder.items.length > 0
+        ) {
+            addOrderToAdminTable(
+                tableBody,
+                currentOrder,
+                serialNumber
+            );
+
+            serialNumber++;
+        } else {
+
+            /*
+             * Final backward compatibility for the oldest data.
+             */
+            const oldStatus =
+                localStorage.getItem("current_order_status");
+
+            if (
+                oldStatus &&
+                oldStatus !== "Empty"
+            ) {
+                addOldOrderToAdminTable(
+                    tableBody,
+                    oldStatus,
+                    serialNumber
+                );
+
+                serialNumber++;
             }
         }
-    </script>
+    }
+
+
+/* =================================================
+       EMPTY STATE
+    ================================================= */
+
+    if (
+        tableBody.children.length === 0
+    ) {
+
+        tableBody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="6"
+                    class="empty"
+                >
+                    No data available yet.
+                </td>
+
+            </tr>
+
+        `;
+    }
+
+
+    /*
+        Show refresh time.
+    */
+
+    const refreshStatus =
+        document.getElementById(
+            "refreshStatus"
+        );
+
+
+    if (refreshStatus) {
+
+        refreshStatus.innerText =
+            "Last updated: " +
+            new Date().toLocaleTimeString();
+    }
+}
+
+
+/* =====================================================
+   ADD MULTI-ITEM ORDER
+===================================================== */
+
+function addOrderToAdminTable(
+    tableBody,
+    order,
+    serialNumber
+) {
+
+    const status =
+        order.status ||
+        localStorage.getItem(
+            "current_order_status"
+        ) ||
+        "Pending";
+
+
+    const statusClass =
+        status === "Accepted"
+            ? "accepted"
+            : "pending";
+
+
+    const customerName =
+        getCustomerName(
+            order.customerMobile
+        );
+
+
+    const customerMobile =
+        order.customerMobile ||
+        "--";
+
+
+    let total =
+        0;
+
+
+    /*
+        Build every vegetable inside
+        the same order.
+    */
+
+    let itemsHTML = "";
+
+
+    order.items.forEach(
+        item => {
+
+            const quantity =
+                Number(
+                    item.quantity || 0
+                );
+
+
+            const price =
+                Number(
+                    item.price || 0
+                );
+
+
+            const subtotal =
+                quantity * price;
+
+
+            total += subtotal;
+
+
+            itemsHTML += `
+
+                <div class="order-item">
+
+                    🥦
+                    <strong>
+                        ${escapeHTML(
+                            item.name ||
+                            "Vegetable"
+                        )}
+                    </strong>
+
+                    <br>
+
+                    Quantity:
+                    ${quantity}
+                    KG
+
+                    ×
+
+                    ₹${price.toFixed(2)}
+
+                    =
+
+                    <strong>
+                        ₹${subtotal.toFixed(2)}
+                    </strong>
+
+                    ${
+                        item.farmerName
+                        ? `
+                            <br>
+                            Farmer:
+                            ${escapeHTML(
+                                item.farmerName
+                            )}
+                        `
+                        : ""
+                    }
+
+                </div>
+
+            `;
+        }
+    );
+
+
+    if (
+        order.totalAmount !== undefined
+    ) {
+
+        total =
+            Number(
+                order.totalAmount
+            );
+    }
+
+
+    const code =
+        order.approvedCode ||
+        order.code ||
+        localStorage.getItem(
+            "last_generated_code"
+        ) ||
+        "--";
+
+
+    const acceptedTime =
+        order.acceptedTime ||
+        localStorage.getItem(
+            "order_accepted_time"
+        ) ||
+        "Waiting";
+
+
+    let statusText;
+
+
+    if (
+        status === "Accepted"
+    ) {
+
+        statusText = `
+
+            <span
+                class="badge accepted"
+            >
+                ACCEPTED
+            </span>
+
+            <br><br>
+
+            📬
+            <strong>
+                SMS Bill Dispatched
+            </strong>
+
+            <br>
+
+            Time:
+            ${escapeHTML(
+                acceptedTime
+            )}
+
+        `;
+
+    } else {
+
+        statusText = `
+
+            <span
+                class="badge pending"
+            >
+                PENDING
+            </span>
+
+            <br><br>
+
+            ⏳
+            Waiting for Farmer Acceptance
+
+        `;
+    }
+
+
+    const row =
+        document.createElement(
+            "tr"
+        );
+
+
+    row.innerHTML = `
+
+        <td>
+            ${serialNumber}
+        </td>
+
+        <td>
+
+            <strong>
+                ${escapeHTML(
+                    customerName
+                )}
+            </strong>
+
+        </td>
+
+        <td>
+            ${escapeHTML(
+                customerMobile
+            )}
+        </td>
+
+        <td>
+
+            <span
+                class="badge ${statusClass}"
+            >
+                CART ORDER
+            </span>
+
+        </td>
+
+        <td>
+            --
+        </td>
+
+        <td>
+
+            <strong>
+                🛒 Customer Order
+            </strong>
+
+            <br><br>
+
+            Code:
+            <strong>
+                ${escapeHTML(code)}
+            </strong>
+
+            <br><br>
+
+            ${itemsHTML}
+
+            <div class="order-total">
+
+                Total Order:
+                ₹${total.toFixed(2)}
+
+            </div>
+
+            <br>
+
+            ${statusText}
+
+        </td>
+
+    `;
+
+
+    tableBody.appendChild(row);
+}
+
+
+/* =====================================================
+   OLD ORDER SUPPORT
+===================================================== */
+
+function addOldOrderToAdminTable(
+    tableBody,
+    status,
+    serialNumber
+) {
+
+    const vegName =
+        localStorage.getItem(
+            "ordered_vegetable"
+        ) ||
+        "Fresh Vegetables";
+
+
+    const quantity =
+        Number(
+            localStorage.getItem(
+                "ordered_quantity"
+            ) || 1
+        );
+
+
+    const price =
+        Number(
+            localStorage.getItem(
+                "ordered_price"
+            ) || 25
+        );
+
+
+    const total =
+        quantity * price;
+
+
+    const code =
+        localStorage.getItem(
+            "last_generated_code"
+        ) ||
+        "--";
+
+
+    const customerName =
+        localStorage.getItem(
+            "customer_name"
+        ) ||
+        "Customer";
+
+
+    const statusClass =
+        status === "Accepted"
+            ? "accepted"
+            : "pending";
+
+
+    const row =
+        document.createElement(
+            "tr"
+        );
+
+
+    row.innerHTML = `
+
+        <td>
+            ${serialNumber}
+        </td>
+
+        <td>
+            <strong>
+                ${escapeHTML(
+                    customerName
+                )}
+            </strong>
+        </td>
+
+        <td>
+            --
+        </td>
+
+        <td>
+
+            <span
+                class="badge ${statusClass}"
+            >
+                CART ORDER
+            </span>
+
+        </td>
+
+        <td>
+            --
+        </td>
+
+        <td>
+
+            🥦
+            <strong>
+                ${escapeHTML(
+                    vegName
+                )}
+            </strong>
+
+            <br>
+
+            Quantity:
+            ${quantity}
+            KG
+
+            <br>
+
+            Price:
+            ₹${price.toFixed(2)}
+            / KG
+
+            <br>
+
+            Total:
+            <strong>
+                ₹${total.toFixed(2)}
+            </strong>
+
+            <br>
+
+            Code:
+            <strong>
+                ${escapeHTML(code)}
+            </strong>
+
+        </td>
+
+    `;
+
+
+    tableBody.appendChild(row);
+}
+
+
+/* =====================================================
+   IMPORTANT: AUTOMATIC REFRESH
+===================================================== */
+
+/*
+    When customer.html changes localStorage
+    from another browser tab/window,
+    this event fires automatically.
+*/
+
+window.addEventListener(
+    "storage",
+    function(event) {
+
+        if (
+            event.key ===
+                "freshfarm_orders" ||
+
+            event.key ===
+                "freshfarm_current_order" ||
+
+            event.key ===
+                "current_order_status" ||
+
+            event.key ===
+                "veg_market_vegetables" ||
+
+            event.key ===
+                "last_generated_code" ||
+
+            event.key ===
+                "order_accepted_time"
+        ) {
+
+            loadAdminData();
+        }
+
+    }
+);
+
+
+/*
+    Poll localStorage every 1 second.
+
+    This guarantees the admin page updates
+    even when browser storage events behave
+    differently between tabs.
+*/
+
+setInterval(
+    function() {
+
+        const adminContent =
+            document.getElementById(
+                "adminContent"
+            );
+
+
+        if (
+            adminContent &&
+            adminContent.style.display !==
+                "none"
+        ) {
+
+            loadAdminData();
+        }
+
+    },
+    1000
+);
+
+
+/* =====================================================
+   ENTER KEY LOGIN
+===================================================== */
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            event.key === "Enter" &&
+            document.getElementById(
+                "loginBox"
+            ).style.display !== "none"
+        ) {
+
+            checkAdminLogin();
+        }
+
+    }
+);
+
+</script>
+
 </body>
 </html>
+```
