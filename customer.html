@@ -1,59 +1,103 @@
-<div class="container" style="padding: 20px;">
-    <h2>Customer Shopping Cart (కార్ట్)</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshFarm - Customer Portal</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fdf9; margin: 0; padding: 20px; }
+        .container { max-width: 600px; margin: 30px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 5px solid #28a745; }
+        h2 { color: #1e5628; margin-top: 0; text-align: center; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; color: #333; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        .cart-summary { background: #eef9f0; padding: 15px; border-radius: 6px; margin: 20px 0; border: 1px dashed #28a745; }
+        .total-price { font-size: 18px; font-weight: bold; color: #28a745; text-align: right; }
+        .order-btn { width: 100%; background-color: #28a745; color: white; padding: 14px; font-size: 16px; border: none; cursor: pointer; border-radius: 6px; font-weight: bold; transition: background 0.2s; }
+        .order-btn:hover { background-color: #1e5628; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🛒 Customer Shopping Cart (కార్ట్)</h2>
     
-    <!-- Sample Form inputs to simulate cart -->
-    <div style="margin-bottom: 15px;">
-        <label>Customer Name: </label>
-        <input type="text" id="custName" value="Suresh Babu" placeholder="Enter name">
+    <!-- User Info Section -->
+    <div class="form-group">
+        <label>Your Name (మీ పేరు):</label>
+        <input type="text" id="customerName" value="Suresh Babu" placeholder="Enter your full name">
     </div>
-    <div style="margin-bottom: 15px;">
-        <label>Mobile Number: </label>
-        <input type="text" id="custPhone" value="8123456789" placeholder="Enter mobile">
-    </div>
-    <div style="margin-bottom: 15px;">
-        <label>Select Item: </label>
-        <select id="cartItem">
-            <option value="Tomatoes - 10kg">Tomatoes - 10kg</option>
-            <option value="Onions - 5kg">Onions - 5kg</option>
-        </select>
-    </div>
-    <div style="margin-bottom: 15px;">
-        <label>Total Price (ధర): </label>
-        <input type="number" id="itemPrice" value="500">
+    
+    <div class="form-group">
+        <label>Mobile Number (మొబైల్ సంఖ్య):</label>
+        <input type="text" id="customerPhone" value="8123456789" placeholder="Enter 10-digit number">
     </div>
 
-    <button onclick="placeCustomerOrder()" style="background-color: #28a745; color: white; padding: 10px 20px; border: none; cursor: pointer; border-radius: 5px;">
-        Place Order to Farmer (ఆర్డర్ పంపించు)
+    <!-- Items Section -->
+    <div class="form-group">
+        <label>Choose Vegetables (కూరగాయలు ఎంచుకోండి):</label>
+        <select id="vegetableSelect" onchange="updateTotal()">
+            <option value="Tomatoes - 10kg" data-price="400">Tomatoes (టమోటాలు) - 10kg [₹400]</option>
+            <option value="Onions - 5kg" data-price="200">Onions (ఉల్లిపాయలు) - 5kg [₹200]</option>
+            <option value="Potatoes - 5kg" data-price="150">Potatoes (బంగాళాదుంపలు) - 5kg [₹150]</option>
+        </select>
+    </div>
+
+    <!-- Cart Info display -->
+    <div class="cart-summary">
+        <p style="margin: 0 0 10px 0; font-weight: bold; color: #555;">Selected Item Summary:</p>
+        <div class="total-price">Total Bill: ₹<span id="cartTotal">400</span></div>
+    </div>
+
+    <!-- Place Order Button (రైతుకు ఆర్డర్ పంపే ఆప్షన్) -->
+    <button class="order-btn" onclick="sendCartToFarmer()">
+        Place Order to Farmer (రైతుకు ఆర్డర్ పంపించు 🛒)
     </button>
 </div>
 
 <script>
-function placeCustomerOrder() {
-    let name = document.getElementById('custName').value;
-    let phone = document.getElementById('custPhone').value;
-    let item = document.getElementById('cartItem').value;
-    let price = document.getElementById('itemPrice').value;
+// సెలెక్ట్ చేసిన ఐటెమ్ బట్టి ధరను మార్చడానికి
+function updateTotal() {
+    let select = document.getElementById('vegetableSelect');
+    let selectedOption = select.options[select.selectedIndex];
+    let price = selectedOption.getAttribute('data-price');
+    document.getElementById('cartTotal').innerText = price;
+}
 
-    if(!name || !phone) {
-        alert("Please enter Name and Phone!");
+// ఆర్డర్ డేటాను Farmer పేజీకి పంపే మెయిన్ ఫంక్షన్
+function sendCartToFarmer() {
+    let name = document.getElementById('customerName').value.trim();
+    let phone = document.getElementById('customerPhone').value.trim();
+    
+    let select = document.getElementById('vegetableSelect');
+    let item = select.options[select.selectedIndex].value;
+    let totalBill = document.getElementById('cartTotal').innerText;
+
+    if (!name || !phone) {
+        alert("Please enter Name and Mobile Number!");
         return;
     }
 
-    // Existing orders list loading
+    // 1. మునుపటి ఆర్డర్ల డేటాను లోడ్ చేయడం
     let orderQueue = JSON.parse(localStorage.getItem('farmerOrderQueue')) || [];
 
-    // Creating new order details object
-    let newOrder = {
+    // 2. కొత్త ఆర్డర్ వివరాలు తయారుచేయడం
+    let currentOrder = {
         orderId: 'ORD-' + Date.now(),
         customerName: name,
         customerPhone: phone,
         items: item,
-        billAmount: price,
+        billAmount: totalBill,
         status: 'Pending'
     };
 
-    orderQueue.push(newOrder);
+    // 3. లిస్ట్‌లోకి పంపి బ్రౌజర్ లోకల్ మెమొరీకి సేవ్ చేయడం
+    orderQueue.push(currentOrder);
     localStorage.setItem('farmerOrderQueue', JSON.stringify(orderQueue));
-    alert("Order Sent to Farmer Successfully! (రైతుకు ఆర్డర్ పంపబడింది)");
+
+    alert("Order Placed Successfully! (రైతుకు ఆర్డర్ విజయవంతంగా పంపబడింది)");
 }
 </script>
+
+</body>
+</html>
