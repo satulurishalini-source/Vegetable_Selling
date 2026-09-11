@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fresh Market Customer Order Portal</title>
+    <title>Customer Fresh Market Portal</title>
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #f7faf7; margin: 0; padding: 20px; color: #2d3748; }
@@ -14,9 +14,10 @@
         .panel { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
         h2 { margin-top: 0; font-size: 18px; color: #1b5e20; border-bottom: 2px solid #cbd5e0; padding-bottom: 8px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
 
-        /* Hardcoded Vegetable List Styling */
+        /* Stable Vegetable Cards Layout */
         .veg-list-scroll { max-height: 80vh; overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 12px; }
         .veg-card { background: #ffffff; border: 1px solid #edf2f7; border-radius: 8px; padding: 14px; display: flex; justify-content: space-between; align-items: center; }
+        .veg-card:hover { border-color: #c8e6c9; }
         .info-pane .name { font-size: 16px; font-weight: bold; color: #2e7d32; }
         .info-pane .details { font-size: 13px; color: #4a5568; margin-top: 4px; }
         .action-pane { display: flex; align-items: center; gap: 8px; }
@@ -33,6 +34,7 @@
         .total-row { font-size: 16px; font-weight: bold; color: #1b5e20; background: #e8f5e9; }
         .remove-btn { color: #e53e3e; background: none; border: none; cursor: pointer; font-weight: bold; font-size: 14px; }
         .checkout-btn { width: 100%; background: #1b5e20; color: white; border: none; padding: 12px; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        .checkout-btn:hover { background: #0d3c0e; }
         .empty-bill { text-align: center; color: #718096; padding: 40px; font-style: italic; border: 2px dashed #e2e8f0; border-radius: 6px; }
     </style>
 </head>
@@ -52,10 +54,10 @@
                     <div class="details">Price: <strong>₹25 / KG</strong> | Farmer: shalini</div>
                 </div>
                 <div class="action-pane">
-                    <input type="number" class="qty-input" value="500" min="1" id="cust-qty-1">
+                    <input type="number" class="qty-input" value="1" min="1" id="cust-qty-1">
                     <select class="unit-dropdown" id="cust-unit-1">
-                        <option value="Grams">Grams</option>
                         <option value="KG">KG</option>
+                        <option value="Grams">Grams</option>
                     </select>
                     <button class="add-btn" onclick="addVegItemToBill(1, 'Tomatoes', '🍅', 25)">Add to Bill</button>
                 </div>
@@ -68,10 +70,10 @@
                     <div class="details">Price: <strong>₹49 / KG</strong> | Farmer: shalini</div>
                 </div>
                 <div class="action-pane">
-                    <input type="number" class="qty-input" value="250" min="1" id="cust-qty-2">
+                    <input type="number" class="qty-input" value="1" min="1" id="cust-qty-2">
                     <select class="unit-dropdown" id="cust-unit-2">
-                        <option value="Grams">Grams</option>
                         <option value="KG">KG</option>
+                        <option value="Grams">Grams</option>
                     </select>
                     <button class="add-btn" onclick="addVegItemToBill(2, 'Potatoes', '🥔', 49)">Add to Bill</button>
                 </div>
@@ -84,10 +86,10 @@
                     <div class="details">Price: <strong>₹20 / KG</strong> | Farmer: shalini</div>
                 </div>
                 <div class="action-pane">
-                    <input type="number" class="qty-input" value="500" min="1" id="cust-qty-3">
+                    <input type="number" class="qty-input" value="1" min="1" id="cust-qty-3">
                     <select class="unit-dropdown" id="cust-unit-3">
-                        <option value="Grams">Grams</option>
                         <option value="KG">KG</option>
+                        <option value="Grams">Grams</option>
                     </select>
                     <button class="add-btn" onclick="addVegItemToBill(3, 'Carrot', '🥕', 20)">Add to Bill</button>
                 </div>
@@ -148,10 +150,10 @@
                     <div class="details">Price: <strong>₹35 / KG</strong> | Farmer: shalini</div>
                 </div>
                 <div class="action-pane">
-                    <input type="number" class="qty-input" value="500" min="1" id="cust-qty-7">
+                    <input type="number" class="qty-input" value="1" min="1" id="cust-qty-7">
                     <select class="unit-dropdown" id="cust-unit-7">
-                        <option value="Grams">Grams</option>
                         <option value="KG">KG</option>
+                        <option value="Grams">Grams</option>
                     </select>
                     <button class="add-btn" onclick="addVegItemToBill(7, 'Brinjal', '🍆', 35)">Add to Bill</button>
                 </div>
@@ -164,10 +166,10 @@
                     <div class="details">Price: <strong>₹30 / KG</strong> | Farmer: kumar</div>
                 </div>
                 <div class="action-pane">
-                    <input type="number" class="qty-input" value="500" min="1" id="cust-qty-8">
+                    <input type="number" class="qty-input" value="1" min="1" id="cust-qty-8">
                     <select class="unit-dropdown" id="cust-unit-8">
-                        <option value="Grams">Grams</option>
                         <option value="KG">KG</option>
+                        <option value="Grams">Grams</option>
                     </select>
                     <button class="add-btn" onclick="addVegItemToBill(8, 'Cucumber', '🥒', 30)">Add to Bill</button>
                 </div>
@@ -177,6 +179,3 @@
             <div class="veg-card">
                 <div class="info-pane">
                     <div class="name">🌱 Lady Finger</div>
-                    <div class="details">Price: <strong>₹45 / KG</strong> | Farmer: kumar</div>
-                </div>
-                <div class="action-pane">
