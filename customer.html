@@ -3,137 +3,353 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FreshFarm - Customer Dashboard</title>
+    <title>FreshFarm - Vegetable Selling Platform</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #f4f6f8; color: #333; padding-bottom: 50px; }
-        .top-bar { background-color: #f8f9fa; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e0e0e0; }
-        .brand { font-size: 20px; font-weight: bold; color: #1a7f37; }
-        .btn-logout { background-color: #d9534f; color: white; border: none; padding: 6px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
-        .welcome-title { font-size: 22px; margin-bottom: 20px; color: #2c3e50; }
-        .card { background: #ffffff; border-radius: 6px; border: 1px solid #e5e7eb; margin-bottom: 20px; padding: 18px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .card-header { font-size: 16px; font-weight: 600; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; color: #212529; }
-        .market-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; margin-bottom: 10px; }
-        .item-details h4 { margin-bottom: 4px; color: #111827; }
+
+        /* Navigation Bar */
+        .top-bar { background-color: #ffffff; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e7eb; }
+        .brand { font-size: 20px; font-weight: bold; color: #16a34a; display: flex; align-items: center; gap: 8px; }
+        .btn-logout { background-color: #ef4444; color: white; border: none; padding: 6px 16px; border-radius: 4px; cursor: pointer; font-weight: 600; }
+
+        /* View Switcher Controls */
+        .view-switcher { background-color: #e2e8f0; padding: 10px; text-align: center; font-weight: 600; margin-bottom: 20px; font-size: 14px; }
+        .view-switcher button { padding: 6px 14px; margin: 0 4px; cursor: pointer; border: 1px solid #cbd5e1; border-radius: 4px; background: #ffffff; font-weight: 600; }
+        .view-switcher button.active { background: #16a34a; color: white; border-color: #16a34a; }
+
+        /* Main Container */
+        .container { max-width: 900px; margin: 0 auto; padding: 0 15px; }
+        .welcome-title { font-size: 22px; margin-bottom: 20px; color: #1e293b; }
+
+        /* Cards */
+        .card { background: #ffffff; border-radius: 6px; border: 1px solid #e5e7eb; margin-bottom: 20px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .card-header { font-size: 16px; font-weight: 600; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; color: #1f2937; }
+
+        /* Vegetable List */
+        .market-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 6px; margin-bottom: 10px; }
+        .item-details h4 { margin-bottom: 4px; color: #111827; font-size: 15px; text-transform: capitalize; }
         .item-details p { font-size: 13px; color: #6b7280; }
-        .btn-buy { background-color: #1a7f37; color: white; border: none; padding: 8px 16px; border-radius: 4px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
+        .btn-buy { background-color: #16a34a; color: white; border: none; padding: 8px 16px; border-radius: 4px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; font-size: 13px; }
+        .btn-buy:hover { background-color: #15803d; }
+
+        /* Bottom Cart Grid */
         .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         @media (max-width: 768px) { .bottom-grid { grid-template-columns: 1fr; } }
-        .cart-item-detail { font-size: 14px; line-height: 1.8; color: #374151; }
-        .badge-pending { background-color: #ef4444; color: white; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; display: inline-block; margin-top: 5px; }
+
+        /* Table Cart Layout */
+        .cart-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 12px; }
+        .cart-table th, .cart-table td { padding: 8px 6px; border-bottom: 1px solid #f3f4f6; text-align: left; }
+        .cart-table th { background-color: #f9fafb; font-weight: 600; color: #4b5563; }
+        .total-row { font-weight: bold; color: #111827; background-color: #f0fdf4; }
+        .qty-btn { padding: 2px 6px; font-weight: bold; cursor: pointer; border: 1px solid #cbd5e1; background: #fff; border-radius: 3px; }
+
+        /* Badges */
+        .badge-pending { background-color: #ef4444; color: white; padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; display: inline-block; }
+        .badge-accepted { background-color: #10b981; color: white; padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; display: inline-block; }
+
+        /* Invoice styling */
         .invoice-card { background-color: #f0fdf4; border: 1px dashed #16a34a; border-radius: 6px; padding: 15px; font-size: 13px; }
         .invoice-header { display: flex; justify-content: space-between; align-items: center; font-weight: bold; color: #15803d; margin-bottom: 10px; }
         .invoice-status-tag { border: 1px solid #16a34a; color: #16a34a; font-size: 10px; padding: 2px 6px; border-radius: 3px; }
         .invoice-row { margin-bottom: 6px; color: #374151; }
+
+        /* Farmer Form */
+        .veg-box { background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; padding: 12px; margin-bottom: 12px; }
+        .veg-box h4 { margin-bottom: 8px; color: #16a34a; font-size: 14px; }
+        .form-row { display: flex; gap: 10px; }
+        .form-group { flex: 1; }
+        .form-group label { display: block; font-size: 11px; font-weight: 600; margin-bottom: 3px; color: #4b5563; }
+        .form-group input { width: 100%; padding: 6px 8px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 13px; }
+
+        .order-notification-box { background-color: #fffbeb; border: 1px dashed #f59e0b; border-radius: 6px; padding: 15px; text-align: center; }
+        .order-notification-box .title { color: #d97706; font-weight: bold; margin-bottom: 8px; }
+        .btn-accept { background-color: #16a34a; color: white; border: none; padding: 10px 18px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+
+        /* Modal Overlay */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-card { background: #ffffff; width: 320px; border-radius: 8px; padding: 15px; }
+        .modal-header { font-size: 12px; font-weight: bold; color: #4b5563; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; margin-bottom: 12px; }
+        .modal-body { background-color: #04091e; color: #ffffff; border-radius: 6px; padding: 12px; font-size: 12px; line-height: 1.6; }
+        .modal-body .brand-tag { color: #10b981; font-weight: bold; margin-bottom: 6px; }
+        .modal-footer { margin-top: 15px; text-align: right; }
+        .btn-modal-ok { background-color: #e5e7eb; color: #1f2937; border: 1px solid #d1d5db; padding: 4px 16px; border-radius: 4px; cursor: pointer; font-weight: 600; }
     </style>
 </head>
 <body>
+
+    <div class="view-switcher">
+        <span>Switch Interface View: </span>
+        <button id="btn-show-customer" class="active" onclick="switchView('customer')">Customer View</button>
+        <button id="btn-show-farmer" onclick="switchView('farmer')">Farmer View</button>
+    </div>
 
     <div class="top-bar">
         <div class="brand">🌱 FreshFarm</div>
         <button class="btn-logout">Logout</button>
     </div>
 
-    <div class="container">
+    <!-- CUSTOMER VIEW -->
+    <div id="customer-view" class="container" style="margin-top: 20px;">
         <h2 class="welcome-title">Welcome, shalini (Customer)</h2>
 
-        <!-- Available Market Vegetables (8 Items) -->
         <div class="card">
             <div class="card-header">📊 Available Market Vegetables (మార్కెట్లో ఉన్న కూరగాయలు)</div>
-
-            <div class="market-item">
-                <div class="item-details">
-                    <h4>🍅 tomatoes</h4>
-                    <p>Price: ₹35 / KG | Stock: 1 KG</p>
-                    <p>Farmer: shalini</p>
-                </div>
-                <button class="btn-buy">Buy Now ↗</button>
-            </div>
-
-            <div class="market-item">
-                <div class="item-details">
-                    <h4>🥔 potatoes</h4>
-                    <p>Price: ₹40 / KG | Stock: 60 KG</p>
-                    <p>Farmer: shalini</p>
-                </div>
-                <button class="btn-buy">Buy Now ↗</button>
-            </div>
-
-            <div class="market-item">
-                <div class="item-details">
-                    <h4>🥕 Carrot</h4>
-                    <p>Price: ₹20 / KG | Stock: 40 KG</p>
-                    <p>Farmer: shalini</p>
-                </div>
-                <button class="btn-buy">Buy Now ↗</button>
-            </div>
-
-            <div class="market-item">
-                <div class="item-details">
-                    <h4>🥔 potato</h4>
-                    <p>Price: ₹35 / KG | Stock: 60 KG</p>
-                    <p>Farmer: shalini</p>
-                </div>
-                <button class="btn-buy">Buy Now ↗</button>
-            </div>
-
-            <div class="market-item">
-                <div class="item-details">
-                    <h4>🥬 cabbage</h4>
-                    <p>Price: ₹50 / KG | Stock: 40 KG</p>
-                    <p>Farmer: shalini</p>
-                </div>
-                <button class="btn-buy">Buy Now ↗</button>
-            </div>
-
-            <div class="market-item">
-                <div class="item-details">
-                    <h4>🌶️ chilli</h4>
-                    <p>Price: ₹38 / KG | Stock: 40 KG</p>
-                    <p>Farmer: shalini</p>
-                </div>
-                <button class="btn-buy">Buy Now ↗</button>
-            </div>
-
-            <div class="market-item">
-                <div class="item-details">
-                    <h4>🍆 brinjal</h4>
-                    <p>Price: ₹35 / KG | Stock: 40 KG</p>
-                    <p>Farmer: shalini</p>
-                </div>
-                <button class="btn-buy">Buy Now ↗</button>
-            </div>
-
-            <div class="market-item">
-                <div class="item-details">
-                    <h4>🥒 cucumber</h4>
-                    <p>Price: ₹30 / KG | Stock: 50 KG</p>
-                    <p>Farmer: shalini</p>
-                </div>
-                <button class="btn-buy">Buy Now ↗</button>
-            </div>
+            <div id="market-list"></div>
         </div>
 
-        <!-- Cart and Invoice Section -->
         <div class="bottom-grid">
             <div class="card">
                 <div class="card-header">🛒 Vegetables in Your Cart</div>
-                <div class="cart-item-detail">
-                    <p><strong>Item:</strong> cabbage</p>
-                    <p><strong>Quantity:</strong> 1 KG</p>
-                    <p><strong>Price:</strong> ₹50 / kg</p>
-                    <p><strong>Subtotal:</strong> ₹50.00</p>
-                    <span class="badge-pending">STATUS: Pending</span>
-                </div>
+                <div id="cart-container"></div>
             </div>
 
             <div class="card">
                 <div class="card-header">📱 Live SMS Bill Invoice</div>
-                <div style="color: #6b7280; font-size: 14px;">Waiting for confirmation...</div>
+                <div id="invoice-placeholder" style="color: #6b7280; font-size: 14px;">Waiting for confirmation...</div>
+
+                <div id="invoice-content" class="invoice-card" style="display: none;">
+                    <div class="invoice-header">
+                        <span>🌱 FreshFarm Bill</span>
+                        <span class="invoice-status-tag">✓ ORDER APPROVED</span>
+                    </div>
+                    <div class="invoice-row"><strong>Code:</strong> FF-APRV-9376</div>
+                    <div class="invoice-row" id="inv-items-count"><strong>Items:</strong> 0 Vegetables</div>
+                    <div class="invoice-row" id="inv-total-amount"><strong>Total Bill:</strong> ₹0.00</div>
+                    <div class="invoice-row"><strong>Time:</strong> 10:29 AM</div>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- FARMER VIEW -->
+    <div id="farmer-view" class="container" style="display: none; margin-top: 20px;">
+        <div class="card">
+            <div class="card-header">🥦 Manage All Vegetables</div>
+            <div id="farmer-veg-list"></div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">🔔 Live Customer Orders Notification</div>
+            <div id="order-box" class="order-notification-box">
+                <div class="title">🔔 Active Order Received!</div>
+                <p style="font-size: 14px; color: #374151;" id="farmer-order-info">Items in cart | Total: ₹0.00</p>
+                <p style="font-size: 13px; color: #4b5563; margin-top: 4px;"><strong>Tracking Code:</strong> FF-PEND-9376</p>
+                <button class="btn-accept" onclick="acceptOrder()">Accept Order & Send SMS Notification ✉️</button>
+            </div>
+
+            <div id="order-accepted-banner" style="display: none; color: #166534; font-size: 14px; font-weight: 500;">
+                ☑ Last order accepted successfully. Single SMS Bill Sent to Customer!
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal SMS Pop-up -->
+    <div id="smsModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">💬 SMS DISPATCHED TO CUSTOMER!</div>
+            <div class="modal-body">
+                <div class="brand-tag">🌱 FreshFarm Consolidated Bill</div>
+                <p>Invoice Code: FF-APRV-9376</p>
+                <p id="sms-items-count">Items: 0 Vegetables</p>
+                <p id="sms-total-amount">Total Bill: ₹0.00</p>
+                <p>Time: 10:29 AM</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal-ok" onclick="closeModal()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const initialVegetables = [
+            { id: 1, name: 'tomatoes', icon: '🍅', price: 35, stock: 1, farmer: 'shalini' },
+            { id: 2, name: 'potatoes', icon: '🥔', price: 40, stock: 60, farmer: 'shalini' },
+            { id: 3, name: 'Carrot', icon: '🥕', price: 20, stock: 40, farmer: 'shalini' },
+            { id: 4, name: 'potato', icon: '🥔', price: 35, stock: 60, farmer: 'shalini' },
+            { id: 5, name: 'cabbage', icon: '🥬', price: 50, stock: 40, farmer: 'shalini' },
+            { id: 6, name: 'chilli', icon: '🌶️', price: 38, stock: 40, farmer: 'shalini' },
+            { id: 7, name: 'brinjal', icon: '🍆', price: 35, stock: 40, farmer: 'shalini' },
+            { id: 8, name: 'cucumber', icon: '🥒', price: 30, stock: 50, farmer: 'shalini' },
+            { id: 9, name: 'lady finger', icon: '🌱', price: 45, stock: 30, farmer: 'shalini' },
+            { id: 10, name: 'onion', icon: '🧅', price: 25, stock: 80, farmer: 'shalini' }
+        ];
+
+        let vegetables = [...initialVegetables];
+        let cart = { 5: 1 }; // Cabbage pre-added to match initial view
+        let orderAccepted = false;
+
+        function renderMarket() {
+            const listContainer = document.getElementById('market-list');
+            listContainer.innerHTML = '';
+            vegetables.forEach(item => {
+                listContainer.innerHTML += `
+                    <div class="market-item">
+                        <div class="item-details">
+                            <h4>${item.icon} ${item.name}</h4>
+                            <p>Price: ₹${item.price} / KG | Stock: ${item.stock} KG</p>
+                            <p>Farmer: ${item.farmer}</p>
+                        </div>
+                        <button class="btn-buy" onclick="addToCart(${item.id})">Buy Now ↗</button>
+                    </div>
+                `;
+            });
+        }
+
+        function renderFarmerList() {
+            const farmerContainer = document.getElementById('farmer-veg-list');
+            farmerContainer.innerHTML = '';
+            vegetables.forEach((item, index) => {
+                farmerContainer.innerHTML += `
+                    <div class="veg-box">
+                        <h4>${item.icon} Vegetable ${index + 1}: ${item.name}</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Price / KG (₹):</label>
+                                <input type="number" value="${item.price}" onchange="updatePrice(${item.id}, this.value)">
+                            </div>
+                            <div class="form-group">
+                                <label>Stock (KG):</label>
+                                <input type="number" value="${item.stock}" onchange="updateStock(${item.id}, this.value)">
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function addToCart(id) {
+            cart[id] = (cart[id] || 0) + 1;
+            renderCart();
+        }
+
+        function updateQty(id, delta) {
+            if (cart[id]) {
+                cart[id] += delta;
+                if (cart[id] <= 0) delete cart[id];
+            }
+            renderCart();
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cart-container');
+            const itemIds = Object.keys(cart);
+            
+            if (itemIds.length === 0) {
+                container.innerHTML = '<p style="color:#6b7280; font-size:13px;">Your cart is empty.</p>';
+                document.getElementById('farmer-order-info').innerText = 'No items in cart';
+                return;
+            }
+
+            let grandTotal = 0;
+            let itemCount = 0;
+            let rowsHtml = '';
+
+            itemIds.forEach(id => {
+                const item = vegetables.find(v => v.id == id);
+                if (item) {
+                    const qty = cart[id];
+                    const subtotal = item.price * qty;
+                    grandTotal += subtotal;
+                    itemCount += qty;
+                    rowsHtml += `
+                        <tr>
+                            <td>${item.name}</td>
+                            <td>
+                                <button class="qty-btn" onclick="updateQty(${item.id}, -1)">-</button>
+                                ${qty} KG
+                                <button class="qty-btn" onclick="updateQty(${item.id}, 1)">+</button>
+                            </td>
+                            <td>₹${item.price}</td>
+                            <td>₹${subtotal.toFixed(2)}</td>
+                        </tr>
+                    `;
+                }
+            });
+
+            container.innerHTML = `
+                <table class="cart-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Qty</th>
+                            <th>Price</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rowsHtml}
+                        <tr class="total-row">
+                            <td colspan="3">Grand Total:</td>
+                            <td>₹${grandTotal.toFixed(2)}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <span class="${orderAccepted ? 'badge-accepted' : 'badge-pending'}">
+                    STATUS: ${orderAccepted ? 'Accepted' : 'Pending'}
+                </span>
+            `;
+
+            document.getElementById('farmer-order-info').innerHTML = `
+                <strong>Items:</strong> ${itemIds.length} Vegetables (${itemCount} KG Total) | <strong>Grand Total:</strong> ₹${grandTotal.toFixed(2)}
+            `;
+            document.getElementById('inv-items-count').innerText = `Items: ${itemIds.length} Vegetables`;
+            document.getElementById('inv-total-amount').innerText = `Total Bill: ₹${grandTotal.toFixed(2)}`;
+            document.getElementById('sms-items-count').innerText = `Items: ${itemIds.length} Vegetables`;
+            document.getElementById('sms-total-amount').innerText = `Total Bill: ₹${grandTotal.toFixed(2)}`;
+        }
+
+        function updatePrice(id, newPrice) {
+            const item = vegetables.find(v => v.id == id);
+            if (item) item.price = Number(newPrice);
+            renderMarket();
+            renderCart();
+        }
+
+        function updateStock(id, newStock) {
+            const item = vegetables.find(v => v.id == id);
+            if (item) item.stock = Number(newStock);
+            renderMarket();
+        }
+
+        function acceptOrder() {
+            orderAccepted = true;
+            document.getElementById('smsModal').style.display = 'flex';
+            document.getElementById('order-box').style.display = 'none';
+            document.getElementById('order-accepted-banner').style.display = 'block';
+
+            document.getElementById('invoice-placeholder').style.display = 'none';
+            document.getElementById('invoice-content').style.display = 'block';
+            renderCart();
+        }
+
+        function closeModal() {
+            document.getElementById('smsModal').style.display = 'none';
+        }
+
+        function switchView(view) {
+            const custView = document.getElementById('customer-view');
+            const farmerView = document.getElementById('farmer-view');
+            const btnCust = document.getElementById('btn-show-customer');
+            const btnFarmer = document.getElementById('btn-show-farmer');
+
+            if (view === 'customer') {
+                custView.style.display = 'block';
+                farmerView.style.display = 'none';
+                btnCust.classList.add('active');
+                btnFarmer.classList.remove('active');
+            } else {
+                custView.style.display = 'none';
+                farmerView.style.display = 'block';
+                btnFarmer.classList.add('active');
+                btnCust.classList.remove('active');
+            }
+        }
+
+        // Initialize App
+        renderMarket();
+        renderFarmerList();
+        renderCart();
+    </script>
 </body>
 </html>
