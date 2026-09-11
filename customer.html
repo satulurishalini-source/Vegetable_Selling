@@ -3,196 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FreshFarm Dashboard</title>
+    <title>FreshFarm - Customer Dashboard</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #f4f6f8; color: #333; padding-bottom: 50px; }
         .top-bar { background-color: #ffffff; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e7eb; }
         .brand { font-size: 20px; font-weight: bold; color: #16a34a; }
-        .nav-btn { background: #e2e8f0; border: none; padding: 8px 16px; font-weight: 600; border-radius: 4px; cursor: pointer; margin-left: 5px; }
-        .nav-btn.active { background: #16a34a; color: white; }
-        .container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
+        .container { max-width: 900px; margin: 20px auto 0; padding: 0 15px; }
         .card { background: #ffffff; border-radius: 6px; border: 1px solid #e5e7eb; margin-bottom: 20px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         .card-header { font-size: 16px; font-weight: 600; margin-bottom: 15px; color: #1f2937; }
-        .market-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #f3f4f6; }
-        .btn-buy { background-color: #16a34a; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; }
         .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .cart-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 12px; }
-        .cart-table th, .cart-table td { padding: 6px; border-bottom: 1px solid #f3f4f6; text-align: left; }
-        .btn-order { width: 100%; background-color: #16a34a; color: white; border: none; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer; }
-        .badge { padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; display: inline-block; color: white; }
-        .pending { background-color: #ef4444; }
-        .accepted { background-color: #10b981; }
-        .invoice-card { background-color: #f0fdf4; border: 1px dashed #16a34a; border-radius: 6px; padding: 15px; font-size: 13px; }
-        .order-notification-box { background-color: #fffbeb; border: 1px dashed #f59e0b; border-radius: 6px; padding: 15px; text-align: center; }
-        .btn-accept { background-color: #1a7f37; color: white; border: none; padding: 10px 18px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 12px; }
+        .cart-table th, .cart-table td { padding: 8px 6px; border-bottom: 1px solid #f3f4f6; text-align: left; }
+        .cart-table th { background-color: #f9fafb; font-weight: 600; color: #4b5563; }
+        .btn-order { width: 100%; background-color: #16a34a; color: white; border: none; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .badge-pending { background-color: #ef4444; color: white; padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; display: inline-block; }
+        .badge-accepted { background-color: #10b981; color: white; padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; display: inline-block; }
+        .invoice-card { background-color: #04091e; color: #ffffff; border-radius: 6px; padding: 15px; font-size: 13px; line-height: 1.6; }
+        .invoice-header { display: flex; justify-content: space-between; align-items: center; font-weight: bold; color: #10b981; margin-bottom: 10px; border-bottom: 1px solid #1f2937; padding-bottom: 8px; }
     </style>
 </head>
 <body>
 
     <div class="top-bar">
         <div class="brand">🌱 FreshFarm</div>
-        <div>
-            <button id="tab-cust" class="nav-btn active" onclick="switchView('customer')">Customer View</button>
-            <button id="tab-farm" class="nav-btn" onclick="switchView('farmer')">Farmer View</button>
-        </div>
     </div>
 
-    <!-- Customer View -->
-    <div id="customer-view" class="container">
-        <div class="card">
-            <div class="card-header">🥦 Available Vegetables</div>
-            <div id="market-list"></div>
-        </div>
+    <div class="container">
+        <h2 style="margin-bottom: 20px;">Customer Dashboard</h2>
 
         <div class="bottom-grid">
+            <!-- Cart Box -->
             <div class="card">
-                <div class="card-header">🛒 Cart Details</div>
-                <div id="cart-container"></div>
+                <div class="card-header">🛒 Vegetables in Your Cart</div>
+                <table class="cart-table">
+                    <thead>
+                        <tr><th>Item</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>cabbage</td><td>1 KG</td><td>₹50</td><td>₹50.00</td></tr>
+                        <tr><td>chilli</td><td>1 KG</td><td>₹38</td><td>₹38.00</td></tr>
+                        <tr><td>brinjal</td><td>1 KG</td><td>₹35</td><td>₹35.00</td></tr>
+                        <tr><td>cucumber</td><td>1 KG</td><td>₹30</td><td>₹30.00</td></tr>
+                        <tr><td>lady finger</td><td>1 KG</td><td>₹45</td><td>₹45.00</td></tr>
+                        <tr><td>onion</td><td>1 KG</td><td>₹25</td><td>₹25.00</td></tr>
+                        <tr style="font-weight:bold; background-color: #f0fdf4;"><td colspan="3">Grand Total:</td><td>₹223.00</td></tr>
+                    </tbody>
+                </table>
+                <span id="status-badge" class="badge-pending">STATUS: Pending</span>
+                <button class="btn-order" onclick="sendOrderToFarmer()">Place Order Now 🛒</button>
             </div>
 
+            <!-- SMS Bill Invoice Box -->
             <div class="card">
                 <div class="card-header">📱 Live SMS Bill Invoice</div>
-                <div id="invoice-placeholder" style="color: #6b7280; font-size: 14px;">Waiting for confirmation...</div>
+                <div id="invoice-placeholder" style="color: #6b7280; font-size: 14px;">Waiting for farmer confirmation...</div>
+
                 <div id="invoice-content" class="invoice-card" style="display: none;">
-                    <div style="font-weight: bold; color: #15803d; margin-bottom: 8px;">🌱 FreshFarm Bill (APPROVED)</div>
-                    <div id="inv-code"></div>
-                    <div id="inv-items"></div>
-                    <div id="inv-total" style="font-weight: bold; margin-top: 4px;"></div>
+                    <div class="invoice-header">
+                        <span>🌱 FreshFarm Bill</span>
+                        <span style="color: #10b981; font-size: 11px;">✓ SMS DISPATCHED</span>
+                    </div>
+                    <p id="inv-code">Invoice Code: -</p>
+                    <p id="inv-items">Items: -</p>
+                    <p id="inv-total" style="font-weight: bold; color: #10b981; margin-top: 5px;">Total Bill: ₹0.00</p>
+                    <p id="inv-time" style="font-size: 11px; color: #9ca3af; margin-top: 5px;">Time: -</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Farmer View -->
-    <div id="farmer-view" class="container" style="display: none;">
-        <div class="card">
-            <div class="card-header">📊 Live Customer Orders</div>
-            <div id="no-orders" style="color: #6b7280;">No pending orders right now.</div>
-            <div id="order-box" class="order-notification-box" style="display: none;">
-                <div style="color: #d97706; font-weight: bold; margin-bottom: 8px;">🔔 New Order Received!</div>
-                <p id="order-items"></p>
-                <p id="order-total" style="font-weight: bold; margin-top: 4px;"></p>
-                <button class="btn-accept" onclick="acceptOrder()">Accept Order & Send SMS ✔️</button>
-            </div>
-        </div>
-    </div>
-
     <script>
-        const vegetables = [
-            { id: 1, name: 'cabbage', price: 50 },
-            { id: 2, name: 'chilli', price: 38 },
-            { id: 3, name: 'brinjal', price: 35 },
-            { id: 4, name: 'cucumber', price: 30 },
-            { id: 5, name: 'lady finger', price: 45 },
-            { id: 6, name: 'onion', price: 25 }
-        ];
-
-        let cart = { 1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1 };
-        let activeOrder = null;
-
-        function switchView(view) {
-            document.getElementById('customer-view').style.display = view === 'customer' ? 'block' : 'none';
-            document.getElementById('farmer-view').style.display = view === 'farmer' ? 'block' : 'none';
-            document.getElementById('tab-cust').className = 'nav-btn ' + (view === 'customer' ? 'active' : '');
-            document.getElementById('tab-farm').className = 'nav-btn ' + (view === 'farmer' ? 'active' : '');
-            renderAll();
-        }
-
-        function renderMarket() {
-            const list = document.getElementById('market-list');
-            list.innerHTML = '';
-            vegetables.forEach(item => {
-                list.innerHTML += `
-                    <div class="market-item">
-                        <span><strong>${item.name}</strong> - ₹${item.price}/KG</span>
-                        <button class="btn-buy" onclick="addToCart(${item.id})">Buy Now</button>
-                    </div>`;
-            });
-        }
-
-        function addToCart(id) {
-            cart[id] = (cart[id] || 0) + 1;
-            renderAll();
-        }
-
-        function placeOrder() {
-            let itemList = [];
-            let total = 0;
-            Object.keys(cart).forEach(id => {
-                const item = vegetables.find(v => v.id == id);
-                if (item) {
-                    itemList.push(`${item.name} (${cart[id]} KG)`);
-                    total += item.price * cart[id];
-                }
-            });
-
-            activeOrder = {
-                code: 'FF-ORD-9376',
-                items: itemList.join(', '),
-                total: total.toFixed(2),
-                status: 'PENDING'
+        function sendOrderToFarmer() {
+            const order = {
+                code: 'FF-APRV-9376',
+                items: 'cabbage, chilli, brinjal, cucumber, lady finger, onion',
+                total: '223.00',
+                status: 'PENDING',
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             };
-
-            renderAll();
-            alert('Order placed! Switch to Farmer View to Accept.');
+            localStorage.setItem('freshfarm_order', JSON.stringify(order));
+            alert('Order sent! Now open farmer.html and click Accept.');
         }
 
-        function acceptOrder() {
-            if (activeOrder) {
-                activeOrder.status = 'ACCEPTED';
-                renderAll();
-            }
-        }
+        function checkOrderStatus() {
+            const savedOrder = JSON.parse(localStorage.getItem('freshfarm_order'));
 
-        function renderAll() {
-            // Render Cart
-            let grandTotal = 0;
-            let rowsHtml = '';
-            Object.keys(cart).forEach(id => {
-                const item = vegetables.find(v => v.id == id);
-                if (item) {
-                    let sub = item.price * cart[id];
-                    grandTotal += sub;
-                    rowsHtml += `<tr><td>${item.name}</td><td>${cart[id]} KG</td><td>₹${sub}</td></tr>`;
-                }
-            });
+            if (savedOrder && savedOrder.status === 'ACCEPTED') {
+                // 1. Update Badge
+                const badge = document.getElementById('status-badge');
+                badge.className = 'badge-accepted';
+                badge.innerText = 'STATUS: Accepted';
 
-            const isAccepted = activeOrder && activeOrder.status === 'ACCEPTED';
-            const isPending = activeOrder && activeOrder.status === 'PENDING';
-
-            document.getElementById('cart-container').innerHTML = `
-                <table class="cart-table">
-                    <tr><th>Item</th><th>Qty</th><th>Subtotal</th></tr>
-                    ${rowsHtml}
-                    <tr><td colspan="2"><strong>Total:</strong></td><td><strong>₹${grandTotal.toFixed(2)}</strong></td></tr>
-                </table>
-                <span class="badge ${isAccepted ? 'accepted' : 'pending'}">STATUS: ${activeOrder ? activeOrder.status : 'Pending'}</span>
-                <button class="btn-order" onclick="placeOrder()">Place Order Now 🛒</button>`;
-
-            // Render Invoice
-            if (isAccepted) {
+                // 2. Display the SMS Invoice
                 document.getElementById('invoice-placeholder').style.display = 'none';
                 document.getElementById('invoice-content').style.display = 'block';
-                document.getElementById('inv-code').innerText = 'Code: ' + activeOrder.code;
-                document.getElementById('inv-items').innerText = 'Items: ' + activeOrder.items;
-                document.getElementById('inv-total').innerText = 'Total Bill: ₹' + activeOrder.total;
-            }
 
-            // Render Farmer View
-            if (isPending) {
-                document.getElementById('no-orders').style.display = 'none';
-                document.getElementById('order-box').style.display = 'block';
-                document.getElementById('order-items').innerText = 'Items: ' + activeOrder.items;
-                document.getElementById('order-total').innerText = 'Total: ₹' + activeOrder.total;
-            } else {
-                document.getElementById('no-orders').style.display = 'block';
-                document.getElementById('order-box').style.display = 'none';
+                document.getElementById('inv-code').innerText = 'Invoice Code: ' + savedOrder.code;
+                document.getElementById('inv-items').innerText = 'Items: ' + savedOrder.items;
+                document.getElementById('inv-total').innerText = 'Total Bill: ₹' + savedOrder.total;
+                document.getElementById('inv-time').innerText = 'Time: ' + savedOrder.time;
             }
         }
 
-        renderMarket();
-        renderAll();
+        // Listen for storage changes from farmer.html tab
+        window.addEventListener('storage', checkOrderStatus);
+
+        // Check continuously every 1 second in case window events are blocked locally
+        setInterval(checkOrderStatus, 1000);
     </script>
 </body>
 </html>
