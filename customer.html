@@ -1,103 +1,648 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FreshFarm - Customer Portal</title>
+    <title>Farmer Dashboard - FreshFarm</title>
+
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fdf9; margin: 0; padding: 20px; }
-        .container { max-width: 600px; margin: 30px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 5px solid #28a745; }
-        h2 { color: #1e5628; margin-top: 0; text-align: center; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: bold; color: #333; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
-        .cart-summary { background: #eef9f0; padding: 15px; border-radius: 6px; margin: 20px 0; border: 1px dashed #28a745; }
-        .total-price { font-size: 18px; font-weight: bold; color: #28a745; text-align: right; }
-        .order-btn { width: 100%; background-color: #28a745; color: white; padding: 14px; font-size: 16px; border: none; cursor: pointer; border-radius: 6px; font-weight: bold; transition: background 0.2s; }
-        .order-btn:hover { background-color: #1e5628; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        .navbar {
+            background-color: #ffffff;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            color: #2e7d32;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .main-container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .welcome-text {
+            color: #2e7d32;
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 8px;
+        }
+
+        .vegetable-box {
+            border: 1px solid #ddd;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 6px;
+            background-color: #fafafa;
+        }
+
+        .vegetable-box h4 {
+            margin: 0 0 10px 0;
+            color: #2e7d32;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 95%;
+            padding: 9px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .btn-submit {
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        .btn-submit:hover {
+            background-color: #1b5e20;
+        }
+
+        .order-alert {
+            background-color: #fff3e0;
+            border: 2px dashed #ff9800;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .btn-accept {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 15px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 700px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
+
 <body>
 
-<div class="container">
-    <h2>🛒 Customer Shopping Cart (కార్ట్)</h2>
-    
-    <!-- User Info Section -->
-    <div class="form-group">
-        <label>Your Name (మీ పేరు):</label>
-        <input type="text" id="customerName" value="Suresh Babu" placeholder="Enter your full name">
-    </div>
-    
-    <div class="form-group">
-        <label>Mobile Number (మొబైల్ సంఖ్య):</label>
-        <input type="text" id="customerPhone" value="8123456789" placeholder="Enter 10-digit number">
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <div class="logo">🥦 FreshFarm</div>
+        <button class="logout-btn" onclick="logoutUser()">Logout</button>
     </div>
 
-    <!-- Items Section -->
-    <div class="form-group">
-        <label>Choose Vegetables (కూరగాయలు ఎంచుకోండి):</label>
-        <select id="vegetableSelect" onchange="updateTotal()">
-            <option value="Tomatoes - 10kg" data-price="400">Tomatoes (టమోటాలు) - 10kg [₹400]</option>
-            <option value="Onions - 5kg" data-price="200">Onions (ఉల్లిపాయలు) - 5kg [₹200]</option>
-            <option value="Potatoes - 5kg" data-price="150">Potatoes (బంగాళాదుంపలు) - 5kg [₹150]</option>
-        </select>
+    <div class="main-container">
+
+        <!-- WELCOME -->
+        <div class="welcome-text">
+            Welcome, <span id="farmerNameDisplay">shalini</span> (Farmer)
+        </div>
+
+        <div class="grid-container">
+
+            <!-- WALLET -->
+            <div class="card">
+                <h3>💰 Wallet Balance</h3>
+
+                <h2 id="farmerWalletBalance"
+                    style="color: #2e7d32; font-size: 32px; margin: 15px 0;">
+                    ₹0.00
+                </h2>
+            </div>
+
+            <!-- ADD 6 VEGETABLES -->
+            <div class="card">
+
+                <h3>🌾 Add Vegetables to Market</h3>
+
+                <!-- VEGETABLE 1 -->
+                <div class="vegetable-box">
+                    <h4>🥕 Vegetable 1</h4>
+
+                    <div class="form-group">
+                        <label>Vegetable Name:</label>
+                        <input type="text"
+                               id="vegName1"
+                               placeholder="e.g., Tomato">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Price per KG (₹):</label>
+                        <input type="number"
+                               id="vegPrice1"
+                               placeholder="e.g., 25">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Quantity Available (KG):</label>
+                        <input type="number"
+                               id="vegQuantity1"
+                               placeholder="e.g., 10">
+                    </div>
+                </div>
+
+
+                <!-- VEGETABLE 2 -->
+                <div class="vegetable-box">
+                    <h4>🥔 Vegetable 2</h4>
+
+                    <div class="form-group">
+                        <label>Vegetable Name:</label>
+                        <input type="text"
+                               id="vegName2"
+                               placeholder="e.g., Potato">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Price per KG (₹):</label>
+                        <input type="number"
+                               id="vegPrice2"
+                               placeholder="e.g., 30">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Quantity Available (KG):</label>
+                        <input type="number"
+                               id="vegQuantity2"
+                               placeholder="e.g., 20">
+                    </div>
+                </div>
+
+
+                <!-- VEGETABLE 3 -->
+                <div class="vegetable-box">
+                    <h4>🥦 Vegetable 3</h4>
+
+                    <div class="form-group">
+                        <label>Vegetable Name:</label>
+                        <input type="text"
+                               id="vegName3"
+                               placeholder="e.g., Cabbage">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Price per KG (₹):</label>
+                        <input type="number"
+                               id="vegPrice3"
+                               placeholder="e.g., 20">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Quantity Available (KG):</label>
+                        <input type="number"
+                               id="vegQuantity3"
+                               placeholder="e.g., 15">
+                    </div>
+                </div>
+
+
+                <!-- VEGETABLE 4 -->
+                <div class="vegetable-box">
+                    <h4>🌶️ Vegetable 4</h4>
+
+                    <div class="form-group">
+                        <label>Vegetable Name:</label>
+                        <input type="text"
+                               id="vegName4"
+                               placeholder="e.g., Chilli">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Price per KG (₹):</label>
+                        <input type="number"
+                               id="vegPrice4"
+                               placeholder="e.g., 40">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Quantity Available (KG):</label>
+                        <input type="number"
+                               id="vegQuantity4"
+                               placeholder="e.g., 8">
+                    </div>
+                </div>
+
+
+                <!-- VEGETABLE 5 -->
+                <div class="vegetable-box">
+                    <h4>🍆 Vegetable 5</h4>
+
+                    <div class="form-group">
+                        <label>Vegetable Name:</label>
+                        <input type="text"
+                               id="vegName5"
+                               placeholder="e.g., Brinjal">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Price per KG (₹):</label>
+                        <input type="number"
+                               id="vegPrice5"
+                               placeholder="e.g., 35">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Quantity Available (KG):</label>
+                        <input type="number"
+                               id="vegQuantity5"
+                               placeholder="e.g., 12">
+                    </div>
+                </div>
+
+
+                <!-- VEGETABLE 6 -->
+                <div class="vegetable-box">
+                    <h4>🥒 Vegetable 6</h4>
+
+                    <div class="form-group">
+                        <label>Vegetable Name:</label>
+                        <input type="text"
+                               id="vegName6"
+                               placeholder="e.g., Cucumber">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Price per KG (₹):</label>
+                        <input type="number"
+                               id="vegPrice6"
+                               placeholder="e.g., 30">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Quantity Available (KG):</label>
+                        <input type="number"
+                               id="vegQuantity6"
+                               placeholder="e.g., 10">
+                    </div>
+                </div>
+
+
+                <!-- ADD BUTTON -->
+                <button class="btn-submit"
+                        onclick="handleFarmerAddVeg()">
+                    ➕ Add All Vegetables to Market
+                </button>
+
+            </div>
+        </div>
+
+
+        <!-- CUSTOMER ORDERS -->
+        <div class="card">
+
+            <h3>📥 Live Customer Orders</h3>
+
+            <div id="ordersSection">
+
+                <p style="color: #777; font-style: italic;"
+                   id="noOrdersText">
+                    No pending orders found from customers.
+                </p>
+
+            </div>
+        </div>
+
     </div>
 
-    <!-- Cart Info display -->
-    <div class="cart-summary">
-        <p style="margin: 0 0 10px 0; font-weight: bold; color: #555;">Selected Item Summary:</p>
-        <div class="total-price">Total Bill: ₹<span id="cartTotal">400</span></div>
-    </div>
 
-    <!-- Place Order Button (రైతుకు ఆర్డర్ పంపే ఆప్షన్) -->
-    <button class="order-btn" onclick="sendCartToFarmer()">
-        Place Order to Farmer (రైతుకు ఆర్డర్ పంపించు 🛒)
-    </button>
-</div>
+    <!-- APP.JS -->
+    <script src="app.js"></script>
 
-<script>
-// సెలెక్ట్ చేసిన ఐటెమ్ బట్టి ధరను మార్చడానికి
-function updateTotal() {
-    let select = document.getElementById('vegetableSelect');
-    let selectedOption = select.options[select.selectedIndex];
-    let price = selectedOption.getAttribute('data-price');
-    document.getElementById('cartTotal').innerText = price;
-}
+    <script>
 
-// ఆర్డర్ డేటాను Farmer పేజీకి పంపే మెయిన్ ఫంక్షన్
-function sendCartToFarmer() {
-    let name = document.getElementById('customerName').value.trim();
-    let phone = document.getElementById('customerPhone').value.trim();
-    
-    let select = document.getElementById('vegetableSelect');
-    let item = select.options[select.selectedIndex].value;
-    let totalBill = document.getElementById('cartTotal').innerText;
+        // Get current farmer
+        let user = getCurrentUser() || {
+            name: "shalini",
+            balance: 60000,
+            mobile: 12345
+        };
 
-    if (!name || !phone) {
-        alert("Please enter Name and Mobile Number!");
-        return;
-    }
+        document.getElementById("farmerNameDisplay").innerText = user.name;
 
-    // 1. మునుపటి ఆర్డర్ల డేటాను లోడ్ చేయడం
-    let orderQueue = JSON.parse(localStorage.getItem('farmerOrderQueue')) || [];
+        document.getElementById("farmerWalletBalance").innerText =
+            `₹${parseFloat(user.balance).toFixed(2)}`;
 
-    // 2. కొత్త ఆర్డర్ వివరాలు తయారుచేయడం
-    let currentOrder = {
-        orderId: 'ORD-' + Date.now(),
-        customerName: name,
-        customerPhone: phone,
-        items: item,
-        billAmount: totalBill,
-        status: 'Pending'
-    };
 
-    // 3. లిస్ట్‌లోకి పంపి బ్రౌజర్ లోకల్ మెమొరీకి సేవ్ చేయడం
-    orderQueue.push(currentOrder);
-    localStorage.setItem('farmerOrderQueue', JSON.stringify(orderQueue));
+        // ADD 6 VEGETABLES
+        function handleFarmerAddVeg() {
 
-    alert("Order Placed Successfully! (రైతుకు ఆర్డర్ విజయవంతంగా పంపబడింది)");
-}
-</script>
+            let vegetables = [];
+
+            for (let i = 1; i <= 6; i++) {
+
+                let name =
+                    document.getElementById(`vegName${i}`).value.trim();
+
+                let price =
+                    document.getElementById(`vegPrice${i}`).value.trim();
+
+                let qty =
+                    document.getElementById(`vegQuantity${i}`).value.trim();
+
+
+                // Only add filled vegetables
+                if (name && price && qty) {
+
+                    vegetables.push({
+                        name: name,
+                        price: price,
+                        quantity: qty
+                    });
+
+                }
+            }
+
+
+            // Check whether at least one vegetable is entered
+            if (vegetables.length === 0) {
+
+                alert("❌ Please enter at least one vegetable!");
+
+                return;
+            }
+
+
+            // Add each vegetable
+            vegetables.forEach(function(vegetable) {
+
+                addVegetable(
+                    vegetable.name,
+                    vegetable.price,
+                    vegetable.quantity
+                );
+
+            });
+
+
+            alert(
+                "✅ " +
+                vegetables.length +
+                " vegetable(s) added successfully to the market!"
+            );
+
+
+            // Clear all fields
+            for (let i = 1; i <= 6; i++) {
+
+                document.getElementById(`vegName${i}`).value = "";
+                document.getElementById(`vegPrice${i}`).value = "";
+                document.getElementById(`vegQuantity${i}`).value = "";
+
+            }
+
+            location.reload();
+        }
+
+
+        // CHECK CUSTOMER ORDERS
+        function checkPendingOrders() {
+
+            let status =
+                localStorage.getItem("current_order_status");
+
+            let ordersSection =
+                document.getElementById("ordersSection");
+
+            let pendingCode =
+                localStorage.getItem("last_generated_code")
+                || "FF-PEND-1234";
+
+
+            let vegName =
+                localStorage.getItem("ordered_vegetable")
+                || "Fresh Vegetables";
+
+            let vegQty =
+                localStorage.getItem("ordered_quantity")
+                || "1";
+
+            let vegPrice =
+                localStorage.getItem("ordered_price")
+                || "25";
+
+
+            let totalAmount =
+                parseFloat(vegQty) * parseFloat(vegPrice);
+
+
+            if (status === "Pending") {
+
+                document.getElementById("noOrdersText").style.display =
+                    "none";
+
+
+                ordersSection.innerHTML = `
+
+                    <div class="order-alert">
+
+                        <p style="
+                            font-size:16px;
+                            margin:5px 0;
+                            color:#E65100;">
+
+                            🔔 <strong>New Order Received!</strong>
+
+                        </p>
+
+                        <p>
+                            <strong>Item:</strong>
+                            ${vegName}
+                            (${vegQty} KG)
+                            |
+                            <strong>Total:</strong>
+                            ₹${totalAmount.toFixed(2)}
+                        </p>
+
+                        <p>
+                            Tracking Code:
+                            <strong>${pendingCode}</strong>
+                        </p>
+
+                        <button
+                            class="btn-accept"
+                            onclick="acceptCustomerOrder()">
+
+                            Accept Order & Send SMS ✅
+
+                        </button>
+
+                    </div>
+                `;
+
+            }
+
+            else if (status === "Accepted") {
+
+                ordersSection.innerHTML = `
+
+                    <p style="
+                        color:#2e7d32;
+                        font-weight:bold;">
+
+                        ✅ Last order accepted successfully.
+                        SMS Bill Sent!
+
+                    </p>
+
+                `;
+            }
+        }
+
+
+        // ACCEPT ORDER
+        function acceptCustomerOrder() {
+
+            localStorage.setItem(
+                "current_order_status",
+                "Accepted"
+            );
+
+
+            let now = new Date();
+
+            let currentTimeString =
+                now.toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit"
+                });
+
+
+            localStorage.setItem(
+                "order_accepted_time",
+                currentTimeString
+            );
+
+
+            let pendingCode =
+                localStorage.getItem("last_generated_code")
+                || "FF-PEND-1234";
+
+
+            let approvedCode =
+                pendingCode.replace("PEND", "APRV");
+
+
+            localStorage.setItem(
+                "last_generated_code",
+                approvedCode
+            );
+
+
+            let vegName =
+                localStorage.getItem("ordered_vegetable")
+                || "Fresh Vegetables";
+
+            let vegQty =
+                localStorage.getItem("ordered_quantity")
+                || "1";
+
+            let vegPrice =
+                localStorage.getItem("ordered_price")
+                || "25";
+
+
+            let total =
+                parseFloat(vegQty) *
+                parseFloat(vegPrice);
+
+
+            let smsMessage = `🥦 FreshFarm Bill
+-------------------
+Invoice Code: ${approvedCode}
+Item: ${vegName}
+Total Bill: ₹${total.toFixed(2)}
+Time: ${currentTimeString}
+-------------------
+Status: APPROVED ✅`;
+
+
+            alert(
+                `📱 SMS DISPATCHED TO CUSTOMER!\n\n${smsMessage}`
+            );
+
+
+            location.reload();
+        }
+
+
+        // LOGOUT
+        function logoutUser() {
+
+            logout();
+
+        }
+
+
+        // Run order check
+        checkPendingOrders();
+
+    </script>
 
 </body>
 </html>
+```
