@@ -90,42 +90,168 @@
             location.reload();
         }
 
-        function checkPendingOrders() {
-            let status = localStorage.getItem('current_order_status');
-            let ordersSection = document.getElementById('ordersSection');
-            let pendingCode = localStorage.getItem('last_generated_code') || 'FF-PEND-1234';
-            
-            let vegName = localStorage.getItem('ordered_vegetable') || 'Fresh Vegetables';
-            let vegQty = localStorage.getItem('ordered_quantity') || '1';
-            let vegPrice = localStorage.getItem('ordered_price') || '25';
-            let totalAmount = vegQty * vegPrice;
+        const ORDERS_KEY = 'freshfarm_orders';
+        const CURRENT_ORDER_KEY = 'freshfarm_current_order';
 
-            if (status === 'Pending') {
-                document.getElementById('noOrdersText').style.display = 'none';
-                ordersSection.innerHTML = `
-                    <div class="order-alert">
-                        <p style="font-size: 16px; margin: 5px 0; color: #E65100;">🔔 <strong>New Order Received!</strong></p>
-                        <p><strong>Item:</strong> ${vegName} (${vegQty} KG) | <strong>Total:</strong> ₹${totalAmount}.00</p>
-                        <p>Tracking Code: <strong>${pendingCode}</strong></p>
-                        <button class="btn-accept" onclick="acceptCustomerOrder()">Accept Order & Send SMS ✅</button>
-                    </div>
-                `;
-            } else if (status === 'Accepted') {
-                ordersSection.innerHTML = `<p style="color: #2e7d32; font-weight: bold;">✅ Last order accepted successfully. SMS Bill Sent!</p>`;
+        function getAllOrders() {
+            try {
+                const raw = localStorage.getItem(ORDERS_KEY);
+                const orders = raw ? JSON.parse(raw) : [];
+                return Array.isArray(orders) ? orders : [];
+            } catch (e) {
+                return [];
             }
         }
 
-        function acceptCustomerOrder() {
-            localStorage.setItem('current_order_status', 'Accepted');
-            let now = new Date();
-            let currentTimeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            localStorage.setItem('order_accepted_time', currentTimeString);
+        function saveAllOrders(orders) {
+            localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
+        }
 
-            let pendingCode = localStorage.getItem('last_generated_code') || 'FF-PEND-1234';
-            let approvedCode = pendingCode.replace('PEND', 'APRV');
+        // Orders that include at least one item belonging to this farmer,
+        // where THIS farmer hasn't accepted (and paid out) their part yet.
+        // (Using per-farmer acceptance instead of a single order-wide status
+        // so multi-farmer orders don't lose payment for the other farmers.)
+        function getFarmerPendingOrders() {
+            return getAllOrders().filter(order =>
+                Array.isArray(order.items) &&
+                order.items.some(item => String(item.farmerMobile) === String(user.mobile)) &&
+                !(Array.isArray(order.acceptedFarmers) && order.acceptedFarmers.includes(String(user.mobile)))
+            );
+        }
+
+        function checkPendingOrders() {
+            const ordersSection = document.getElementById('ordersSection');
+            const pendingOrders = getFarmerPendingOrders();
+
+            if (pendingOrders.length === 0) {
+                ordersSection.innerHTML = `<p style="color: #777; font-style: italic;" id="noOrdersText">No pending orders found from customers.</p>`;
+                return;
+            }
+
+            ordersSection.innerHTML = pendingOrders.map(order => {
+                // Only show this farmer's own items from the order
+                const myItems = order.items.filter(item => String(item.farmerMobile) === String(user.mobile));
+                const myTotal = myItems.reduce((sum, item) => sum + (Number(item.quantity) * Number(item.price)), 0);
+
+                const itemLines = myItems.map(item => `
+                    <p style="margin: 4px 0;">${item.name} — ${item.quantity} KG × ₹${Number(item.price).toFixed(2)} = ₹${(item.quantity * item.price).toFixed(2)}</p>
+                `).join('');
+
+                return `
+                    <div class="order-alert">
+                        <p style="font-size: 16px; margin: 5px 0; color: #E65100;">🔔 <strong>New Order Received!</strong></p>
+                        ${itemLines}
+                        <p><strong>Your Total:</strong> ₹${myTotal.toFixed(2)}</p>
+                        <p>Tracking Code: <strong>${order.code}</strong></p>
+                        <button class="btn-accept" onclick="acceptCustomerOrder(${order.id})">Accept Order & Send SMS ✅</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function acceptCustomerOrder(orderId) {
+            const orders = getAllOrders();
+            const order = orders.find(o => o.id === orderId);
+            if (!order) {
+                alert('Order not found. It may have already been updated.');
+                checkPendingOrders();
+                return;
+            }
+
+            if (!Array.isArray(order.acceptedFarmers)) order.acceptedFarmers = [];
+            const alreadyAccepted = order.acceptedFarmers.includes(String(user.mobile));
+
+            // Only this farmer's items/total from the (possibly multi-farmer) order
+            const myItems = (order.items || []).filter(item => String(item.farmerMobile) === String(user.mobile));
+            const myTotal = myItems.reduce((sum, item) => sum + (Number(item.quantity) * Number(item.price)), 0);
+
+            if (!alreadyAccepted) {
+                // ===== Move money from customer to farmer wallet =====
+                const customer = getUserByMobile(order.customerMobile);
+                const farmer = getUserByMobile(user.mobile);
+
+                if (!customer || !farmer) {
+                    alert('Could not find customer or farmer account for this order.');
+                    return;
+                }
+                if (customer.balance < myTotal) {
+                    alert(`Customer has insufficient wallet balance (₹${customer.balance.toFixed(2)}) to pay for this order (₹${myTotal.toFixed(2)}).`);
+                    return;
+                }
+
+                updateUserBalance(customer.mobile, customer.balance - myTotal);
+                updateUserBalance(farmer.mobile, farmer.balance + myTotal);
+
+                // ===== Reduce vegetable stock for the accepted items =====
+                const veggies = JSON.parse(localStorage.getItem('veg_market_vegetables')) || [];
+                myItems.forEach(item => {
+                    const veg = veggies.find(v => Number(v.id) === Number(item.vegId));
+                    if (veg) {
+                        veg.quantityKg = Math.max(0, Number(veg.quantityKg) - Number(item.quantity));
+                    }
+                });
+                localStorage.setItem('veg_market_vegetables', JSON.stringify(veggies));
+
+                // ===== Record the transaction so it shows in history =====
+                addTransaction({
+                    id: Date.now(),
+                    type: 'BUY',
+                    senderId: customer.mobile,
+                    receiverId: farmer.mobile,
+                    amount: myTotal,
+                    vegetableName: myItems.map(i => i.name).join(', '),
+                    quantityKg: myItems.reduce((s, i) => s + Number(i.quantity), 0),
+                    timestamp: Date.now()
+                });
+
+                order.acceptedFarmers.push(String(user.mobile));
+
+                // Refresh the in-memory user + on-screen wallet balance immediately
+                const refreshedUser = getCurrentUser();
+                if (refreshedUser) {
+                    user = refreshedUser;
+                    document.getElementById('farmerWalletBalance').innerText = `₹${parseFloat(user.balance).toFixed(2)}`;
+                }
+            }
+
+            // Order is only fully "Accepted" once every farmer in it has accepted their part
+            const allFarmerMobiles = [...new Set((order.items || []).map(i => String(i.farmerMobile)))];
+            const fullyAccepted = allFarmerMobiles.every(m => order.acceptedFarmers.includes(m));
+
+            const now = new Date();
+            const currentTimeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const approvedCode = (order.code || 'FF-PEND-0000').replace('PEND', 'APRV');
+
+            // Update the real order record — this is what admin.html reads
+            order.status = fullyAccepted ? 'Accepted' : 'Partially Accepted';
+            order.acceptedTime = currentTimeString;
+            order.approvedCode = approvedCode;
+            saveAllOrders(orders);
+
+            // Keep the "live" current-order copy in sync too, if it's the same order
+            try {
+                const currentRaw = localStorage.getItem(CURRENT_ORDER_KEY);
+                const currentOrder = currentRaw ? JSON.parse(currentRaw) : null;
+                if (currentOrder && currentOrder.id === orderId) {
+                    currentOrder.status = order.status;
+                    currentOrder.acceptedTime = currentTimeString;
+                    currentOrder.code = approvedCode;
+                    localStorage.setItem(CURRENT_ORDER_KEY, JSON.stringify(currentOrder));
+                }
+            } catch (e) {}
+
+            // Legacy keys, kept for backward compatibility with older bill display code
+            localStorage.setItem('current_order_status', fullyAccepted ? 'Accepted' : 'Pending');
+            localStorage.setItem('order_accepted_time', currentTimeString);
             localStorage.setItem('last_generated_code', approvedCode);
 
-            let smsMessage = `🥦 FreshFarm Bill\n-------------------\nInvoice Code: ${approvedCode}\nItem: ${localStorage.getItem('ordered_vegetable')}\nTotal Bill: ₹${localStorage.getItem('ordered_quantity') * localStorage.getItem('ordered_price')}.00\nTime: ${currentTimeString}\n-------------------\nStatus: APPROVED ✅`;
+            const totalAmount = order.totalAmount !== undefined
+                ? order.totalAmount
+                : order.items.reduce((s, i) => s + (i.quantity * i.price), 0);
+
+            const itemSummary = order.items.map(i => `${i.name}: ${i.quantity}kg × ₹${i.price}`).join('\n');
+
+            const smsMessage = `🥦 FreshFarm Bill\n-------------------\nInvoice Code: ${approvedCode}\nItems:\n${itemSummary}\nTotal Bill: ₹${Number(totalAmount).toFixed(2)}\nTime: ${currentTimeString}\n-------------------\nStatus: APPROVED ✅`;
 
             alert(`📱 SMS DISPATCHED TO CUSTOMER!\n\n${smsMessage}`);
             location.reload();
@@ -136,6 +262,15 @@
         }
 
         checkPendingOrders();
+
+        // Keep the orders list live without needing a manual refresh
+        setInterval(checkPendingOrders, 2000);
+
+        window.addEventListener('storage', function(event) {
+            if (event.key === 'freshfarm_orders' || event.key === 'freshfarm_current_order') {
+                checkPendingOrders();
+            }
+        });
     </script>
 </body>
 </html>
