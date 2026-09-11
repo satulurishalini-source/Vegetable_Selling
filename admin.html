@@ -3,162 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Secure Single Table</title>
+    <title>Customer Vegetable Market - Single Bill Checkout</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 80vh; }
-        .container { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); margin-bottom: 20px; width: 100%; max-width: 950px; }
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f5f8f5; margin: 0; padding: 20px; color: #2c3e50; }
         
-        /* 🔒 Login Form Styling */
-        .login-box { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 320px; text-align: center; }
-        .login-box h2 { margin-bottom: 20px; color: #333; }
-        .login-box input { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; }
-        .login-box button { width: 97%; padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; font-weight: bold; }
-        .login-box button:hover { background-color: #45a049; }
-        .error-msg { color: red; font-size: 14px; margin-top: 10px; display: none; }
+        .market-layout { display: grid; grid-template-columns: 1.2fr 1fr; gap: 25px; max-width: 1200px; margin: 0 auto; }
+        @media (max-width: 900px) { .market-layout { grid-template-columns: 1fr; } }
 
-        /* 📊 Table Styling */
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-        th { background-color: #2E7D32; color: white; }
-        tr:nth-child(even) { background-color: #f9f9f9; }
-        .logout-btn { background-color: #f44336; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; float: right; font-weight: bold; }
-        
-        /* Roles Style */
-        .badge-farmer { background-color: #E8F5E9; color: #2E7D32; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 13px; }
-        .badge-customer { background-color: #E3F2FD; color: #1565C0; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 13px; }
-        .badge-pending { background-color: #FFF3E0; color: #E65100; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 13px; }
-        .badge-accepted { background-color: #E8F5E9; color: #1B5E20; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 13px; }
+        .panel { background: #ffffff; border: 1px solid #e1ebd5; border-radius: 10px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        h2 { margin-top: 0; font-size: 18px; color: #1b5e20; border-bottom: 2px solid #a5d6a7; padding-bottom: 8px; margin-bottom: 15px; }
 
-        #adminContent { display: none; width: 100%; max-width: 950px; }
+        /* Left Side: Vegetable Grid View */
+        .veg-list-scroll { max-height: 80vh; overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 12px; }
+        .veg-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; display: flex; justify-content: space-between; align-items: center; }
+        .info-pane .name { font-size: 15px; font-weight: bold; color: #2e7d32; text-transform: capitalize; }
+        .info-pane .details { font-size: 13px; color: #555; margin-top: 3px; }
+        .action-pane { display: flex; align-items: center; gap: 8px; }
+        .qty-input { width: 70px; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px; text-align: center; }
+        .unit-dropdown { padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px; background: white; cursor: pointer; }
+        .add-btn { background: #2e7d32; color: white; border: none; padding: 7px 12px; border-radius: 4px; font-size: 13px; font-weight: bold; cursor: pointer; }
+        .add-btn:hover { background: #1b5e20; }
+
+        /* Right Side: Invoice Billing System */
+        .bill-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
+        .bill-table th, .bill-table td { border-bottom: 1px solid #e2e8f0; padding: 10px 8px; text-align: left; }
+        .bill-table th { background-color: #f1f8e9; color: #2e7d32; font-weight: bold; }
+        .bill-table td.num { text-align: right; }
+        .total-row { font-size: 16px; font-weight: bold; color: #1b5e20; background: #f1f8e9; }
+        .remove-btn { color: #d32f2f; background: none; border: none; cursor: pointer; font-weight: bold; }
+        .checkout-btn { width: 100%; background: #1b5e20; color: white; border: none; padding: 12px; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        .empty-bill { text-align: center; color: #888; padding: 30px; font-style: italic; }
     </style>
 </head>
 <body>
 
-    <!-- 🔒 1. Admin Login Box -->
-    <div class="login-box" id="loginBox">
-        <h2>Admin Login 🔐</h2>
-        <input type="text" id="adminUser" placeholder="Username">
-        <input type="password" id="adminPass" placeholder="Password">
-        <button onclick="checkAdminLogin()">Login</button>
-        <p class="error-msg" id="errorMsg">తప్పుడు యూజర్‌నేమ్ లేదా పాస్‌వర్డ్!</p>
-    </div>
-
-    <!-- 📊 2. Master Dashboard (Single Table) -->
-    <div id="adminContent">
-        <button class="logout-btn" onclick="adminLogout()">Logout</button>
-        <h1>Admin Master Dashboard 📊</h1>
-
-        <div class="container">
-            <h2>All Market Transactions & Users (మొత్తం డేటా ఒకే పట్టికలో)</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>S.No</th>
-                        <th>User Name (పేరు)</th>
-                        <th>Mobile Number</th>
-                        <th>Role (బాధ్యత)</th>
-                        <th>Wallet Balance</th>
-                        <th>Activity & SMS Bill Details (కూరగాయలు / ధర / ఆర్డర్ వివరాలు)</th>
-                    </tr>
-                </thead>
-                <tbody id="masterTableBody">
-                    <!-- Data here -->
-                </tbody>
-            </table>
+<div class="market-layout">
+    
+    <!-- LEFT PANEL: VEGETABLE MARKET SELECTION -->
+    <div class="panel">
+        <h2>🥦 Available Market Vegetables (Select up to 10)</h2>
+        <div class="veg-list-scroll" id="vegetableMarketContainer">
+            <!-- 10 Vegetable Items will generate automatically here via javascript instantiation logic -->
         </div>
     </div>
 
-    <script>
-        // 🔑 1. లాగిన్ వివరాలు మీ పేరుతో మార్చబడ్డాయి (Username: shalini, Password: shalini123)
-        const CORRECT_USER = "shalini";
-        const CORRECT_PASS = "shalini123";
+    <!-- RIGHT PANEL: CENTRAL SINGLE INVOICE BILL -->
+    <div class="panel">
+        <h2>🧾 Single Order Bill Summary</h2>
+        <table class="bill-table">
+            <thead>
+                <tr>
+                    <th>Vegetable</th>
+                    <th>Qty ordered</th>
+                    <th style="text-align: right;">Cost (₹)</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="billItemsBody">
+                <!-- Cart rows append dynamically here -->
+            </tbody>
+        </table>
+        <div id="emptyBillMessage" class="empty-bill">Your bill statement is empty. Choose quantities on the left to add items!</div>
+        
+        <button class="checkout-btn" onclick="finalizeBillReceipt()">💳 Generate & Pay Final Invoice</button>
+    </div>
 
-        function checkAdminLogin() {
-            var inputUser = document.getElementById('adminUser').value.trim();
-            var inputPass = document.getElementById('adminPass').value.trim();
-            var errorMsg = document.getElementById('errorMsg');
+</div>
 
-            if (inputUser === CORRECT_USER && inputPass === CORRECT_PASS) {
-                document.getElementById('loginBox').style.display = 'none';
-                document.getElementById('adminContent').style.display = 'block';
-                document.body.style.justifyContent = 'flex-start';
-                loadSingleTableData();
-            } else {
-                errorMsg.style.display = 'block';
-            }
+<script>
+    // 1. Data Store containing the list of 10 market vegetables with standard local market stock metrics
+    const marketProducts = [
+        { id: 1, name: "Tomatoes", pricePerKg: 25, defaultQty: 500, defaultUnit: "Grams", icon: "🍅" },
+        { id: 2, name: "Potatoes", pricePerKg: 49, defaultQty: 250, defaultUnit: "Grams", icon: "🥔" },
+        { id: 3, name: "Carrot", pricePerKg: 20, defaultQty: 500, defaultUnit: "Grams", icon: "🥕" },
+        { id: 4, name: "Onions", pricePerKg: 35, defaultQty: 1, defaultUnit: "KG", icon: "🧅" },
+        { id: 5, name: "Cabbage", pricePerKg: 30, defaultQty: 1, defaultUnit: "KG", icon: "🥬" },
+        { id: 6, name: "Green Chillies", pricePerKg: 40, defaultQty: 100, defaultUnit: "Grams", icon: "🌶️" },
+        { id: 7, name: "Brinjal", pricePerKg: 35, defaultQty: 500, defaultUnit: "Grams", icon: "🍆" },
+        { id: 8, name: "Cucumber", pricePerKg: 30, defaultQty: 500, defaultUnit: "Grams", icon: "🥒" },
+        { id: 9, name: "Lady Finger (Okra)", pricePerKg: 45, defaultQty: 250, defaultUnit: "Grams", icon: "🌱" },
+        { id: 10, name: "Capsicum", pricePerKg: 60, defaultQty: 250, defaultUnit: "Grams", icon: "🫑" }
+    ];
+
+    // Global Active Bill Basket State Object array
+    let singleBillBasket = [];
+
+    // 2. Loop & paint the 10 vegetable cards onto the layout view screen
+    function loadMarketView() {
+        const container = document.getElementById('vegetableMarketContainer');
+        container.innerHTML = "";
+
+        marketProducts.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'veg-card';
+            card.innerHTML = `
+                <div class="info-pane">
+                    <div class="name">${item.icon} ${item.name}</div>
+                    <div class="details">Price: <strong>₹${item.pricePerKg} / KG</strong> | Farmer: shalini</div>
+                </div>
+                <div class="action-pane">
+                    <input type="number" class="qty-input" value="${item.defaultQty}" min="1" id="input-qty-${item.id}">
+                    <select class="unit-dropdown" id="input-unit-${item.id}">
+                        <option value="Grams" ${item.defaultUnit === "Grams" ? "selected" : ""}>Grams</option>
+                        <option value="KG" ${item.defaultUnit === "KG" ? "selected" : ""}>KG</option>
+                    </select>
+                    <button class="add-btn" onclick="addItemToBill(${item.id})">Add</button>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    // 3. Logic layer to inject a vegetable row entry calculation into the current active summary bill
+    function addItemToBill(productId) {
+        const targetProduct = marketProducts.find(p => p.id === productId);
+        const quantityInputVal = parseFloat(document.getElementById(`input-qty-${productId}`).value);
+        const unitSelectedVal = document.getElementById(`input-unit-${productId}`).value;
+
+        if (isNaN(quantityInputVal) || quantityInputVal <= 0) {
+            alert("Please key in a valid purchase quantity number value!");
+            return;
         }
 
-        function adminLogout() {
-            document.getElementById('loginBox').style.display = 'block';
-            document.getElementById('adminContent').style.display = 'none';
-            document.body.style.justifyContent = 'center';
-            document.getElementById('adminUser').value = '';
-            document.getElementById('adminPass').value = '';
-            document.getElementById('errorMsg').style.display = 'none';
+        // Standard scaling adjustment algorithm factors mapping out weight matrices
+        let calculatedWeightInKg = quantityInputVal;
+        if (unitSelectedVal === "Grams") {
+            calculatedWeightInKg = quantityInputVal / 1000;
         }
 
-        // 🔄 లూప్స్ ఉపయోగించి మొత్తం డేటాని ఒకే టేబుల్‌లోకి తీసుకురావడం
-        function loadSingleTableData() {
-            var tableBody = document.getElementById('masterTableBody');
-            tableBody.innerHTML = ''; 
-            var serialNumber = 1;
+        const exactCalculatedRowCost = calculatedWeightInKg * targetProduct.pricePerKg;
 
-            // 1. లోకల్ స్టోరేజ్ నుండి యూజర్ల లిస్ట్ లూప్ చేయడం
-            var usersList = JSON.parse(localStorage.getItem('veg_market_users')) || [];
-            for (var i = 0; i < usersList.length; i++) {
-                var roleClass = usersList[i].role === 'FARMER' ? 'badge-farmer' : 'badge-customer';
-                
-                var row = '<tr>' +
-                    '<td>' + (serialNumber++) + '</td>' +
-                    '<td><strong>' + (usersList[i].name || 'N/A') + '</strong></td>' +
-                    '<td>' + (usersList[i].mobile || 'N/A') + '</td>' +
-                    '<td><span class="' + roleClass + '">' + (usersList[i].role || 'USER') + '</span></td>' +
-                    '<td>₹' + (usersList[i].balance || '0.00') + '</td>' +
-                    '<td><em style="color: #666;">Registered profile</em></td>' +
-                '</tr>';
-                tableBody.innerHTML += row;
-            }
-
-            // 2. లోకల్ స్టోరేజ్ నుండి కూరగాయల లిస్ట్ లూప్ చేయడం
-            var vegList = JSON.parse(localStorage.getItem('veg_market_items')) || [];
-            for (var j = 0; j < vegList.length; j++) {
-                var rowVeg = '<tr>' +
-                    '<td>' + (serialNumber++) + '</td>' +
-                    '<td><strong>' + (vegList[j].farmer || 'N/A') + '</strong></td>' +
-                    '<td>--</td>' +
-                    '<td><span class="badge-farmer">FARMER STOCK</span></td>' +
-                    '<td>--</td>' +
-                    '<td>Added: <strong>' + (vegList[j].name || 'N/A') + '</strong> (' + (vegList[j].quantity || '0') + ' KG) @ ₹' + (vegList[j].price || '0') + '/kg</td>' +
-                '</tr>';
-                tableBody.innerHTML += rowVeg;
-            }
-
-            // 3. 🛒 కస్టమర్ కార్ట్ ఆర్డర్ మరియు లైవ్ SMS బిల్లు ట్రాకింగ్ వివరాలను లూప్ చేయడం
-            var orderStatus = localStorage.getItem('current_order_status');
-            if (orderStatus && orderStatus !== 'Empty') {
-                var lastCode = localStorage.getItem('last_generated_code') || 'FF-PEND-1122';
-                var vegName = localStorage.getItem('ordered_vegetable') || 'Fresh Tomatoes';
-                var vegQty = localStorage.getItem('ordered_quantity') || '2';
-                var vegPrice = localStorage.getItem('ordered_price') || '30';
-                var totalAmount = vegQty * vegPrice;
-                var acceptedTime = localStorage.getItem('order_accepted_time') || 'Waiting...';
-                
-                var statusBadge = orderStatus === 'Pending' ? 'badge-pending' : 'badge-accepted';
-                var activityText = orderStatus === 'Pending' ? 
-                    'Ordered: <strong>' + vegName + '</strong> (' + vegQty + ' KG) - Total: ₹' + totalAmount + '.00 | Status: ⏳ Pending Farmer Acceptance' :
-                    'Ordered: <strong>' + vegName + '</strong> (' + vegQty + ' KG) - Total: ₹' + totalAmount + '.00 | 📬 <strong>SMS Bill Dispatched</strong> at ' + acceptedTime;
-
-                var rowOrder = '<tr>' +
-                    '<td>' + (serialNumber++) + '</td>' +
-                    '<td><strong>' + (localStorage.getItem('customer_name') || 'shalini') + '</strong></td>' +
-                    '<td>--</td>' +
-                    '<td><span class="' + statusBadge + '">CART ORDER (' + orderStatus.toUpperCase() + ')</span></td>' +
-                    '<td>--</td>' +
-                    '<td>Code: <strong>' + lastCode + '</strong> | ' + activityText + '</td>' +
-                '</tr>';
-                tableBody.innerHTML += rowOrder;
-            }
+        // Check if item is already added to bill; if so, update it instead of adding a double row entry
+        const existingIndex = singleBillBasket.findIndex(item => item.id === productId);
+        if (existingIndex > -1) {
+            singleBillBasket[existingIndex] = {
+                ...singleBillBasket[existingIndex],
+                quantity: quantityInputVal,
+                unit: unitSelectedVal,
+                totalCost: exactCalculatedRowCost
+            };
+        } else {
+            singleBillBasket.push({
+                id: targetProduct.id,
+                name: targetProduct.name,
+                quantity: quantityInputVal,
+                unit: unitSelectedVal,
+                totalCost: exactCalculatedRowCost
+            });
         }
-    </script>
-</body>
-</html>
+
+        renderBillInvoice();
+    }
+
+    // 4. Utility logic to clear out any accidental or misconfigured rows out of the active billing loop
+    function removeBillItem(id) {
+        singleBillBasket = singleBillBasket.filter(item => item.id !== id);
+        renderBillInvoice();
+    }
+
+    // 5. Interface builder logic mapping calculation totals straight into customer layout
+    function renderBillInvoice() {
+        const tbody = document.getElementById('billItemsBody');
+        const emptyMsg = document.getElementById('emptyBillMessage');
+        tbody.innerHTML = "";
+        
+        if (singleBillBasket.length === 0) {
+            emptyMsg.style.display = "block";
+            return;
+        }
+        emptyMsg.style.display = "none";
+
+        let aggregatedInvoiceGrandTotal = 0;
+
+        singleBillBasket.forEach(item => {
+            aggregatedInvoiceGrandTotal += item.totalCost;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><strong>${item.name}</strong></td>
+                <td>${item.quantity} ${item.unit}</td>
+                <td class="num">₹${item.totalCost.toFixed(2)}</td>
+                <td><button class="remove-btn" onclick="removeBillItem(${item.id})">❌</button></td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        // Inject the final computed bill total summary row calculation at the bottom
+        const totalRow = document.createElement('tr');
+        totalRow.className = 'total-row';
+        totalRow.innerHTML = `
+            <td colspan="2">Grand Total Bill:</td>
