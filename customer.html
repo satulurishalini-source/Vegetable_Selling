@@ -2,136 +2,140 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FreshFarm - Customer Dashboard</title>
+    <title>Vegetable Market Checkout</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fdf9; margin: 0; padding: 20px; }
-        .container { max-width: 600px; margin: 30px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 5px solid #28a745; }
-        h2 { color: #1e5628; margin-top: 0; text-align: center; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: bold; color: #333; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
-        .weight-group { display: flex; gap: 10px; }
-        .weight-group input { flex: 2; }
-        .weight-group select { flex: 1; }
-        .cart-summary { background: #eef9f0; padding: 15px; border-radius: 6px; margin: 20px 0; border: 1px dashed #28a745; }
-        .total-price { font-size: 18px; font-weight: bold; color: #28a745; text-align: right; }
-        .order-btn { width: 100%; background-color: #28a745; color: white; padding: 14px; font-size: 16px; border: none; cursor: pointer; border-radius: 6px; font-weight: bold; transition: background 0.2s; }
-        .order-btn:hover { background-color: #1e5628; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fcfcfc;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .header {
+            color: #2e7d32;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .product-card {
+            border-bottom: 1px solid #eeeeee;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+        .product-title {
+            color: #2e7d32;
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        .product-info {
+            font-size: 14px;
+            color: #444444;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .quantity-field {
+            width: 70px;
+            padding: 6px;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .unit-dropdown {
+            padding: 6px;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+            background-color: #ffffff;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .btn-add-cart {
+            background-color: #2e7d32;
+            color: #ffffff;
+            border: none;
+            padding: 7px 15px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-add-cart:hover {
+            background-color: #1b5e20;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>🛒 Customer Shopping Cart (కార్ట్)</h2>
-    
-    <!-- Customer Details Form -->
-    <div class="form-group">
-        <label>Customer Name (మీ పేరు):</label>
-        <input type="text" id="customerName" value="Suresh Babu" placeholder="Enter your name">
-    </div>
-    
-    <div class="form-group">
-        <label>Mobile Number (మొబైల్ సంఖ్య):</label>
-        <input type="text" id="customerPhone" value="8123456789" placeholder="Enter 10-digit number">
-    </div>
+    <div class="header">Available Market Vegetables</div>
 
-    <!-- Vegetables Selection List -->
-    <div class="form-group">
-        <label>Select Vegetable (కూరగాయలు ఎంచుకోండి):</label>
-        <select id="vegetableSelect" onchange="updateTotalBill()">
-            <option value="Tomato" data-price="40">Tomato (టమోటా) - ₹40/KG</option>
-            <option value="Potato" data-price="35">Potato (బంగాళాదుంప) - ₹35/KG</option>
-            <option value="Cabbage" data-price="30">Cabbage (క్యాబేజీ) - ₹30/KG</option>
-            <option value="Chilly" data-price="50">Chilly (పచ్చిమిర్చి) - ₹50/KG</option>
-        </select>
-    </div>
-
-    <!-- Weight & Unit Section (Grams / KG Option) -->
-    <div class="form-group">
-        <label>Quantity / Weight (పరిమాణం):</label>
-        <div class="weight-group">
-            <input type="number" id="vegQuantity" value="500" min="1" oninput="updateTotalBill()">
-            <select id="weightUnit" onchange="updateTotalBill()">
-                <option value="g">Grams (గ్రాములు)</option>
-                <option value="kg">KG (కిలోలు)</option>
+    <!-- Tomatoes Card -->
+    <div class="product-card" id="item-tomatoes">
+        <div class="product-title">🥦 tomatoes</div>
+        <div class="product-info">
+            Price: ₹<span class="base-price">25</span> / KG<br>
+            Stock: 1 KG<br>
+            Farmer: shalini
+        </div>
+        <div class="controls">
+            <input type="number" class="quantity-field" value="500" min="1">
+            <select class="unit-dropdown">
+                <option value="Grams">Grams</option>
+                <option value="KG">KG</option>
             </select>
+            <button class="btn-add-cart" onclick="addToCart('item-tomatoes')">Add to Cart</button>
         </div>
     </div>
 
-    <!-- Cart Summary Display -->
-    <div class="cart-summary">
-        <p style="margin: 0 0 10px 0; font-weight: bold; color: #555;">Selected Items:</p>
-        <div class="total-price">Total Bill: ₹<span id="cartTotal">20</span></div>
+    <!-- Potatoes Card -->
+    <div class="product-card" id="item-potatoes">
+        <div class="product-title">🥦 potatoes</div>
+        <div class="product-info">
+            Price: ₹<span class="base-price">49</span> / KG<br>
+            Stock: 60 KG<br>
+            Farmer: shalini
+        </div>
+        <div class="controls">
+            <input type="number" class="quantity-field" value="250" min="1">
+            <select class="unit-dropdown">
+                <option value="Grams">Grams</option>
+                <option value="KG">KG</option>
+            </select>
+            <button class="btn-add-cart" onclick="addToCart('item-potatoes')">Add to Cart</button>
+        </div>
     </div>
-
-    <!-- Place Order Option Button -->
-    <button class="order-btn" onclick="sendOrderToFarmer()">
-        Place Order to Farmer (రైతుకు ఆర్డర్ పంపించు 🛒)
-    </button>
 </div>
 
 <script>
-// గ్రాములు మరియు కిలోల బట్టి కరెక్ట్ బిల్లు లెక్కించే ఫంక్షన్
-function updateTotalBill() {
-    let select = document.getElementById('vegetableSelect');
-    let selectedOption = select.options[select.selectedIndex];
-    let pricePerKg = parseFloat(selectedOption.getAttribute('data-price'));
-    
-    let qty = parseFloat(document.getElementById('vegQuantity').value) || 0;
-    let unit = document.getElementById('weightUnit').value;
+function addToCart(productId) {
+    const card = document.getElementById(productId);
+    const name = card.querySelector('.product-title').innerText;
+    const pricePerKg = parseFloat(card.querySelector('.base-price').innerText);
+    const quantity = parseFloat(card.querySelector('.quantity-field').value);
+    const unit = card.querySelector('.unit-dropdown').value;
 
-    let total = 0;
-    if (unit === 'g') {
-        // గ్రాములలో ఉంటే (మొత్తం గ్రాములు / 1000) చేసి కేజీ ధరతో గుణిస్తుంది
-        total = (qty / 1000) * pricePerKg;
+    let finalPrice = 0;
+
+    if (unit === "Grams") {
+        // Divide by 1000 to convert grams input to its KG price equivalent
+        finalPrice = (quantity / 1000) * pricePerKg;
     } else {
-        // కేజీలలో ఉంటే డైరెక్ట్‌గా గుణిస్తుంది
-        total = qty * pricePerKg;
+        finalPrice = quantity * pricePerKg;
     }
 
-    // కేవలం రెండు దశాంశాల (2 decimal places) వరకు మాత్రమే ధర చూపిస్తుంది
-    document.getElementById('cartTotal').innerText = total.toFixed(2);
+    alert(`Item: ${name}\nQuantity: ${quantity} ${unit}\nTotal Calculated Price: ₹${finalPrice.toFixed(2)}`);
 }
-
-// ఆర్డర్ డేటాను Farmer పేజీకి పంపించే మెయిన్ ఫంక్షన్
-function sendOrderToFarmer() {
-    let name = document.getElementById('customerName').value.trim();
-    let phone = document.getElementById('customerPhone').value.trim();
-    
-    let select = document.getElementById('vegetableSelect');
-    let vegName = select.options[select.selectedIndex].value;
-    let qty = document.getElementById('vegQuantity').value;
-    let unit = document.getElementById('weightUnit').value;
-    let totalBill = document.getElementById('cartTotal').innerText;
-
-    if (!name || !phone || qty <= 0) {
-        alert("Please fill all details correctly!");
-        return;
-    }
-
-    // 1. లోకల్ మెమొరీ నుండి పాత ఆర్డర్ల లిస్ట్ తేవడం
-    let orderQueue = JSON.parse(localStorage.getItem('farmerOrderQueue')) || [];
-
-    // 2. కొత్త ఆర్డర్ వివరాలు క్రియేట్ చేయడం
-    let newOrder = {
-        orderId: 'ORD-' + Date.now(),
-        customerName: name,
-        customerPhone: phone,
-        items: vegName + " (" + qty + " " + unit.toUpperCase() + ")",
-        billAmount: totalBill,
-        status: 'Pending'
-    };
-
-    // 3. లోకల్ స్టోరేజ్ లో సేవ్ చేయడం
-    orderQueue.push(newOrder);
-    localStorage.setItem('farmerOrderQueue', JSON.stringify(orderQueue));
-
-    alert("Order Placed Successfully! (రైతుకు ఆర్డర్ విజయవంతంగా పంపబడింది)");
-}
-
-// పేజీ మొదట లోడ్ అయినప్పుడు బిల్లు అప్డేట్ అవ్వడానికి
-document.addEventListener("DOMContentLoaded", updateTotalBill);
 </script>
 
 </body>
