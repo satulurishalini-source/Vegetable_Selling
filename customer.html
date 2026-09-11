@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fresh Market - Customer Order & Single Bill System</title>
+    <title>Customer Fresh Market Portal</title>
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #f7faf7; margin: 0; padding: 20px; color: #2d3748; }
@@ -14,9 +14,9 @@
         .panel { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
         h2 { margin-top: 0; font-size: 18px; color: #1b5e20; border-bottom: 2px solid #cbd5e0; padding-bottom: 8px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
 
-        /* Left Column: 10 Vegetables List */
+        /* Vegetable List Layout */
         .veg-list-scroll { max-height: 80vh; overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 12px; }
-        .veg-card { background: #ffffff; border: 1px solid #edf2f7; border-radius: 8px; padding: 14px; display: flex; justify-content: space-between; align-items: center; transition: border-color 0.2s; }
+        .veg-card { background: #ffffff; border: 1px solid #edf2f7; border-radius: 8px; padding: 14px; display: flex; justify-content: space-between; align-items: center; }
         .veg-card:hover { border-color: #c8e6c9; }
         .info-pane .name { font-size: 16px; font-weight: bold; color: #2e7d32; }
         .info-pane .details { font-size: 13px; color: #4a5568; margin-top: 4px; }
@@ -26,15 +26,14 @@
         .add-btn { background: #2e7d32; color: white; border: none; padding: 7px 14px; border-radius: 4px; font-size: 13px; font-weight: bold; cursor: pointer; }
         .add-btn:hover { background: #1b5e20; }
 
-        /* Right Column: Order Bill Receipt Summary */
+        /* Invoice Summary Setup */
         .bill-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
         .bill-table th, .bill-table td { border-bottom: 1px solid #e2e8f0; padding: 12px 8px; text-align: left; }
         .bill-table th { background-color: #f1f8e9; color: #2e7d32; font-weight: bold; }
         .bill-table td.num { text-align: right; }
         .total-row { font-size: 16px; font-weight: bold; color: #1b5e20; background: #e8f5e9; }
         .remove-btn { color: #e53e3e; background: none; border: none; cursor: pointer; font-weight: bold; font-size: 14px; }
-        .checkout-btn { width: 100%; background: #1b5e20; color: white; border: none; padding: 12px; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: background 0.2s; }
-        .checkout-btn:hover { background: #0d3c0e; }
+        .checkout-btn { width: 100%; background: #1b5e20; color: white; border: none; padding: 12px; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 20px; }
         .empty-bill { text-align: center; color: #718096; padding: 40px; font-style: italic; border: 2px dashed #e2e8f0; border-radius: 6px; }
     </style>
 </head>
@@ -42,15 +41,15 @@
 
 <div class="market-layout">
     
-    <!-- LEFT CONSOLE: CUSTOMER ITEM GRID MARKET SELECTION -->
+    <!-- LEFT SIDE: VEGETABLE MARKET DISPLAY SELECTION -->
     <div class="panel">
         <h2>🥦 Available Market Vegetables</h2>
         <div class="veg-list-scroll" id="customerMarketGrid">
-            <!-- JavaScript prints the 10 vegetable items directly right here -->
+            <!-- JavaScript prints your 10 vegetable items directly here -->
         </div>
     </div>
 
-    <!-- RIGHT CONSOLE: THE SINGLE CONSOLIDATED CUSTOMER BILL -->
+    <!-- RIGHT SIDE: THE SINGLE CONSOLIDATED CUSTOMER BILL -->
     <div class="panel">
         <h2>🧾 Single Order Bill Summary</h2>
         <div id="billContainer">
@@ -64,10 +63,10 @@
                     </tr>
                 </thead>
                 <tbody id="billItemsBody">
-                    <!-- Added rows stream into here dynamically -->
+                    <!-- Ordered rows stream into here dynamically -->
                 </tbody>
             </table>
-            <div id="emptyBillMessage" class="empty-bill">Your bill is empty. Adjust quantities on the left side and click "Add to Bill" to calculate costs!</div>
+            <div id="emptyBillMessage" class="empty-bill">Your bill is empty. Choose quantities on the left to add items!</div>
         </div>
         
         <button class="checkout-btn" onclick="checkoutSingleBill()">🛒 Place Order & Generate Bill Receipt</button>
@@ -75,8 +74,9 @@
 
 </div>
 
+<!-- CRITICAL FIX: Script placed at the bottom so elements are fully loaded first -->
 <script>
-    // 1. Array containing exactly 10 vegetables matching your previous catalog setup
+    // The 10 explicit vegetables database setup mapping
     const customerProductsList = [
         { id: 1, name: "Tomatoes", pricePerKg: 25, defaultQty: 500, defaultUnit: "Grams", icon: "🍅", farmer: "shalini" },
         { id: 2, name: "Potatoes", pricePerKg: 49, defaultQty: 250, defaultUnit: "Grams", icon: "🥔", farmer: "shalini" },
@@ -90,13 +90,12 @@
         { id: 10, name: "Capsicum", pricePerKg: 60, defaultQty: 250, defaultUnit: "Grams", icon: "🫑", farmer: "shalini" }
     ];
 
-    // Local Customer Cart Basket Array Memory Cache
     let customerActiveBillItems = [];
 
-    // 2. Loop and generate the 10 customer vegetable blocks automatically on page startup
-    function initCustomerMarket() {
+    // FIXED: Uses DOMContentLoaded to guarantee execution as soon as HTML parses
+    document.addEventListener("DOMContentLoaded", function() {
         const grid = document.getElementById('customerMarketGrid');
-        grid.innerHTML = "";
+        grid.innerHTML = ""; // Clear loader references
 
         customerProductsList.forEach(item => {
             const rowCard = document.createElement('div');
@@ -117,9 +116,9 @@
             `;
             grid.appendChild(rowCard);
         });
-    }
+    });
 
-    // 3. Mathematical unit converter processor logic
+    // Calculates and processes gram-to-KG metric scales
     function addVegItemToBill(productId) {
         const product = customerProductsList.find(p => p.id === productId);
         const qtyVal = parseFloat(document.getElementById(`cust-qty-${productId}`).value);
@@ -130,7 +129,6 @@
             return;
         }
 
-        // Standard scaling adjustment algorithm factors mapping out weight matrices
         let massInKg = qtyVal;
         if (unitVal === "Grams") {
             massInKg = qtyVal / 1000;
@@ -138,7 +136,6 @@
 
         const mathematicallyCalculatedCost = massInKg * product.pricePerKg;
 
-        // If item exists in the invoice already, update its entries instead of appending duplicates
         const matchesIndex = customerActiveBillItems.findIndex(i => i.id === productId);
         if (matchesIndex > -1) {
             customerActiveBillItems[matchesIndex] = {
@@ -161,13 +158,11 @@
         calculateAndRenderBillTable();
     }
 
-    // 4. Utility routine to drop specific line row items out of the running invoice computation
     function removeVegItemFromBill(id) {
         customerActiveBillItems = customerActiveBillItems.filter(item => item.id !== id);
         calculateAndRenderBillTable();
     }
 
-    // 5. Interface builder computing real-time item rows and appending Grand Total
     function calculateAndRenderBillTable() {
         const tbody = document.getElementById('billItemsBody');
         const emptyAlert = document.getElementById('emptyBillMessage');
@@ -187,3 +182,14 @@
         let singleInvoiceGrandTotal = 0;
 
         customerActiveBillItems.forEach(item => {
+            singleInvoiceGrandTotal += item.rowPrice;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><strong>${item.icon} ${item.name}</strong></td>
+                <td>${item.quantity} ${item.unit}</td>
+                <td class="num">₹${item.rowPrice.toFixed(2)}</td>
+                <td style="text-align:center;"><button class="remove-btn" onclick="removeVegItemFromBill(${item.id})">❌</button></td>
+            `;
+            tbody.appendChild(tr);
+        });
+
