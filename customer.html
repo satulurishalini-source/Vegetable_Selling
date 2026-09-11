@@ -11,10 +11,10 @@
         .market-layout { display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px; max-width: 1200px; margin: 0 auto; }
         @media (max-width: 900px) { .market-layout { grid-template-columns: 1fr; } }
 
-        .panel { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .panel { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 20px; }
         h2 { margin-top: 0; font-size: 18px; color: #1b5e20; border-bottom: 2px solid #cbd5e0; padding-bottom: 8px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
 
-        /* Highly Visible Vegetable Grid Cards Layout */
+        /* Vegetable List Cards Styling */
         .veg-list-scroll { max-height: 80vh; overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 15px; }
         .veg-card { background: #ffffff; border: 1px solid #edf2f7; border-radius: 10px; padding: 15px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         .veg-card:hover { border-color: #c8e6c9; }
@@ -27,27 +27,37 @@
         .qty-input { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; text-align: center; font-size: 14px; font-weight: 600; }
         .unit-dropdown { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; background: white; cursor: pointer; font-size: 14px; }
         
-        /* Dedicated, Highly Visible Add Button */
         .add-btn { width: 100%; background: #2e7d32; color: white; border: none; padding: 8px 12px; border-radius: 4px; font-size: 13px; font-weight: bold; cursor: pointer; text-align: center; white-space: nowrap; }
         .add-btn:hover { background: #1b5e20; }
 
-        /* Invoice Summary Setup */
+        /* Bill Table Summary Setup */
         .bill-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
         .bill-table th, .bill-table td { border-bottom: 1px solid #e2e8f0; padding: 12px 8px; text-align: left; }
         .bill-table th { background-color: #f1f8e9; color: #2e7d32; font-weight: bold; }
         .bill-table td.num { text-align: right; }
         .total-row { font-size: 16px; font-weight: bold; color: #1b5e20; background: #e8f5e9; }
         .remove-btn { color: #e53e3e; background: none; border: none; cursor: pointer; font-weight: bold; font-size: 14px; }
+        
         .checkout-btn { width: 100%; background: #1b5e20; color: white; border: none; padding: 12px; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 20px; }
         .checkout-btn:hover { background: #0d3c0e; }
         .empty-bill { text-align: center; color: #718096; padding: 40px; font-style: italic; border: 2px dashed #e2e8f0; border-radius: 6px; }
+
+        /* New Full-Width Invoice Styles */
+        .invoice-box { max-width: 1200px; margin: 20px auto 0 auto; display: none; background: #fff; border: 2px dashed #2e7d32; border-radius: 10px; padding: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .invoice-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #2e7d32; padding-bottom: 10px; margin-bottom: 20px; }
+        .invoice-title { font-size: 24px; font-weight: bold; color: #1b5e20; }
+        .invoice-meta { text-align: right; font-size: 14px; color: #666; }
+        .invoice-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .invoice-table th, .invoice-table td { padding: 12px; border-bottom: 1px solid #edf2f7; text-align: left; }
+        .invoice-table th { background-color: #f7faf7; color: #2e7d32; font-weight: bold; }
+        .invoice-grand-total { font-size: 18px; font-weight: bold; color: #1b5e20; text-align: right; padding: 15px; background: #e8f5e9; border-radius: 6px; }
     </style>
 </head>
 <body>
 
 <div class="market-layout">
     
-    <!-- LEFT SIDE: 10 VEGETABLES (ALWAYS VISIBLE WITH INDIVIDUAL ORDER BUTTONS) -->
+    <!-- LEFT PANEL: 10 VEGETABLES GRID VIEW SELECTION -->
     <div class="panel">
         <h2>🥦 Available Market Vegetables</h2>
         <div class="veg-list-scroll">
@@ -156,25 +166,3 @@
                         <option value="Grams">Grams</option>
                         <option value="KG">KG</option>
                     </select>
-                    <button class="add-btn" onclick="addVegItemToBill(6, 'Green Chillies', '🌶️', 40)">🛒 Add to Bill</button>
-                </div>
-            </div>
-
-            <!-- 7. Brinjal -->
-            <div class="veg-card">
-                <div class="card-row-top">
-                    <div class="info-pane">
-                        <div class="name">🍆 Brinjal</div>
-                        <div class="details">Price: <strong>₹35 / KG</strong> | Farmer: shalini</div>
-                    </div>
-                </div>
-                <div class="card-row-bottom">
-                    <input type="number" class="qty-input" value="1" min="1" id="cust-qty-7">
-                    <select class="unit-dropdown" id="cust-unit-7">
-                        <option value="KG">KG</option>
-                        <option value="Grams">Grams</option>
-                    </select>
-                    <button class="add-btn" onclick="addVegItemToBill(7, 'Brinjal', '🍆', 35)">🛒 Add to Bill</button>
-                </div>
-            </div>
-
