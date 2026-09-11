@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Fresh Market Portal</title>
+    <title>Fresh Market Customer Order Portal</title>
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #f7faf7; margin: 0; padding: 20px; color: #2d3748; }
@@ -14,10 +14,9 @@
         .panel { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
         h2 { margin-top: 0; font-size: 18px; color: #1b5e20; border-bottom: 2px solid #cbd5e0; padding-bottom: 8px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
 
-        /* Vegetable List Layout */
+        /* Hardcoded Vegetable List Styling */
         .veg-list-scroll { max-height: 80vh; overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 12px; }
         .veg-card { background: #ffffff; border: 1px solid #edf2f7; border-radius: 8px; padding: 14px; display: flex; justify-content: space-between; align-items: center; }
-        .veg-card:hover { border-color: #c8e6c9; }
         .info-pane .name { font-size: 16px; font-weight: bold; color: #2e7d32; }
         .info-pane .details { font-size: 13px; color: #4a5568; margin-top: 4px; }
         .action-pane { display: flex; align-items: center; gap: 8px; }
@@ -41,155 +40,143 @@
 
 <div class="market-layout">
     
-    <!-- LEFT SIDE: VEGETABLE MARKET DISPLAY SELECTION -->
+    <!-- LEFT SIDE: 10 HARDCODED VEGETABLES (ALWAYS VISIBLE) -->
     <div class="panel">
         <h2>🥦 Available Market Vegetables</h2>
-        <div class="veg-list-scroll" id="customerMarketGrid">
-            <!-- JavaScript prints your 10 vegetable items directly here -->
-        </div>
-    </div>
-
-    <!-- RIGHT SIDE: THE SINGLE CONSOLIDATED CUSTOMER BILL -->
-    <div class="panel">
-        <h2>🧾 Single Order Bill Summary</h2>
-        <div id="billContainer">
-            <table class="bill-table" id="billTable" style="display: none;">
-                <thead>
-                    <tr>
-                        <th>Vegetable Item</th>
-                        <th>Selected Qty</th>
-                        <th style="text-align: right;">Cost (₹)</th>
-                        <th>Cancel</th>
-                    </tr>
-                </thead>
-                <tbody id="billItemsBody">
-                    <!-- Ordered rows stream into here dynamically -->
-                </tbody>
-            </table>
-            <div id="emptyBillMessage" class="empty-bill">Your bill is empty. Choose quantities on the left to add items!</div>
-        </div>
-        
-        <button class="checkout-btn" onclick="checkoutSingleBill()">🛒 Place Order & Generate Bill Receipt</button>
-    </div>
-
-</div>
-
-<!-- CRITICAL FIX: Script placed at the bottom so elements are fully loaded first -->
-<script>
-    // The 10 explicit vegetables database setup mapping
-    const customerProductsList = [
-        { id: 1, name: "Tomatoes", pricePerKg: 25, defaultQty: 500, defaultUnit: "Grams", icon: "🍅", farmer: "shalini" },
-        { id: 2, name: "Potatoes", pricePerKg: 49, defaultQty: 250, defaultUnit: "Grams", icon: "🥔", farmer: "shalini" },
-        { id: 3, name: "Carrot", pricePerKg: 20, defaultQty: 500, defaultUnit: "Grams", icon: "🥕", farmer: "shalini" },
-        { id: 4, name: "Onions", pricePerKg: 35, defaultQty: 1, defaultUnit: "KG", icon: "🧅", farmer: "shalini" },
-        { id: 5, name: "Cabbage", pricePerKg: 30, defaultQty: 1, defaultUnit: "KG", icon: "🥬", farmer: "ramesh" },
-        { id: 6, name: "Green Chillies", pricePerKg: 40, defaultQty: 100, defaultUnit: "Grams", icon: "🌶️", farmer: "ramesh" },
-        { id: 7, name: "Brinjal", pricePerKg: 35, defaultQty: 500, defaultUnit: "Grams", icon: "🍆", farmer: "shalini" },
-        { id: 8, name: "Cucumber", pricePerKg: 30, defaultQty: 500, defaultUnit: "Grams", icon: "🥒", farmer: "kumar" },
-        { id: 9, name: "Lady Finger", pricePerKg: 45, defaultQty: 250, defaultUnit: "Grams", icon: "🌱", farmer: "kumar" },
-        { id: 10, name: "Capsicum", pricePerKg: 60, defaultQty: 250, defaultUnit: "Grams", icon: "🫑", farmer: "shalini" }
-    ];
-
-    let customerActiveBillItems = [];
-
-    // FIXED: Uses DOMContentLoaded to guarantee execution as soon as HTML parses
-    document.addEventListener("DOMContentLoaded", function() {
-        const grid = document.getElementById('customerMarketGrid');
-        grid.innerHTML = ""; // Clear loader references
-
-        customerProductsList.forEach(item => {
-            const rowCard = document.createElement('div');
-            rowCard.className = 'veg-card';
-            rowCard.innerHTML = `
+        <div class="veg-list-scroll">
+            
+            <!-- 1. Tomatoes -->
+            <div class="veg-card">
                 <div class="info-pane">
-                    <div class="name">${item.icon} ${item.name}</div>
-                    <div class="details">Price: <strong>₹${item.pricePerKg} / KG</strong> | Farmer: ${item.farmer}</div>
+                    <div class="name">🍅 Tomatoes</div>
+                    <div class="details">Price: <strong>₹25 / KG</strong> | Farmer: shalini</div>
                 </div>
                 <div class="action-pane">
-                    <input type="number" class="qty-input" value="${item.defaultQty}" min="1" id="cust-qty-${item.id}">
-                    <select class="unit-dropdown" id="cust-unit-${item.id}">
-                        <option value="Grams" ${item.defaultUnit === "Grams" ? "selected" : ""}>Grams</option>
-                        <option value="KG" ${item.defaultUnit === "KG" ? "selected" : ""}>KG</option>
+                    <input type="number" class="qty-input" value="500" min="1" id="cust-qty-1">
+                    <select class="unit-dropdown" id="cust-unit-1">
+                        <option value="Grams">Grams</option>
+                        <option value="KG">KG</option>
                     </select>
-                    <button class="add-btn" onclick="addVegItemToBill(${item.id})">Add to Bill</button>
+                    <button class="add-btn" onclick="addVegItemToBill(1, 'Tomatoes', '🍅', 25)">Add to Bill</button>
                 </div>
-            `;
-            grid.appendChild(rowCard);
-        });
-    });
+            </div>
 
-    // Calculates and processes gram-to-KG metric scales
-    function addVegItemToBill(productId) {
-        const product = customerProductsList.find(p => p.id === productId);
-        const qtyVal = parseFloat(document.getElementById(`cust-qty-${productId}`).value);
-        const unitVal = document.getElementById(`cust-unit-${productId}`).value;
+            <!-- 2. Potatoes -->
+            <div class="veg-card">
+                <div class="info-pane">
+                    <div class="name">🥔 Potatoes</div>
+                    <div class="details">Price: <strong>₹49 / KG</strong> | Farmer: shalini</div>
+                </div>
+                <div class="action-pane">
+                    <input type="number" class="qty-input" value="250" min="1" id="cust-qty-2">
+                    <select class="unit-dropdown" id="cust-unit-2">
+                        <option value="Grams">Grams</option>
+                        <option value="KG">KG</option>
+                    </select>
+                    <button class="add-btn" onclick="addVegItemToBill(2, 'Potatoes', '🥔', 49)">Add to Bill</button>
+                </div>
+            </div>
 
-        if (isNaN(qtyVal) || qtyVal <= 0) {
-            alert("Please provide a valid quantity count.");
-            return;
-        }
+            <!-- 3. Carrot -->
+            <div class="veg-card">
+                <div class="info-pane">
+                    <div class="name">🥕 Carrot</div>
+                    <div class="details">Price: <strong>₹20 / KG</strong> | Farmer: shalini</div>
+                </div>
+                <div class="action-pane">
+                    <input type="number" class="qty-input" value="500" min="1" id="cust-qty-3">
+                    <select class="unit-dropdown" id="cust-unit-3">
+                        <option value="Grams">Grams</option>
+                        <option value="KG">KG</option>
+                    </select>
+                    <button class="add-btn" onclick="addVegItemToBill(3, 'Carrot', '🥕', 20)">Add to Bill</button>
+                </div>
+            </div>
 
-        let massInKg = qtyVal;
-        if (unitVal === "Grams") {
-            massInKg = qtyVal / 1000;
-        }
+            <!-- 4. Onions -->
+            <div class="veg-card">
+                <div class="info-pane">
+                    <div class="name">🧅 Onions</div>
+                    <div class="details">Price: <strong>₹35 / KG</strong> | Farmer: shalini</div>
+                </div>
+                <div class="action-pane">
+                    <input type="number" class="qty-input" value="1" min="1" id="cust-qty-4">
+                    <select class="unit-dropdown" id="cust-unit-4">
+                        <option value="KG">KG</option>
+                        <option value="Grams">Grams</option>
+                    </select>
+                    <button class="add-btn" onclick="addVegItemToBill(4, 'Onions', '🧅', 35)">Add to Bill</button>
+                </div>
+            </div>
 
-        const mathematicallyCalculatedCost = massInKg * product.pricePerKg;
+            <!-- 5. Cabbage -->
+            <div class="veg-card">
+                <div class="info-pane">
+                    <div class="name">🥬 Cabbage</div>
+                    <div class="details">Price: <strong>₹30 / KG</strong> | Farmer: ramesh</div>
+                </div>
+                <div class="action-pane">
+                    <input type="number" class="qty-input" value="1" min="1" id="cust-qty-5">
+                    <select class="unit-dropdown" id="cust-unit-5">
+                        <option value="KG">KG</option>
+                        <option value="Grams">Grams</option>
+                    </select>
+                    <button class="add-btn" onclick="addVegItemToBill(5, 'Cabbage', '🥬', 30)">Add to Bill</button>
+                </div>
+            </div>
 
-        const matchesIndex = customerActiveBillItems.findIndex(i => i.id === productId);
-        if (matchesIndex > -1) {
-            customerActiveBillItems[matchesIndex] = {
-                ...customerActiveBillItems[matchesIndex],
-                quantity: qtyVal,
-                unit: unitVal,
-                rowPrice: mathematicallyCalculatedCost
-            };
-        } else {
-            customerActiveBillItems.push({
-                id: product.id,
-                name: product.name,
-                icon: product.icon,
-                quantity: qtyVal,
-                unit: unitVal,
-                rowPrice: mathematicallyCalculatedCost
-            });
-        }
+            <!-- 6. Green Chillies -->
+            <div class="veg-card">
+                <div class="info-pane">
+                    <div class="name">🌶️ Green Chillies</div>
+                    <div class="details">Price: <strong>₹40 / KG</strong> | Farmer: ramesh</div>
+                </div>
+                <div class="action-pane">
+                    <input type="number" class="qty-input" value="100" min="1" id="cust-qty-6">
+                    <select class="unit-dropdown" id="cust-unit-6">
+                        <option value="Grams">Grams</option>
+                        <option value="KG">KG</option>
+                    </select>
+                    <button class="add-btn" onclick="addVegItemToBill(6, 'Green Chillies', '🌶️', 40)">Add to Bill</button>
+                </div>
+            </div>
 
-        calculateAndRenderBillTable();
-    }
+            <!-- 7. Brinjal -->
+            <div class="veg-card">
+                <div class="info-pane">
+                    <div class="name">🍆 Brinjal</div>
+                    <div class="details">Price: <strong>₹35 / KG</strong> | Farmer: shalini</div>
+                </div>
+                <div class="action-pane">
+                    <input type="number" class="qty-input" value="500" min="1" id="cust-qty-7">
+                    <select class="unit-dropdown" id="cust-unit-7">
+                        <option value="Grams">Grams</option>
+                        <option value="KG">KG</option>
+                    </select>
+                    <button class="add-btn" onclick="addVegItemToBill(7, 'Brinjal', '🍆', 35)">Add to Bill</button>
+                </div>
+            </div>
 
-    function removeVegItemFromBill(id) {
-        customerActiveBillItems = customerActiveBillItems.filter(item => item.id !== id);
-        calculateAndRenderBillTable();
-    }
+            <!-- 8. Cucumber -->
+            <div class="veg-card">
+                <div class="info-pane">
+                    <div class="name">🥒 Cucumber</div>
+                    <div class="details">Price: <strong>₹30 / KG</strong> | Farmer: kumar</div>
+                </div>
+                <div class="action-pane">
+                    <input type="number" class="qty-input" value="500" min="1" id="cust-qty-8">
+                    <select class="unit-dropdown" id="cust-unit-8">
+                        <option value="Grams">Grams</option>
+                        <option value="KG">KG</option>
+                    </select>
+                    <button class="add-btn" onclick="addVegItemToBill(8, 'Cucumber', '🥒', 30)">Add to Bill</button>
+                </div>
+            </div>
 
-    function calculateAndRenderBillTable() {
-        const tbody = document.getElementById('billItemsBody');
-        const emptyAlert = document.getElementById('emptyBillMessage');
-        const billTable = document.getElementById('billTable');
-        
-        tbody.innerHTML = "";
-        
-        if (customerActiveBillItems.length === 0) {
-            emptyAlert.style.display = "block";
-            billTable.style.display = "none";
-            return;
-        }
-
-        emptyAlert.style.display = "none";
-        billTable.style.display = "table";
-
-        let singleInvoiceGrandTotal = 0;
-
-        customerActiveBillItems.forEach(item => {
-            singleInvoiceGrandTotal += item.rowPrice;
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td><strong>${item.icon} ${item.name}</strong></td>
-                <td>${item.quantity} ${item.unit}</td>
-                <td class="num">₹${item.rowPrice.toFixed(2)}</td>
-                <td style="text-align:center;"><button class="remove-btn" onclick="removeVegItemFromBill(${item.id})">❌</button></td>
-            `;
-            tbody.appendChild(tr);
-        });
-
+            <!-- 9. Lady Finger -->
+            <div class="veg-card">
+                <div class="info-pane">
+                    <div class="name">🌱 Lady Finger</div>
+                    <div class="details">Price: <strong>₹45 / KG</strong> | Farmer: kumar</div>
+                </div>
+                <div class="action-pane">
