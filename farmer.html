@@ -2,726 +2,646 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Dashboard - FreshFarm</title>
 
-<title>Customer Dashboard - FreshFarm</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
 
-<style>
+        .navbar {
+            background-color: #ffffff;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
 
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    background: #f4f4f4;
-}
+        .logo {
+            color: #2e7d32;
+            font-size: 24px;
+            font-weight: bold;
+        }
 
-.navbar {
-    background: #2e7d32;
-    color: white;
-    padding: 18px;
-    text-align: center;
-}
+        .logout-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
 
-.container {
-    width: 90%;
-    max-width: 1000px;
-    margin: 25px auto;
-}
+        .main-container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
 
-h2 {
-    color: #2e7d32;
-}
+        .welcome-text {
+            color: #2e7d32;
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
 
-.vegetables {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 15px;
-}
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
 
-.vegetable-card {
-    background: white;
-    padding: 18px;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-}
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
 
-.vegetable-card h3 {
-    margin-top: 0;
-}
+        .card h3 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 8px;
+        }
 
-.price {
-    font-weight: bold;
-    color: #2e7d32;
-}
+        .vegetable-box {
+            border: 1px solid #ddd;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 6px;
+            background-color: #fafafa;
+        }
 
-.quantity {
-    width: 90px;
-    padding: 8px;
-    margin: 8px 0;
-}
+        .vegetable-box h4 {
+            margin: 0 0 10px 0;
+            color: #2e7d32;
+        }
 
-.add-btn {
-    background: #4caf50;
-    color: white;
-    border: none;
-    padding: 9px 14px;
-    border-radius: 5px;
-    cursor: pointer;
-}
+        .form-group {
+            margin-bottom: 10px;
+        }
 
-.add-btn:hover {
-    background: #388e3c;
-}
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
 
-.cart {
-    background: white;
-    margin-top: 30px;
-    padding: 20px;
-    border-radius: 8px;
-}
+        .form-group input {
+            width: 95%;
+            padding: 9px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
 
-.cart-item {
-    background: #fafafa;
-    padding: 14px;
-    border-left: 5px solid #ff9800;
-    border-radius: 5px;
-    margin-top: 10px;
-}
+        .btn-submit {
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+        }
 
-.cart-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+        .btn-submit:hover {
+            background-color: #1b5e20;
+        }
 
-.remove-btn {
-    background: #f44336;
-    color: white;
-    border: none;
-    padding: 6px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-}
+        .order-alert {
+            background-color: #fff3e0;
+            border: 2px dashed #ff9800;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            text-align: center;
+        }
 
-.grand-total {
-    background: #e8f5e9;
-    border: 2px solid #4caf50;
-    padding: 15px;
-    border-radius: 6px;
-    margin-top: 15px;
-    font-size: 20px;
-    font-weight: bold;
-    color: #2e7d32;
-}
+        .btn-accept {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 15px;
+            margin-top: 10px;
+        }
 
-.place-order {
-    width: 100%;
-    margin-top: 15px;
-    padding: 14px;
-    background: #ff9800;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 18px;
-    cursor: pointer;
-}
-
-.place-order:hover {
-    background: #f57c00;
-}
-
-.empty {
-    color: #999;
-    font-style: italic;
-}
-
-</style>
+        @media (max-width: 700px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<!-- NAVBAR -->
-<div class="navbar">
-    <h1>🌱 FreshFarm</h1>
-    <p>Customer Dashboard</p>
-</div>
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <div class="logo">🥦 FreshFarm</div>
+        <button class="logout-btn" onclick="logoutUser()">Logout</button>
+    </div>
+
+    <div class="main-container">
+
+        <!-- WELCOME -->
+        <div class="welcome-text">
+            Welcome, <span id="farmerNameDisplay">shalini</span> (Farmer)
+        </div>
+
+        <div class="grid-container">
+
+            <!-- WALLET -->
+            <div class="card">
+                <h3>💰 Wallet Balance</h3>
+
+                <h2 id="farmerWalletBalance"
+                    style="color: #2e7d32; font-size: 32px; margin: 15px 0;">
+                    ₹0.00
+                </h2>
+            </div>
+
+            <!-- ADD 6 VEGETABLES -->
+            <div class="card">
+
+                <h3>🌾 Add Vegetables to Market</h3>
+
+                <!-- VEGETABLE 1 -->
+                <div class="vegetable-box">
+                    <h4>🥕 Vegetable 1</h4>
+
+                    <div class="form-group">
+                        <label>Vegetable Name:</label>
+                        <input type="text"
+                               id="vegName1"
+                               placeholder="e.g., Tomato">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Price per KG (₹):</label>
+                        <input type="number"
+                               id="vegPrice1"
+                               placeholder="e.g., 25">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Quantity Available (KG):</label>
+                        <input type="number"
+                               id="vegQuantity1"
+                               placeholder="e.g., 10">
+                    </div>
+                </div>
 
 
-<div class="container">
+                <!-- VEGETABLE 2 -->
+                <div class="vegetable-box">
+                    <h4>🥔 Vegetable 2</h4>
 
-    <!-- VEGETABLES -->
-    <h2>🥕 Available Vegetables</h2>
+                    <div class="form-group">
+                        <label>Vegetable Name:</label>
+                        <input type="text"
+                               id="vegName2"
+                               placeholder="e.g., Potato">
+                    </div>
 
-    <div class="vegetables">
+                    <div class="form-group">
+                        <label>Price per KG (₹):</label>
+                        <input type="number"
+                               id="vegPrice2"
+                               placeholder="e.g., 30">
+                    </div>
 
-        <!-- Tomato -->
-        <div class="vegetable-card">
-            <h3>🍅 Tomato</h3>
-            <p class="price">₹40 / kg</p>
+                    <div class="form-group">
+                        <label>Quantity Available (KG):</label>
+                        <input type="number"
+                               id="vegQuantity2"
+                               placeholder="e.g., 20">
+                    </div>
+                </div>
 
-            <input
-                type="number"
-                id="qty-Tomato"
-                class="quantity"
-                value="1"
-                min="0.1"
-                step="0.1"
-            >
 
-            <button
-                class="add-btn"
-                onclick="addToCart('Tomato', 40, 'qty-Tomato')">
-                🛒 Add to Cart
-            </button>
+                <!-- VEGETABLE 3 -->
+                <div class="vegetable-box">
+                    <h4>🥦 Vegetable 3</h4>
+
+                    <div class="form-group">
+                        <label>Vegetable Name:</label>
+                        <input type="text"
+                               id="vegName3"
+                               placeholder="e.g., Cabbage">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Price per KG (₹):</label>
+                        <input type="number"
+                               id="vegPrice3"
+                               placeholder="e.g., 20">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Quantity Available (KG):</label>
+                        <input type="number"
+                               id="vegQuantity3"
+                               placeholder="e.g., 15">
+                    </div>
+                </div>
+
+
+                <!-- VEGETABLE 4 -->
+                <div class="vegetable-box">
+                    <h4>🌶️ Vegetable 4</h4>
+
+                    <div class="form-group">
+                        <label>Vegetable Name:</label>
+                        <input type="text"
+                               id="vegName4"
+                               placeholder="e.g., Chilli">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Price per KG (₹):</label>
+                        <input type="number"
+                               id="vegPrice4"
+                               placeholder="e.g., 40">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Quantity Available (KG):</label>
+                        <input type="number"
+                               id="vegQuantity4"
+                               placeholder="e.g., 8">
+                    </div>
+                </div>
+
+
+                <!-- VEGETABLE 5 -->
+                <div class="vegetable-box">
+                    <h4>🍆 Vegetable 5</h4>
+
+                    <div class="form-group">
+                        <label>Vegetable Name:</label>
+                        <input type="text"
+                               id="vegName5"
+                               placeholder="e.g., Brinjal">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Price per KG (₹):</label>
+                        <input type="number"
+                               id="vegPrice5"
+                               placeholder="e.g., 35">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Quantity Available (KG):</label>
+                        <input type="number"
+                               id="vegQuantity5"
+                               placeholder="e.g., 12">
+                    </div>
+                </div>
+
+
+                <!-- VEGETABLE 6 -->
+                <div class="vegetable-box">
+                    <h4>🥒 Vegetable 6</h4>
+
+                    <div class="form-group">
+                        <label>Vegetable Name:</label>
+                        <input type="text"
+                               id="vegName6"
+                               placeholder="e.g., Cucumber">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Price per KG (₹):</label>
+                        <input type="number"
+                               id="vegPrice6"
+                               placeholder="e.g., 30">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Quantity Available (KG):</label>
+                        <input type="number"
+                               id="vegQuantity6"
+                               placeholder="e.g., 10">
+                    </div>
+                </div>
+
+
+                <!-- ADD BUTTON -->
+                <button class="btn-submit"
+                        onclick="handleFarmerAddVeg()">
+                    ➕ Add All Vegetables to Market
+                </button>
+
+            </div>
         </div>
 
 
-        <!-- Potato -->
-        <div class="vegetable-card">
-            <h3>🥔 Potato</h3>
-            <p class="price">₹35 / kg</p>
+        <!-- CUSTOMER ORDERS -->
+        <div class="card">
 
-            <input
-                type="number"
-                id="qty-Potato"
-                class="quantity"
-                value="1"
-                min="0.1"
-                step="0.1"
-            >
+            <h3>📥 Live Customer Orders</h3>
 
-            <button
-                class="add-btn"
-                onclick="addToCart('Potato', 35, 'qty-Potato')">
-                🛒 Add to Cart
-            </button>
-        </div>
+            <div id="ordersSection">
 
+                <p style="color: #777; font-style: italic;"
+                   id="noOrdersText">
+                    No pending orders found from customers.
+                </p>
 
-        <!-- Carrot -->
-        <div class="vegetable-card">
-            <h3>🥕 Carrot</h3>
-            <p class="price">₹60 / kg</p>
-
-            <input
-                type="number"
-                id="qty-Carrot"
-                class="quantity"
-                value="1"
-                min="0.1"
-                step="0.1"
-            >
-
-            <button
-                class="add-btn"
-                onclick="addToCart('Carrot', 60, 'qty-Carrot')">
-                🛒 Add to Cart
-            </button>
-        </div>
-
-
-        <!-- Onion -->
-        <div class="vegetable-card">
-            <h3>🧅 Onion</h3>
-            <p class="price">₹45 / kg</p>
-
-            <input
-                type="number"
-                id="qty-Onion"
-                class="quantity"
-                value="1"
-                min="0.1"
-                step="0.1"
-            >
-
-            <button
-                class="add-btn"
-                onclick="addToCart('Onion', 45, 'qty-Onion')">
-                🛒 Add to Cart
-            </button>
-        </div>
-
-
-        <!-- Cabbage -->
-        <div class="vegetable-card">
-            <h3>🥬 Cabbage</h3>
-            <p class="price">₹30 / kg</p>
-
-            <input
-                type="number"
-                id="qty-Cabbage"
-                class="quantity"
-                value="1"
-                min="0.1"
-                step="0.1"
-            >
-
-            <button
-                class="add-btn"
-                onclick="addToCart('Cabbage', 30, 'qty-Cabbage')">
-                🛒 Add to Cart
-            </button>
-        </div>
-
-
-        <!-- Brinjal -->
-        <div class="vegetable-card">
-            <h3>🍆 Brinjal</h3>
-            <p class="price">₹50 / kg</p>
-
-            <input
-                type="number"
-                id="qty-Brinjal"
-                class="quantity"
-                value="1"
-                min="0.1"
-                step="0.1"
-            >
-
-            <button
-                class="add-btn"
-                onclick="addToCart('Brinjal', 50, 'qty-Brinjal')">
-                🛒 Add to Cart
-            </button>
-        </div>
-
-
-        <!-- Beans -->
-        <div class="vegetable-card">
-            <h3>🫘 Beans</h3>
-            <p class="price">₹70 / kg</p>
-
-            <input
-                type="number"
-                id="qty-Beans"
-                class="quantity"
-                value="1"
-                min="0.1"
-                step="0.1"
-            >
-
-            <button
-                class="add-btn"
-                onclick="addToCart('Beans', 70, 'qty-Beans')">
-                🛒 Add to Cart
-            </button>
-        </div>
-
-
-        <!-- Beetroot -->
-        <div class="vegetable-card">
-            <h3>🟣 Beetroot</h3>
-            <p class="price">₹55 / kg</p>
-
-            <input
-                type="number"
-                id="qty-Beetroot"
-                class="quantity"
-                value="1"
-                min="0.1"
-                step="0.1"
-            >
-
-            <button
-                class="add-btn"
-                onclick="addToCart('Beetroot', 55, 'qty-Beetroot')">
-                🛒 Add to Cart
-            </button>
-        </div>
-
-
-        <!-- Spinach -->
-        <div class="vegetable-card">
-            <h3>🥬 Spinach</h3>
-            <p class="price">₹25 / kg</p>
-
-            <input
-                type="number"
-                id="qty-Spinach"
-                class="quantity"
-                value="0.5"
-                min="0.1"
-                step="0.1"
-            >
-
-            <button
-                class="add-btn"
-                onclick="addToCart('Spinach', 25, 'qty-Spinach')">
-                🛒 Add to Cart
-            </button>
-        </div>
-
-
-        <!-- Cucumber -->
-        <div class="vegetable-card">
-            <h3>🥒 Cucumber</h3>
-            <p class="price">₹40 / kg</p>
-
-            <input
-                type="number"
-                id="qty-Cucumber"
-                class="quantity"
-                value="1"
-                min="0.1"
-                step="0.1"
-            >
-
-            <button
-                class="add-btn"
-                onclick="addToCart('Cucumber', 40, 'qty-Cucumber')">
-                🛒 Add to Cart
-            </button>
+            </div>
         </div>
 
     </div>
 
 
-    <!-- CART -->
-    <div class="cart">
+    <!-- APP.JS -->
+    <script src="app.js"></script>
 
-        <h2>🛒 My Cart</h2>
+    <script>
 
-        <div id="cartSection">
-            <p class="empty">
-                Your Cart is Empty.
-            </p>
-        </div>
+        // Get current farmer
+        let user = getCurrentUser() || {
+            name: "shalini",
+            balance: 60000,
+            mobile: 12345
+        };
 
-        <div id="cartTotal"></div>
+        document.getElementById("farmerNameDisplay").innerText = user.name;
 
-        <button
-            id="placeOrderButton"
-            class="place-order"
-            style="display:none;"
-            onclick="placeOrder()">
+        document.getElementById("farmerWalletBalance").innerText =
+            `₹${parseFloat(user.balance).toFixed(2)}`;
 
-            🛒 Place Order
 
-        </button>
+        // ADD 6 VEGETABLES
+        function handleFarmerAddVeg() {
 
-    </div>
+            let vegetables = [];
 
-</div>
+            for (let i = 1; i <= 6; i++) {
 
+                let name =
+                    document.getElementById(`vegName${i}`).value.trim();
 
-<script>
+                let price =
+                    document.getElementById(`vegPrice${i}`).value.trim();
 
-// Load saved cart
-let customerCart =
-    JSON.parse(
-        localStorage.getItem("customerCart")
-    ) || [];
+                let qty =
+                    document.getElementById(`vegQuantity${i}`).value.trim();
 
 
-// ADD VEGETABLE TO CART
-function addToCart(name, pricePerKg, quantityId) {
+                // Only add filled vegetables
+                if (name && price && qty) {
 
-    // Maximum 10 vegetables
-    if (customerCart.length >= 10) {
+                    vegetables.push({
+                        name: name,
+                        price: price,
+                        quantity: qty
+                    });
 
-        alert(
-            "⚠️ Maximum 10 vegetables allowed in the cart."
-        );
-
-        return;
-    }
-
-
-    // Get quantity
-    let quantity =
-        Number(
-            document.getElementById(quantityId).value
-        );
-
-
-    // Check quantity
-    if (!quantity || quantity <= 0) {
-
-        alert(
-            "⚠️ Please enter a valid quantity."
-        );
-
-        return;
-    }
-
-
-    // Check duplicate vegetable
-    let existingVegetable =
-        customerCart.find(
-            item => item.name === name
-        );
-
-
-    if (existingVegetable) {
-
-        alert(
-            "⚠️ " + name +
-            " is already in your cart."
-        );
-
-        return;
-    }
-
-
-    // Add vegetable
-    customerCart.push({
-
-        name: name,
-
-        pricePerKg:
-            Number(pricePerKg),
-
-        quantityKg:
-            Number(quantity)
-
-    });
-
-
-    // Save cart
-    saveCart();
-
-
-    // Display cart
-    displayCart();
-
-
-    alert(
-        "✅ " + name +
-        " added to cart!\n\n" +
-        customerCart.length +
-        "/10 vegetables added."
-    );
-}
-
-
-// SAVE CART
-function saveCart() {
-
-    localStorage.setItem(
-        "customerCart",
-        JSON.stringify(customerCart)
-    );
-
-}
-
-
-// DISPLAY CART
-function displayCart() {
-
-    let cartSection =
-        document.getElementById("cartSection");
-
-    let cartTotal =
-        document.getElementById("cartTotal");
-
-    let orderButton =
-        document.getElementById("placeOrderButton");
-
-
-    // Empty cart
-    if (customerCart.length === 0) {
-
-        cartSection.innerHTML = `
-            <p class="empty">
-                Your Cart is Empty.
-            </p>
-        `;
-
-        cartTotal.innerHTML = "";
-
-        orderButton.style.display = "none";
-
-        return;
-    }
-
-
-    cartSection.innerHTML = "";
-
-    let grandTotal = 0;
-
-
-    // Display vegetables
-    customerCart.forEach(
-        function(item, index) {
-
-            let subtotal =
-                Number(item.quantityKg) *
-                Number(item.pricePerKg);
-
-
-            grandTotal += subtotal;
-
-
-            let quantityText;
-
-
-            // KG to grams
-            if (
-                Number(item.quantityKg) < 1
-            ) {
-
-                quantityText =
-                    (
-                        Number(item.quantityKg) *
-                        1000
-                    ).toFixed(0) + " g";
-
-            } else {
-
-                quantityText =
-                    Number(item.quantityKg)
-                    .toFixed(3) + " KG";
+                }
             }
 
 
-            cartSection.innerHTML += `
+            // Check whether at least one vegetable is entered
+            if (vegetables.length === 0) {
 
-                <div class="cart-item">
+                alert("❌ Please enter at least one vegetable!");
 
-                    <div class="cart-header">
+                return;
+            }
 
-                        <strong
-                            style="font-size:18px;">
 
-                            ${index + 1}.
-                            🥦 ${item.name}
+            // Add each vegetable
+            vegetables.forEach(function(vegetable) {
 
-                        </strong>
+                addVegetable(
+                    vegetable.name,
+                    vegetable.price,
+                    vegetable.quantity
+                );
 
+            });
+
+
+            alert(
+                "✅ " +
+                vegetables.length +
+                " vegetable(s) added successfully to the market!"
+            );
+
+
+            // Clear all fields
+            for (let i = 1; i <= 6; i++) {
+
+                document.getElementById(`vegName${i}`).value = "";
+                document.getElementById(`vegPrice${i}`).value = "";
+                document.getElementById(`vegQuantity${i}`).value = "";
+
+            }
+
+            location.reload();
+        }
+
+
+        // CHECK CUSTOMER ORDERS
+        function checkPendingOrders() {
+
+            let status =
+                localStorage.getItem("current_order_status");
+
+            let ordersSection =
+                document.getElementById("ordersSection");
+
+            let pendingCode =
+                localStorage.getItem("last_generated_code")
+                || "FF-PEND-1234";
+
+
+            let vegName =
+                localStorage.getItem("ordered_vegetable")
+                || "Fresh Vegetables";
+
+            let vegQty =
+                localStorage.getItem("ordered_quantity")
+                || "1";
+
+            let vegPrice =
+                localStorage.getItem("ordered_price")
+                || "25";
+
+
+            let totalAmount =
+                parseFloat(vegQty) * parseFloat(vegPrice);
+
+
+            if (status === "Pending") {
+
+                document.getElementById("noOrdersText").style.display =
+                    "none";
+
+
+                ordersSection.innerHTML = `
+
+                    <div class="order-alert">
+
+                        <p style="
+                            font-size:16px;
+                            margin:5px 0;
+                            color:#E65100;">
+
+                            🔔 <strong>New Order Received!</strong>
+
+                        </p>
+
+                        <p>
+                            <strong>Item:</strong>
+                            ${vegName}
+                            (${vegQty} KG)
+                            |
+                            <strong>Total:</strong>
+                            ₹${totalAmount.toFixed(2)}
+                        </p>
+
+                        <p>
+                            Tracking Code:
+                            <strong>${pendingCode}</strong>
+                        </p>
 
                         <button
-                            class="remove-btn"
-                            onclick="removeFromCart(${index})">
+                            class="btn-accept"
+                            onclick="acceptCustomerOrder()">
 
-                            ❌ Remove
+                            Accept Order & Send SMS ✅
 
                         </button>
 
                     </div>
+                `;
 
+            }
 
-                    <p>
-                        <strong>
-                            Quantity:
-                        </strong>
+            else if (status === "Accepted") {
 
-                        ${quantityText}
+                ordersSection.innerHTML = `
+
+                    <p style="
+                        color:#2e7d32;
+                        font-weight:bold;">
+
+                        ✅ Last order accepted successfully.
+                        SMS Bill Sent!
+
                     </p>
 
-
-                    <p>
-                        <strong>
-                            Price:
-                        </strong>
-
-                        ₹${Number(
-                            item.pricePerKg
-                        ).toFixed(2)} / kg
-                    </p>
-
-
-                    <p>
-                        <strong>
-                            Subtotal:
-                        </strong>
-
-                        ₹${subtotal.toFixed(2)}
-                    </p>
-
-                </div>
-
-            `;
+                `;
+            }
         }
-    );
 
 
-    // GRAND TOTAL
-    cartTotal.innerHTML = `
+        // ACCEPT ORDER
+        function acceptCustomerOrder() {
 
-        <div class="grand-total">
-
-            🧾 GRAND TOTAL:
-            ₹${grandTotal.toFixed(2)}
-
-            <br><br>
-
-            <span style="
-                font-size:14px;
-                color:#555;
-            ">
-
-                ${customerCart.length}/10
-                vegetables in cart
-
-            </span>
-
-        </div>
-
-    `;
+            localStorage.setItem(
+                "current_order_status",
+                "Accepted"
+            );
 
 
-    // Show Place Order
-    orderButton.style.display = "block";
+            let now = new Date();
 
-}
-
-
-// REMOVE VEGETABLE
-function removeFromCart(index) {
-
-    customerCart.splice(index, 1);
-
-    saveCart();
-
-    displayCart();
-
-}
+            let currentTimeString =
+                now.toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit"
+                });
 
 
-// PLACE ORDER
-function placeOrder() {
-
-    if (customerCart.length === 0) {
-
-        alert(
-            "⚠️ Your cart is empty."
-        );
-
-        return;
-    }
+            localStorage.setItem(
+                "order_accepted_time",
+                currentTimeString
+            );
 
 
-    let grandTotal = 0;
+            let pendingCode =
+                localStorage.getItem("last_generated_code")
+                || "FF-PEND-1234";
 
 
-    customerCart.forEach(
-        function(item) {
+            let approvedCode =
+                pendingCode.replace("PEND", "APRV");
 
-            grandTotal +=
-                Number(item.quantityKg) *
-                Number(item.pricePerKg);
+
+            localStorage.setItem(
+                "last_generated_code",
+                approvedCode
+            );
+
+
+            let vegName =
+                localStorage.getItem("ordered_vegetable")
+                || "Fresh Vegetables";
+
+            let vegQty =
+                localStorage.getItem("ordered_quantity")
+                || "1";
+
+            let vegPrice =
+                localStorage.getItem("ordered_price")
+                || "25";
+
+
+            let total =
+                parseFloat(vegQty) *
+                parseFloat(vegPrice);
+
+
+            let smsMessage = `🥦 FreshFarm Bill
+-------------------
+Invoice Code: ${approvedCode}
+Item: ${vegName}
+Total Bill: ₹${total.toFixed(2)}
+Time: ${currentTimeString}
+-------------------
+Status: APPROVED ✅`;
+
+
+            alert(
+                `📱 SMS DISPATCHED TO CUSTOMER!\n\n${smsMessage}`
+            );
+
+
+            location.reload();
+        }
+
+
+        // LOGOUT
+        function logoutUser() {
+
+            logout();
 
         }
-    );
 
 
-    alert(
-        "✅ ORDER PLACED SUCCESSFULLY!\n\n" +
+        // Run order check
+        checkPendingOrders();
 
-        "🥕 Vegetables: " +
-        customerCart.length +
-
-        "\n💰 Total Amount: ₹" +
-        grandTotal.toFixed(2)
-    );
-
-}
-
-
-// Display cart when page opens
-displayCart();
-
-</script>
+    </script>
 
 </body>
 </html>
