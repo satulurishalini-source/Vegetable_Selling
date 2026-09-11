@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Fresh Market Portal</title>
+    <title>Customer Fresh Market - Cart & Bill Separation</title>
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #f7faf7; margin: 0; padding: 15px; color: #2d3748; }
@@ -14,8 +14,8 @@
         .panel { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 20px; }
         h2 { margin-top: 0; font-size: 18px; color: #1b5e20; border-bottom: 2px solid #cbd5e0; padding-bottom: 8px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
 
-        /* Vegetable List Cards Styling */
-        .veg-list-scroll { max-height: 80vh; overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 15px; }
+        /* Left Side: Vegetable Cards Layout */
+        .veg-list-scroll { max-height: 85vh; overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 15px; }
         .veg-card { background: #ffffff; border: 1px solid #edf2f7; border-radius: 10px; padding: 15px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         .veg-card:hover { border-color: #c8e6c9; }
         
@@ -30,34 +30,34 @@
         .add-btn { width: 100%; background: #2e7d32; color: white; border: none; padding: 8px 12px; border-radius: 4px; font-size: 13px; font-weight: bold; cursor: pointer; text-align: center; white-space: nowrap; }
         .add-btn:hover { background: #1b5e20; }
 
-        /* Bill Table Summary Setup */
-        .bill-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
-        .bill-table th, .bill-table td { border-bottom: 1px solid #e2e8f0; padding: 12px 8px; text-align: left; }
-        .bill-table th { background-color: #f1f8e9; color: #2e7d32; font-weight: bold; }
-        .bill-table td.num { text-align: right; }
-        .total-row { font-size: 16px; font-weight: bold; color: #1b5e20; background: #e8f5e9; }
+        /* Right Side Option 1: Shopping Cart Table */
+        .cart-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
+        .cart-table th, .cart-table td { border-bottom: 1px solid #e2e8f0; padding: 12px 8px; text-align: left; }
+        .cart-table th { background-color: #f1f8e9; color: #2e7d32; font-weight: bold; }
+        .cart-table td.num { text-align: right; }
+        .running-total-row { font-size: 15px; font-weight: bold; color: #4a5568; background: #f8fafc; }
         .remove-btn { color: #e53e3e; background: none; border: none; cursor: pointer; font-weight: bold; font-size: 14px; }
         
-        .checkout-btn { width: 100%; background: #1b5e20; color: white; border: none; padding: 12px; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 20px; }
-        .checkout-btn:hover { background: #0d3c0e; }
-        .empty-bill { text-align: center; color: #718096; padding: 40px; font-style: italic; border: 2px dashed #e2e8f0; border-radius: 6px; }
+        .generate-bill-btn { width: 100%; background: #2b6cb0; color: white; border: none; padding: 12px; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 15px; transition: background 0.2s; }
+        .generate-bill-btn:hover { background: #2b529a; }
+        .empty-cart-msg { text-align: center; color: #718096; padding: 30px; font-style: italic; border: 2px dashed #e2e8f0; border-radius: 6px; }
 
-        /* New Full-Width Invoice Styles */
-        .invoice-box { max-width: 1200px; margin: 20px auto 0 auto; display: none; background: #fff; border: 2px dashed #2e7d32; border-radius: 10px; padding: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .invoice-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #2e7d32; padding-bottom: 10px; margin-bottom: 20px; }
-        .invoice-title { font-size: 24px; font-weight: bold; color: #1b5e20; }
-        .invoice-meta { text-align: right; font-size: 14px; color: #666; }
-        .invoice-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        .invoice-table th, .invoice-table td { padding: 12px; border-bottom: 1px solid #edf2f7; text-align: left; }
+        /* Right Side Option 2: Isolated Final Bill Receipt */
+        .invoice-box { background: #fff; border: 2px dashed #2e7d32; border-radius: 10px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); display: none; }
+        .invoice-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #2e7d32; padding-bottom: 10px; margin-bottom: 15px; }
+        .invoice-title { font-size: 20px; font-weight: bold; color: #1b5e20; letter-spacing: 0.5px; }
+        .invoice-meta { text-align: right; font-size: 13px; color: #666; line-height: 1.4; }
+        .invoice-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 14px; }
+        .invoice-table th, .invoice-table td { padding: 10px; border-bottom: 1px solid #edf2f7; text-align: left; }
         .invoice-table th { background-color: #f7faf7; color: #2e7d32; font-weight: bold; }
-        .invoice-grand-total { font-size: 18px; font-weight: bold; color: #1b5e20; text-align: right; padding: 15px; background: #e8f5e9; border-radius: 6px; }
+        .invoice-grand-total { font-size: 18px; font-weight: bold; color: #1b5e20; text-align: right; padding: 12px; background: #e8f5e9; border-radius: 6px; border: 1px solid #c8e6c9; }
     </style>
 </head>
 <body>
 
 <div class="market-layout">
     
-    <!-- LEFT PANEL: 10 VEGETABLES GRID VIEW SELECTION -->
+    <!-- LEFT PANEL: AVAILABLE VEGETABLES CATALOG -->
     <div class="panel">
         <h2>🥦 Available Market Vegetables</h2>
         <div class="veg-list-scroll">
@@ -71,12 +71,12 @@
                     </div>
                 </div>
                 <div class="card-row-bottom">
-                    <input type="number" class="qty-input" value="1" min="1" id="cust-qty-1">
+                    <input type="number" class="qty-input" value="500" min="1" id="cust-qty-1">
                     <select class="unit-dropdown" id="cust-unit-1">
-                        <option value="KG">KG</option>
                         <option value="Grams">Grams</option>
+                        <option value="KG">KG</option>
                     </select>
-                    <button class="add-btn" onclick="addVegItemToBill(1, 'Tomatoes', '🍅', 25)">🛒 Add to Bill</button>
+                    <button class="add-btn" onclick="addItemToCart(1, 'Tomatoes', '🍅', 25)">🛒 Add to Cart</button>
                 </div>
             </div>
 
@@ -89,12 +89,12 @@
                     </div>
                 </div>
                 <div class="card-row-bottom">
-                    <input type="number" class="qty-input" value="1" min="1" id="cust-qty-2">
+                    <input type="number" class="qty-input" value="250" min="1" id="cust-qty-2">
                     <select class="unit-dropdown" id="cust-unit-2">
-                        <option value="KG">KG</option>
                         <option value="Grams">Grams</option>
+                        <option value="KG">KG</option>
                     </select>
-                    <button class="add-btn" onclick="addVegItemToBill(2, 'Potatoes', '🥔', 49)">🛒 Add to Bill</button>
+                    <button class="add-btn" onclick="addItemToCart(2, 'Potatoes', '🥔', 49)">🛒 Add to Cart</button>
                 </div>
             </div>
 
@@ -107,12 +107,12 @@
                     </div>
                 </div>
                 <div class="card-row-bottom">
-                    <input type="number" class="qty-input" value="1" min="1" id="cust-qty-3">
+                    <input type="number" class="qty-input" value="500" min="1" id="cust-qty-3">
                     <select class="unit-dropdown" id="cust-unit-3">
-                        <option value="KG">KG</option>
                         <option value="Grams">Grams</option>
+                        <option value="KG">KG</option>
                     </select>
-                    <button class="add-btn" onclick="addVegItemToBill(3, 'Carrot', '🥕', 20)">🛒 Add to Bill</button>
+                    <button class="add-btn" onclick="addItemToCart(3, 'Carrot', '🥕', 20)">🛒 Add to Cart</button>
                 </div>
             </div>
 
@@ -130,7 +130,7 @@
                         <option value="KG">KG</option>
                         <option value="Grams">Grams</option>
                     </select>
-                    <button class="add-btn" onclick="addVegItemToBill(4, 'Onions', '🧅', 35)">🛒 Add to Bill</button>
+                    <button class="add-btn" onclick="addItemToCart(4, 'Onions', '🧅', 35)">🛒 Add to Cart</button>
                 </div>
             </div>
 
@@ -148,7 +148,7 @@
                         <option value="KG">KG</option>
                         <option value="Grams">Grams</option>
                     </select>
-                    <button class="add-btn" onclick="addVegItemToBill(5, 'Cabbage', '🥬', 30)">🛒 Add to Bill</button>
+                    <button class="add-btn" onclick="addItemToCart(5, 'Cabbage', '🥬', 30)">🛒 Add to Cart</button>
                 </div>
             </div>
 
@@ -164,5 +164,3 @@
                     <input type="number" class="qty-input" value="100" min="1" id="cust-qty-6">
                     <select class="unit-dropdown" id="cust-unit-6">
                         <option value="Grams">Grams</option>
-                        <option value="KG">KG</option>
-                    </select>
