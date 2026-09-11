@@ -1,289 +1,59 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vegetable Marketplace</title>
-    <style>
-        :root {
-            --primary-green: #2e7d32;
-            --light-green: #e8f5e9;
-            --text-dark: #333;
-            --card-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            --border-radius: 8px;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-            margin: 20px;
-            background-color: #fcfcfc;
-            color: var(--text-dark);
-        }
-
-        h2 {
-            color: var(--primary-green);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 22px;
-            margin-bottom: 20px;
-        }
-
-        /* Grid Layout for Veggie Cards */
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            max-width: 1200px;
-            margin-bottom: 40px;
-        }
-
-        @media (max-width: 900px) { .grid-container { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 600px) { .grid-container { grid-template-columns: 1fr; } }
-
-        /* Card Styling */
-        .veg-card {
-            background: #fff;
-            padding: 20px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--card-shadow);
-            border: 1px solid #f0f0f0;
-        }
-
-        .veg-name {
-            font-weight: bold;
-            font-size: 16px;
-            margin-bottom: 5px;
-        }
-
-        .veg-price {
-            color: var(--primary-green);
-            font-weight: 600;
-            font-size: 15px;
-            margin-bottom: 15px;
-        }
-
-        .qty-input {
-            width: 80%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            margin-bottom: 12px;
-            font-size: 14px;
-        }
-
-        .btn-add {
-            background-color: var(--primary-green);
-            color: white;
-            border: none;
-            padding: 8px 14px;
-            width: 100%;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-        }
-
-        .btn-add:hover {
-            background-color: #1b5e20;
-        }
-
-        /* Live Orders Container Layout from Image 2 */
-        .orders-panel {
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--card-shadow);
-            border: 1px solid #f0f0f0;
-            max-width: 1200px;
-            margin-top: 30px;
-        }
-
-        .orders-header {
-            padding: 15px 20px;
-            border-bottom: 1px solid #eee;
-            font-weight: bold;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .orders-content {
-            padding: 20px;
-        }
-
-        /* Success Status Message Box */
-        .status-msg {
-            background-color: var(--light-green);
-            color: #1b5e20;
-            padding: 12px 15px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            font-weight: 500;
-            display: none; /* Hidden until item is added */
-        }
-
-        /* Data Rendering Table */
-        .orders-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            font-size: 14px;
-        }
-
-        .orders-table th, .orders-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-
-        .orders-table th {
-            background-color: #f9f9f9;
-            color: #666;
-            font-weight: 600;
-        }
-
-        .grand-total {
-            font-weight: bold;
-            text-align: right;
-            font-size: 16px;
-            color: var(--primary-green);
-            padding-top: 15px;
-        }
-    </style>
-</head>
-<body>
-
-    <h2>🍏 Available Vegetables</h2>
+<div class="container" style="padding: 20px;">
+    <h2>Customer Shopping Cart (కార్ట్)</h2>
     
-    <!-- Vegetables Product Grid Layout -->
-    <div class="grid-container" id="veggie-grid"></div>
-
-    <!-- Live Customer Orders Section (Fixing the blank container data) -->
-    <div class="orders-panel">
-        <div class="orders-header">
-            📋 Live Customer Orders
-        </div>
-        <div class="orders-content">
-            <!-- Dynamic Success Box from Image 2 -->
-            <div class="status-msg" id="success-banner">
-                ✅ Last order accepted successfully. SMS Bill Sent!
-            </div>
-            
-            <!-- Where your missing dynamic order table data renders -->
-            <div id="order-data-view">
-                <p style="color: #888; font-style: italic;">No items added to current order list yet.</p>
-            </div>
-        </div>
+    <!-- Sample Form inputs to simulate cart -->
+    <div style="margin-bottom: 15px;">
+        <label>Customer Name: </label>
+        <input type="text" id="custName" value="Suresh Babu" placeholder="Enter name">
+    </div>
+    <div style="margin-bottom: 15px;">
+        <label>Mobile Number: </label>
+        <input type="text" id="custPhone" value="8123456789" placeholder="Enter mobile">
+    </div>
+    <div style="margin-bottom: 15px;">
+        <label>Select Item: </label>
+        <select id="cartItem">
+            <option value="Tomatoes - 10kg">Tomatoes - 10kg</option>
+            <option value="Onions - 5kg">Onions - 5kg</option>
+        </select>
+    </div>
+    <div style="margin-bottom: 15px;">
+        <label>Total Price (ధర): </label>
+        <input type="number" id="itemPrice" value="500">
     </div>
 
-    <script>
-        // complete configuration dataset reflecting Image 1 prices and quantities
-        const vegetables = [
-            { id: 'tomato', name: 'Tomato', price: 40, qty: 1 },
-            { id: 'potato', name: 'Potato', price: 35, qty: 1 },
-            { id: 'carrot', name: 'Carrot', price: 60, qty: 1 },
-            { id: 'onion', name: 'Onion', price: 45, qty: 1 },
-            { id: 'cabbage', name: 'Cabbage', price: 30, qty: 1 },
-            { id: 'brinjal', name: 'Brinjal', price: 50, qty: 1 },
-            { id: 'beans', name: 'Beans', price: 70, qty: 1 },
-            { id: 'beetroot', name: 'Beetroot', price: 55, qty: 1 },
-            { id: 'spinach', name: 'Spinach', price: 25, qty: 0.5 },
-            { id: 'cucumber', name: 'Cucumber', price: 40, qty: 1 }
-        ];
+    <button onclick="placeCustomerOrder()" style="background-color: #28a745; color: white; padding: 10px 20px; border: none; cursor: pointer; border-radius: 5px;">
+        Place Order to Farmer (ఆర్డర్ పంపించు)
+    </button>
+</div>
 
-        let activeCart = [];
+<script>
+function placeCustomerOrder() {
+    let name = document.getElementById('custName').value;
+    let phone = document.getElementById('custPhone').value;
+    let item = document.getElementById('cartItem').value;
+    let price = document.getElementById('itemPrice').value;
 
-        // Dynamic generation template mapping properties onto HTML blocks
-        function renderStorefront() {
-            const grid = document.getElementById('veggie-grid');
-            grid.innerHTML = vegetables.map(veg => `
-                <div class="veg-card">
-                    <div class="veg-name">${veg.name}</div>
-                    <div class="veg-price">₹${veg.price} / kg</div>
-                    <input type="number" step="0.1" class="qty-input" id="input-${veg.id}" value="${veg.qty}">
-                    <button class="btn-add" onclick="addToCart('${veg.id}', '${veg.name}', ${veg.price})">
-                        🛒 Add to Cart
-                    </button>
-                </div>
-            `).join('');
-        }
+    if(!name || !phone) {
+        alert("Please enter Name and Phone!");
+        return;
+    }
 
-        // Action workflow mapping to show status and build the dynamic customer summary table
-        function addToCart(id, name, price) {
-            const quantityInput = document.getElementById(`input-${id}`).value;
-            const quantity = parseFloat(quantityInput);
+    // Existing orders list loading
+    let orderQueue = JSON.parse(localStorage.getItem('farmerOrderQueue')) || [];
 
-            if (isNaN(quantity) || quantity <= 0) {
-                alert("Please enter a valid quantity amount");
-                return;
-            }
+    // Creating new order details object
+    let newOrder = {
+        orderId: 'ORD-' + Date.now(),
+        customerName: name,
+        customerPhone: phone,
+        items: item,
+        billAmount: price,
+        status: 'Pending'
+    };
 
-            // Check if item already exists in cart, if yes update quantity, else push new item
-            const existingItem = activeCart.find(item => item.id === id);
-            if (existingItem) {
-                existingItem.quantity = quantity;
-            } else {
-                activeCart.push({ id, name, price, quantity });
-            }
-
-            // Show confirmation alert block
-            document.getElementById('success-banner').style.display = 'block';
-
-            // Re-render and populate live table calculation list
-            updateLiveOrdersView();
-        }
-
-        function updateLiveOrdersView() {
-            const container = document.getElementById('order-data-view');
-            
-            if (activeCart.length === 0) {
-                container.innerHTML = `<p style="color: #888; font-style: italic;">No items added to current order list yet.</p>`;
-                return;
-            }
-
-            let totalBill = 0;
-            let tableHTML = `
-                <table class="orders-table">
-                    <thead>
-                        <tr>
-                            <th>Item Name</th>
-                            <th>Unit Rate</th>
-                            <th>Weight Selected</th>
-                            <th>Subtotal</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-
-            activeCart.forEach(item => {
-                const itemTotal = item.price * item.quantity;
-                totalBill += itemTotal;
-                tableHTML += `
-                    <tr>
-                        <td><strong>${item.name}</strong></td>
-                        <td>₹${item.price} / kg</td>
-                        <td>${item.quantity} kg</td>
-                        <td>₹${itemTotal.toFixed(2)}</td>
-                    </tr>
-                `;
-            });
-
-            tableHTML += `
-                    </tbody>
-                </table>
-                <div class="grand-total">Grand Total Bill: ₹${totalBill.toFixed(2)}</div>
-            `;
-
-            container.innerHTML = tableHTML;
-        }
-
-        // Initial setup load
-        renderStorefront();
-    </script>
-</body>
-</html>
+    orderQueue.push(newOrder);
+    localStorage.setItem('farmerOrderQueue', JSON.stringify(orderQueue));
+    alert("Order Sent to Farmer Successfully! (రైతుకు ఆర్డర్ పంపబడింది)");
+}
+</script>
