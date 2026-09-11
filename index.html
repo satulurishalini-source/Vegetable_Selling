@@ -3,85 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FreshFarm - Vegetable Selling Platform</title>
+    <title>FreshFarm - Vegetable Platform</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #f4f6f8; color: #333; padding-bottom: 50px; }
 
-        /* Top Bar */
-        .top-bar { background-color: #ffffff; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e7eb; }
-        .brand { font-size: 20px; font-weight: bold; color: #16a34a; }
-        .btn-logout { background-color: #ef4444; color: white; border: none; padding: 6px 16px; border-radius: 4px; cursor: pointer; font-weight: 600; }
-
-        /* View Switcher */
         .view-switcher { background-color: #e2e8f0; padding: 10px; text-align: center; font-weight: 600; font-size: 14px; }
         .view-switcher button { padding: 6px 14px; margin: 0 4px; cursor: pointer; border: 1px solid #cbd5e1; border-radius: 4px; background: #ffffff; font-weight: 600; }
         .view-switcher button.active { background: #16a34a; color: white; border-color: #16a34a; }
 
-        /* Main Container */
+        .top-bar { background-color: #ffffff; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e7eb; }
+        .brand { font-size: 20px; font-weight: bold; color: #16a34a; }
+        .btn-logout { background-color: #ef4444; color: white; border: none; padding: 6px 16px; border-radius: 4px; cursor: pointer; font-weight: 600; }
+
         .container { max-width: 900px; margin: 20px auto 0; padding: 0 15px; }
         .welcome-title { font-size: 22px; margin-bottom: 20px; color: #1e293b; }
 
-        /* Cards & Layout */
         .card { background: #ffffff; border-radius: 6px; border: 1px solid #e5e7eb; margin-bottom: 20px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         .card-header { font-size: 16px; font-weight: 600; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; color: #1f2937; }
 
-        /* Market Items */
         .market-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 6px; margin-bottom: 10px; }
         .item-details h4 { margin-bottom: 4px; color: #111827; font-size: 15px; text-transform: capitalize; }
         .item-details p { font-size: 13px; color: #6b7280; }
         .btn-buy { background-color: #16a34a; color: white; border: none; padding: 8px 16px; border-radius: 4px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; font-size: 13px; }
-        .btn-buy:hover { background-color: #15803d; }
 
-        /* Bottom Grid */
         .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         @media (max-width: 768px) { .bottom-grid { grid-template-columns: 1fr; } }
 
-        /* Cart Table */
         .cart-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 12px; }
         .cart-table th, .cart-table td { padding: 8px 6px; border-bottom: 1px solid #f3f4f6; text-align: left; }
         .cart-table th { background-color: #f9fafb; font-weight: 600; color: #4b5563; }
         .total-row { font-weight: bold; color: #111827; background-color: #f0fdf4; }
         .qty-btn { padding: 2px 6px; font-weight: bold; cursor: pointer; border: 1px solid #cbd5e1; background: #fff; border-radius: 3px; }
-        
-        .btn-order-now { width: 100%; background-color: #16a34a; color: white; border: none; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 14px; margin-top: 10px; }
-        .btn-order-now:disabled { background-color: #9ca3af; cursor: not-allowed; }
 
-        /* Badges */
-        .badge-none { background-color: #6b7280; color: white; padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; display: inline-block; }
+        .btn-order-now { width: 100%; background-color: #16a34a; color: white; border: none; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 14px; margin-top: 10px; }
+
         .badge-pending { background-color: #ef4444; color: white; padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; display: inline-block; }
         .badge-accepted { background-color: #10b981; color: white; padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; display: inline-block; }
 
-        /* Invoice */
         .invoice-card { background-color: #f0fdf4; border: 1px dashed #16a34a; border-radius: 6px; padding: 15px; font-size: 13px; }
         .invoice-header { display: flex; justify-content: space-between; align-items: center; font-weight: bold; color: #15803d; margin-bottom: 10px; }
         .invoice-status-tag { border: 1px solid #16a34a; color: #16a34a; font-size: 10px; padding: 2px 6px; border-radius: 3px; }
         .invoice-row { margin-bottom: 6px; color: #374151; }
 
-        /* Farmer Inputs */
         .veg-box { background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; padding: 12px; margin-bottom: 12px; }
         .veg-box h4 { margin-bottom: 8px; color: #16a34a; font-size: 14px; }
         .form-row { display: flex; gap: 10px; }
         .form-group { flex: 1; margin-bottom: 8px; }
         .form-group label { display: block; font-size: 11px; font-weight: 600; margin-bottom: 3px; color: #4b5563; }
-        .form-group input, .form-group select { width: 100%; padding: 7px 8px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 13px; }
+        .form-group input { width: 100%; padding: 7px 8px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 13px; }
 
         .order-notification-box { background-color: #fffbeb; border: 1px dashed #f59e0b; border-radius: 6px; padding: 15px; text-align: center; }
         .order-notification-box .title { color: #d97706; font-weight: bold; margin-bottom: 8px; }
         .btn-accept { background-color: #16a34a; color: white; border: none; padding: 10px 18px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; }
 
-        /* Modal Popups */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; }
-        .modal-card { background: #ffffff; width: 360px; border-radius: 8px; padding: 18px; }
-        .modal-header { font-size: 14px; font-weight: bold; color: #111827; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
-        .modal-body { font-size: 13px; color: #374151; }
-        .modal-footer { margin-top: 15px; text-align: right; display: flex; gap: 8px; justify-content: flex-end; }
-        .btn-cancel { background: #e5e7eb; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600; }
-        .btn-submit-order { background: #16a34a; color: white; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600; }
-        
-        /* Dark SMS Box */
+        .modal-card { background: #ffffff; width: 340px; border-radius: 8px; padding: 18px; }
+        .modal-header { font-size: 13px; font-weight: bold; color: #111827; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; margin-bottom: 12px; }
         .sms-box { background-color: #04091e; color: #ffffff; border-radius: 6px; padding: 12px; font-size: 12px; line-height: 1.6; }
         .sms-box .brand-tag { color: #10b981; font-weight: bold; margin-bottom: 6px; }
+        .modal-footer { margin-top: 15px; text-align: right; }
+        .btn-ok { background-color: #e5e7eb; color: #1f2937; border: 1px solid #d1d5db; padding: 4px 16px; border-radius: 4px; cursor: pointer; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -101,13 +83,11 @@
     <div id="customer-view" class="container">
         <h2 class="welcome-title">Welcome, shalini (Customer)</h2>
 
-        <!-- Available Market Vegetables -->
         <div class="card">
             <div class="card-header">📊 Available Market Vegetables (మార్కెట్లో ఉన్న కూరగాయలు)</div>
             <div id="market-list"></div>
         </div>
 
-        <!-- Cart & SMS Invoice Grid -->
         <div class="bottom-grid">
             <div class="card">
                 <div class="card-header">🛒 Vegetables in Your Cart</div>
@@ -116,18 +96,17 @@
 
             <div class="card">
                 <div class="card-header">📱 Live SMS Bill Invoice</div>
-                <div id="invoice-placeholder" style="color: #6b7280; font-size: 14px;">Waiting for order submission and farmer confirmation...</div>
+                <div id="invoice-placeholder" style="color: #6b7280; font-size: 14px;">Waiting for farmer acceptance...</div>
 
                 <div id="invoice-content" class="invoice-card" style="display: none;">
                     <div class="invoice-header">
-                        <span>🌱 FreshFarm Official Bill</span>
+                        <span>🌱 FreshFarm Bill</span>
                         <span class="invoice-status-tag" id="inv-status-tag">✓ ORDER APPROVED</span>
                     </div>
-                    <div class="invoice-row" id="inv-code"><strong>Code:</strong> FF-PEND-9376</div>
-                    <div class="invoice-row" id="inv-items-count"><strong>Items:</strong> 0 Vegetables</div>
+                    <div class="invoice-row"><strong>Code:</strong> FF-APRV-9376</div>
+                    <div class="invoice-row" id="inv-items-list"><strong>Items:</strong> -</div>
                     <div class="invoice-row" id="inv-total-amount"><strong>Total Bill:</strong> ₹0.00</div>
-                    <div class="invoice-row" id="inv-address"><strong>Deliver To:</strong> -</div>
-                    <div class="invoice-row"><strong>Time:</strong> <span id="inv-time">--:--</span></div>
+                    <div class="invoice-row"><strong>Time:</strong> 10:29 AM</div>
                 </div>
             </div>
         </div>
@@ -141,74 +120,34 @@
         </div>
 
         <div class="card">
-            <div class="card-header">🔔 Live Customer Orders Notification</div>
-            <div id="order-no-active" style="color: #6b7280; font-size: 14px;">No active orders pending from customer.</div>
-            
-            <div id="order-box" class="order-notification-box" style="display: none;">
-                <div class="title">🔔 New Order Placed by Customer!</div>
-                <p style="font-size: 14px; color: #374151;" id="farmer-order-info">0 Items | Total: ₹0.00</p>
-                <p style="font-size: 13px; color: #4b5563; margin-top: 4px;" id="farmer-order-code"><strong>Tracking Code:</strong> -</p>
-                <button class="btn-accept" onclick="acceptOrder()">Accept Order & Send SMS Invoice ✉️</button>
+            <div class="card-header">🔔 Live Customer Orders</div>
+            <div id="order-box" class="order-notification-box">
+                <div class="title">🔔 Live Customer Order</div>
+                <p style="font-size: 14px; color: #374151;" id="farmer-order-items"><strong>Items:</strong> -</p>
+                <p style="font-size: 14px; color: #374151; font-weight: bold; margin-top: 4px;" id="farmer-order-total">Total: ₹0.00</p>
+                <p style="font-size: 13px; color: #4b5563; margin-top: 4px;"><strong>Tracking Code:</strong> FF-PEND-9376</p>
+                <button class="btn-accept" onclick="acceptOrder()">Accept Order & Send SMS ✔️</button>
             </div>
 
             <div id="order-accepted-banner" style="display: none; color: #166534; font-size: 14px; font-weight: 500;">
-                ☑ Order accepted successfully. Single SMS Bill Sent to Customer!
+                ☑ Order accepted successfully. Dynamic SMS Bill Sent to Customer!
             </div>
         </div>
     </div>
 
-    <!-- ORDER CHECKOUT MODAL -->
-    <div id="checkoutModal" class="modal-overlay">
-        <div class="modal-card">
-            <div class="modal-header">
-                <span>🛒 Place Your Order</span>
-                <span style="cursor: pointer;" onclick="closeModal('checkoutModal')">✕</span>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>Customer Name:</label>
-                    <input type="text" id="cust-name" value="shalini">
-                </div>
-                <div class="form-group">
-                    <label>Delivery Address:</label>
-                    <input type="text" id="cust-address" placeholder="Enter delivery address...">
-                </div>
-                <div class="form-group">
-                    <label>Payment Mode:</label>
-                    <select id="cust-payment">
-                        <option value="Cash on Delivery">Cash on Delivery (COD)</option>
-                        <option value="UPI / Online">UPI / Online Payment</option>
-                    </select>
-                </div>
-                <div style="margin-top: 10px; background-color: #f9fafb; padding: 10px; border-radius: 4px;">
-                    <strong>Order Summary:</strong>
-                    <div id="checkout-summary" style="margin-top: 4px;">Total Amount: ₹0.00</div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-cancel" onclick="closeModal('checkoutModal')">Cancel</button>
-                <button class="btn-submit-order" onclick="confirmOrderPlacement()">Confirm & Place Order</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- SMS NOTIFICATION MODAL -->
+    <!-- SMS MODAL -->
     <div id="smsModal" class="modal-overlay">
         <div class="modal-card">
-            <div class="modal-header">
-                <span>💬 SMS DISPATCHED TO CUSTOMER!</span>
-            </div>
-            <div class="modal-body">
-                <div class="sms-box">
-                    <div class="brand-tag">🌱 FreshFarm Single Bill</div>
-                    <p id="sms-code">Invoice Code: -</p>
-                    <p id="sms-items-count">Items: 0 Vegetables</p>
-                    <p id="sms-total-amount">Total Bill: ₹0.00</p>
-                    <p id="sms-time">Time: --:--</p>
-                </div>
+            <div class="modal-header">💬 SMS DISPATCHED TO CUSTOMER!</div>
+            <div class="sms-box">
+                <div class="brand-tag">🌱 FreshFarm Single Bill</div>
+                <p>Invoice Code: FF-APRV-9376</p>
+                <p id="sms-items-summary">Items: -</p>
+                <p id="sms-total-amount">Total Bill: ₹0.00</p>
+                <p>Time: 10:29 AM</p>
             </div>
             <div class="modal-footer">
-                <button class="btn-submit-order" onclick="closeModal('smsModal')">OK</button>
+                <button class="btn-ok" onclick="closeModal()">OK</button>
             </div>
         </div>
     </div>
@@ -228,9 +167,8 @@
         ];
 
         let vegetables = [...initialVegetables];
-        let cart = { 5: 1 }; // Pre-loaded with Cabbage
-        let orderState = 'NONE'; // 'NONE', 'PLACED', 'ACCEPTED'
-        let currentOrderDetails = {};
+        let cart = { 5: 1, 9: 1, 10: 1 }; // Initial items shown in your screenshot
+        let orderAccepted = false;
 
         function renderMarket() {
             const listContainer = document.getElementById('market-list');
@@ -258,11 +196,11 @@
                         <h4>${item.icon} Vegetable ${index + 1}: ${item.name}</h4>
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Price / KG (₹):</label>
+                                <label>Price per KG (₹):</label>
                                 <input type="number" value="${item.price}" onchange="updatePrice(${item.id}, this.value)">
                             </div>
                             <div class="form-group">
-                                <label>Stock (KG):</label>
+                                <label>Stock Available (KG):</label>
                                 <input type="number" value="${item.stock}" onchange="updateStock(${item.id}, this.value)">
                             </div>
                         </div>
@@ -284,37 +222,28 @@
             renderCart();
         }
 
-        function calculateTotals() {
-            let grandTotal = 0;
-            let itemCount = 0;
-            const itemIds = Object.keys(cart);
-            itemIds.forEach(id => {
-                const item = vegetables.find(v => v.id == id);
-                if (item) {
-                    grandTotal += item.price * cart[id];
-                    itemCount += cart[id];
-                }
-            });
-            return { grandTotal, itemCount, uniqueItems: itemIds.length };
-        }
-
         function renderCart() {
             const container = document.getElementById('cart-container');
             const itemIds = Object.keys(cart);
             
             if (itemIds.length === 0) {
                 container.innerHTML = '<p style="color:#6b7280; font-size:13px;">Your cart is empty.</p>';
+                document.getElementById('farmer-order-items').innerHTML = '<strong>Items:</strong> None';
+                document.getElementById('farmer-order-total').innerText = 'Total: ₹0.00';
                 return;
             }
 
-            const { grandTotal } = calculateTotals();
+            let grandTotal = 0;
             let rowsHtml = '';
+            let itemSummaryList = [];
 
             itemIds.forEach(id => {
                 const item = vegetables.find(v => v.id == id);
                 if (item) {
                     const qty = cart[id];
                     const subtotal = item.price * qty;
+                    grandTotal += subtotal;
+                    itemSummaryList.push(`${item.name} (${qty} KG)`);
                     rowsHtml += `
                         <tr>
                             <td>${item.name}</td>
@@ -329,10 +258,6 @@
                     `;
                 }
             });
-
-            let badgeHtml = '<span class="badge-none">STATUS: Cart Building</span>';
-            if (orderState === 'PLACED') badgeHtml = '<span class="badge-pending">STATUS: Order Placed (Pending Acceptance)</span>';
-            if (orderState === 'ACCEPTED') badgeHtml = '<span class="badge-accepted">STATUS: Accepted & SMS Dispatched</span>';
 
             container.innerHTML = `
                 <table class="cart-table">
@@ -352,74 +277,20 @@
                         </tr>
                     </tbody>
                 </table>
-                <div>${badgeHtml}</div>
-                <button class="btn-order-now" onclick="openCheckoutModal()">Place Order Now 🛒</button>
+                <span class="${orderAccepted ? 'badge-accepted' : 'badge-pending'}">
+                    STATUS: ${orderAccepted ? 'Accepted' : 'Pending'}
+                </span>
             `;
-        }
 
-        function openCheckoutModal() {
-            const { grandTotal, uniqueItems } = calculateTotals();
-            if (uniqueItems === 0) return alert('Your cart is empty!');
-            document.getElementById('checkout-summary').innerText = `${uniqueItems} Vegetables | Total Amount: ₹${grandTotal.toFixed(2)}`;
-            document.getElementById('checkoutModal').style.display = 'flex';
-        }
-
-        function confirmOrderPlacement() {
-            const address = document.getElementById('cust-address').value;
-            if (!address.trim()) return alert('Please enter a delivery address.');
-
-            const { grandTotal, uniqueItems, itemCount } = calculateTotals();
-            const code = 'FF-ORD-' + Math.floor(1000 + Math.random() * 9000);
-            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-            currentOrderDetails = {
-                code,
-                total: grandTotal,
-                itemsCount: uniqueItems,
-                totalKg: itemCount,
-                address,
-                time: timeStr
-            };
-
-            orderState = 'PLACED';
-            closeModal('checkoutModal');
-            renderCart();
-
-            // Update Farmer Section
-            document.getElementById('order-no-active').style.display = 'none';
-            document.getElementById('order-accepted-banner').style.display = 'none';
-            document.getElementById('order-box').style.display = 'block';
-            document.getElementById('farmer-order-info').innerHTML = `<strong>Items:</strong> ${uniqueItems} Vegetables (${itemCount} KG Total) | <strong>Total:</strong> ₹${grandTotal.toFixed(2)}`;
-            document.getElementById('farmer-order-code').innerHTML = `<strong>Tracking Code:</strong> ${code}`;
+            const summaryText = itemSummaryList.join(', ');
+            document.getElementById('farmer-order-items').innerHTML = `<strong>Items:</strong> ${summaryText}`;
+            document.getElementById('farmer-order-total').innerText = `Total: ₹${grandTotal.toFixed(2)}`;
             
-            // Show pending status in Invoice Card
-            document.getElementById('invoice-placeholder').style.display = 'none';
-            document.getElementById('invoice-content').style.display = 'block';
-            document.getElementById('inv-status-tag').innerText = '⏳ PENDING ACCEPTANCE';
-            document.getElementById('inv-code').innerHTML = `<strong>Code:</strong> ${code}`;
-            document.getElementById('inv-items-count').innerText = `Items: ${uniqueItems} Vegetables`;
-            document.getElementById('inv-total-amount').innerText = `Total Bill: ₹${grandTotal.toFixed(2)}`;
-            document.getElementById('inv-address').innerText = `Deliver To: ${address}`;
-            document.getElementById('inv-time').innerText = timeStr;
-        }
-
-        function acceptOrder() {
-            orderState = 'ACCEPTED';
-            document.getElementById('order-box').style.display = 'none';
-            document.getElementById('order-accepted-banner').style.display = 'block';
-            document.getElementById('inv-status-tag').innerText = '✓ ORDER APPROVED';
-
-            document.getElementById('sms-code').innerText = `Invoice Code: ${currentOrderDetails.code}`;
-            document.getElementById('sms-items-count').innerText = `Items: ${currentOrderDetails.itemsCount} Vegetables`;
-            document.getElementById('sms-total-amount').innerText = `Total Bill: ₹${currentOrderDetails.total.toFixed(2)}`;
-            document.getElementById('sms-time').innerText = `Time: ${currentOrderDetails.time}`;
-
-            document.getElementById('smsModal').style.display = 'flex';
-            renderCart();
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).style.display = 'none';
+            document.getElementById('inv-items-list').innerHTML = `<strong>Items:</strong> ${summaryText}`;
+            document.getElementById('inv-total-amount').innerHTML = `<strong>Total Bill:</strong> ₹${grandTotal.toFixed(2)}`;
+            
+            document.getElementById('sms-items-summary').innerText = `Items: ${summaryText}`;
+            document.getElementById('sms-total-amount').innerText = `Total Bill: ₹${grandTotal.toFixed(2)}`;
         }
 
         function updatePrice(id, newPrice) {
@@ -433,6 +304,21 @@
             const item = vegetables.find(v => v.id == id);
             if (item) item.stock = Number(newStock);
             renderMarket();
+        }
+
+        function acceptOrder() {
+            orderAccepted = true;
+            document.getElementById('smsModal').style.display = 'flex';
+            document.getElementById('order-box').style.display = 'none';
+            document.getElementById('order-accepted-banner').style.display = 'block';
+
+            document.getElementById('invoice-placeholder').style.display = 'none';
+            document.getElementById('invoice-content').style.display = 'block';
+            renderCart();
+        }
+
+        function closeModal() {
+            document.getElementById('smsModal').style.display = 'none';
         }
 
         function switchView(view) {
@@ -454,7 +340,6 @@
             }
         }
 
-        // Init
         renderMarket();
         renderFarmerList();
         renderCart();
