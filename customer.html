@@ -1,141 +1,133 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshFarm - Customer Dashboard</title>
 
-<title>Customer Dashboard - FreshFarm</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f4f4f4;
+        }
 
-<style>
+        .navbar {
+            background: #2e7d32;
+            color: white;
+            padding: 18px;
+            text-align: center;
+        }
 
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    background: #f4f4f4;
-}
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 25px auto;
+        }
 
-.navbar {
-    background: #2e7d32;
-    color: white;
-    padding: 18px;
-    text-align: center;
-}
+        h2 {
+            color: #2e7d32;
+        }
 
-.container {
-    width: 90%;
-    max-width: 1000px;
-    margin: 25px auto;
-}
+        .vegetables {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+        }
 
-h2 {
-    color: #2e7d32;
-}
+        .vegetable-card {
+            background: white;
+            padding: 18px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
 
-.vegetables {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 15px;
-}
+        .vegetable-card h3 {
+            margin-top: 0;
+        }
 
-.vegetable-card {
-    background: white;
-    padding: 18px;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-}
+        .price {
+            color: #2e7d32;
+            font-weight: bold;
+        }
 
-.vegetable-card h3 {
-    margin-top: 0;
-}
+        .quantity {
+            width: 80px;
+            padding: 8px;
+            margin: 8px 0;
+        }
 
-.price {
-    font-weight: bold;
-    color: #2e7d32;
-}
+        .add-btn {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 9px 14px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
 
-.quantity {
-    width: 90px;
-    padding: 8px;
-    margin: 8px 0;
-}
+        .add-btn:hover {
+            background: #388e3c;
+        }
 
-.add-btn {
-    background: #4caf50;
-    color: white;
-    border: none;
-    padding: 9px 14px;
-    border-radius: 5px;
-    cursor: pointer;
-}
+        .cart {
+            background: white;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 8px;
+        }
 
-.add-btn:hover {
-    background: #388e3c;
-}
+        .cart-item {
+            background: #fafafa;
+            padding: 14px;
+            border-left: 5px solid #ff9800;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
 
-.cart {
-    background: white;
-    margin-top: 30px;
-    padding: 20px;
-    border-radius: 8px;
-}
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-.cart-item {
-    background: #fafafa;
-    padding: 14px;
-    border-left: 5px solid #ff9800;
-    border-radius: 5px;
-    margin-top: 10px;
-}
+        .remove-btn {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 7px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
 
-.cart-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+        .grand-total {
+            background: #e8f5e9;
+            border: 2px solid #4caf50;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #2e7d32;
+        }
 
-.remove-btn {
-    background: #f44336;
-    color: white;
-    border: none;
-    padding: 6px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-}
+        .place-order {
+            width: 100%;
+            margin-top: 15px;
+            padding: 14px;
+            background: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            cursor: pointer;
+        }
 
-.grand-total {
-    background: #e8f5e9;
-    border: 2px solid #4caf50;
-    padding: 15px;
-    border-radius: 6px;
-    margin-top: 15px;
-    font-size: 20px;
-    font-weight: bold;
-    color: #2e7d32;
-}
-
-.place-order {
-    width: 100%;
-    margin-top: 15px;
-    padding: 14px;
-    background: #ff9800;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 18px;
-    cursor: pointer;
-}
-
-.place-order:hover {
-    background: #f57c00;
-}
-
-.empty {
-    color: #999;
-    font-style: italic;
-}
-
-</style>
+        .empty {
+            color: #999;
+            font-style: italic;
+        }
+    </style>
 </head>
 
 <body>
@@ -149,19 +141,19 @@ h2 {
 
 <div class="container">
 
-    <!-- VEGETABLES -->
+    <!-- AVAILABLE VEGETABLES -->
     <h2>🥕 Available Vegetables</h2>
 
     <div class="vegetables">
 
-        <!-- Tomato -->
+        <!-- 1 Tomato -->
         <div class="vegetable-card">
             <h3>🍅 Tomato</h3>
             <p class="price">₹40 / kg</p>
 
             <input
                 type="number"
-                id="qty-Tomato"
+                id="qtyTomato"
                 class="quantity"
                 value="1"
                 min="0.1"
@@ -170,20 +162,20 @@ h2 {
 
             <button
                 class="add-btn"
-                onclick="addToCart('Tomato', 40, 'qty-Tomato')">
+                onclick="addToCart('Tomato', 40, 'qtyTomato')">
                 🛒 Add to Cart
             </button>
         </div>
 
 
-        <!-- Potato -->
+        <!-- 2 Potato -->
         <div class="vegetable-card">
             <h3>🥔 Potato</h3>
             <p class="price">₹35 / kg</p>
 
             <input
                 type="number"
-                id="qty-Potato"
+                id="qtyPotato"
                 class="quantity"
                 value="1"
                 min="0.1"
@@ -192,20 +184,20 @@ h2 {
 
             <button
                 class="add-btn"
-                onclick="addToCart('Potato', 35, 'qty-Potato')">
+                onclick="addToCart('Potato', 35, 'qtyPotato')">
                 🛒 Add to Cart
             </button>
         </div>
 
 
-        <!-- Carrot -->
+        <!-- 3 Carrot -->
         <div class="vegetable-card">
             <h3>🥕 Carrot</h3>
             <p class="price">₹60 / kg</p>
 
             <input
                 type="number"
-                id="qty-Carrot"
+                id="qtyCarrot"
                 class="quantity"
                 value="1"
                 min="0.1"
@@ -214,20 +206,20 @@ h2 {
 
             <button
                 class="add-btn"
-                onclick="addToCart('Carrot', 60, 'qty-Carrot')">
+                onclick="addToCart('Carrot', 60, 'qtyCarrot')">
                 🛒 Add to Cart
             </button>
         </div>
 
 
-        <!-- Onion -->
+        <!-- 4 Onion -->
         <div class="vegetable-card">
             <h3>🧅 Onion</h3>
             <p class="price">₹45 / kg</p>
 
             <input
                 type="number"
-                id="qty-Onion"
+                id="qtyOnion"
                 class="quantity"
                 value="1"
                 min="0.1"
@@ -236,20 +228,20 @@ h2 {
 
             <button
                 class="add-btn"
-                onclick="addToCart('Onion', 45, 'qty-Onion')">
+                onclick="addToCart('Onion', 45, 'qtyOnion')">
                 🛒 Add to Cart
             </button>
         </div>
 
 
-        <!-- Cabbage -->
+        <!-- 5 Cabbage -->
         <div class="vegetable-card">
             <h3>🥬 Cabbage</h3>
             <p class="price">₹30 / kg</p>
 
             <input
                 type="number"
-                id="qty-Cabbage"
+                id="qtyCabbage"
                 class="quantity"
                 value="1"
                 min="0.1"
@@ -258,20 +250,20 @@ h2 {
 
             <button
                 class="add-btn"
-                onclick="addToCart('Cabbage', 30, 'qty-Cabbage')">
+                onclick="addToCart('Cabbage', 30, 'qtyCabbage')">
                 🛒 Add to Cart
             </button>
         </div>
 
 
-        <!-- Brinjal -->
+        <!-- 6 Brinjal -->
         <div class="vegetable-card">
             <h3>🍆 Brinjal</h3>
             <p class="price">₹50 / kg</p>
 
             <input
                 type="number"
-                id="qty-Brinjal"
+                id="qtyBrinjal"
                 class="quantity"
                 value="1"
                 min="0.1"
@@ -280,20 +272,20 @@ h2 {
 
             <button
                 class="add-btn"
-                onclick="addToCart('Brinjal', 50, 'qty-Brinjal')">
+                onclick="addToCart('Brinjal', 50, 'qtyBrinjal')">
                 🛒 Add to Cart
             </button>
         </div>
 
 
-        <!-- Beans -->
+        <!-- 7 Beans -->
         <div class="vegetable-card">
             <h3>🫘 Beans</h3>
             <p class="price">₹70 / kg</p>
 
             <input
                 type="number"
-                id="qty-Beans"
+                id="qtyBeans"
                 class="quantity"
                 value="1"
                 min="0.1"
@@ -302,20 +294,20 @@ h2 {
 
             <button
                 class="add-btn"
-                onclick="addToCart('Beans', 70, 'qty-Beans')">
+                onclick="addToCart('Beans', 70, 'qtyBeans')">
                 🛒 Add to Cart
             </button>
         </div>
 
 
-        <!-- Beetroot -->
+        <!-- 8 Beetroot -->
         <div class="vegetable-card">
             <h3>🟣 Beetroot</h3>
             <p class="price">₹55 / kg</p>
 
             <input
                 type="number"
-                id="qty-Beetroot"
+                id="qtyBeetroot"
                 class="quantity"
                 value="1"
                 min="0.1"
@@ -324,20 +316,20 @@ h2 {
 
             <button
                 class="add-btn"
-                onclick="addToCart('Beetroot', 55, 'qty-Beetroot')">
+                onclick="addToCart('Beetroot', 55, 'qtyBeetroot')">
                 🛒 Add to Cart
             </button>
         </div>
 
 
-        <!-- Spinach -->
+        <!-- 9 Spinach -->
         <div class="vegetable-card">
             <h3>🥬 Spinach</h3>
             <p class="price">₹25 / kg</p>
 
             <input
                 type="number"
-                id="qty-Spinach"
+                id="qtySpinach"
                 class="quantity"
                 value="0.5"
                 min="0.1"
@@ -346,20 +338,20 @@ h2 {
 
             <button
                 class="add-btn"
-                onclick="addToCart('Spinach', 25, 'qty-Spinach')">
+                onclick="addToCart('Spinach', 25, 'qtySpinach')">
                 🛒 Add to Cart
             </button>
         </div>
 
 
-        <!-- Cucumber -->
+        <!-- 10 Cucumber -->
         <div class="vegetable-card">
             <h3>🥒 Cucumber</h3>
             <p class="price">₹40 / kg</p>
 
             <input
                 type="number"
-                id="qty-Cucumber"
+                id="qtyCucumber"
                 class="quantity"
                 value="1"
                 min="0.1"
@@ -368,7 +360,7 @@ h2 {
 
             <button
                 class="add-btn"
-                onclick="addToCart('Cucumber', 40, 'qty-Cucumber')">
+                onclick="addToCart('Cucumber', 40, 'qtyCucumber')">
                 🛒 Add to Cart
             </button>
         </div>
@@ -404,16 +396,21 @@ h2 {
 </div>
 
 
+<!-- ================================================= -->
+<!-- JAVASCRIPT MUST BE INSIDE THIS SCRIPT TAG -->
+<!-- ================================================= -->
+
 <script>
 
-// Load saved cart
 let customerCart =
     JSON.parse(
         localStorage.getItem("customerCart")
     ) || [];
 
 
-// ADD VEGETABLE TO CART
+// ===============================
+// ADD TO CART
+// ===============================
 function addToCart(name, pricePerKg, quantityId) {
 
     // Maximum 10 vegetables
@@ -445,10 +442,12 @@ function addToCart(name, pricePerKg, quantityId) {
     }
 
 
-    // Check duplicate vegetable
+    // Check duplicate
     let existingVegetable =
         customerCart.find(
-            item => item.name === name
+            function(item) {
+                return item.name === name;
+            }
         );
 
 
@@ -477,13 +476,9 @@ function addToCart(name, pricePerKg, quantityId) {
     });
 
 
-    // Save cart
     saveCart();
 
-
-    // Display cart
     displayCart();
-
 
     alert(
         "✅ " + name +
@@ -494,7 +489,9 @@ function addToCart(name, pricePerKg, quantityId) {
 }
 
 
+// ===============================
 // SAVE CART
+// ===============================
 function saveCart() {
 
     localStorage.setItem(
@@ -505,7 +502,9 @@ function saveCart() {
 }
 
 
+// ===============================
 // DISPLAY CART
+// ===============================
 function displayCart() {
 
     let cartSection =
@@ -555,10 +554,8 @@ function displayCart() {
             let quantityText;
 
 
-            // KG to grams
-            if (
-                Number(item.quantityKg) < 1
-            ) {
+            // Display grams if less than 1 KG
+            if (Number(item.quantityKg) < 1) {
 
                 quantityText =
                     (
@@ -580,8 +577,7 @@ function displayCart() {
 
                     <div class="cart-header">
 
-                        <strong
-                            style="font-size:18px;">
+                        <strong style="font-size:18px;">
 
                             ${index + 1}.
                             🥦 ${item.name}
@@ -601,19 +597,13 @@ function displayCart() {
 
 
                     <p>
-                        <strong>
-                            Quantity:
-                        </strong>
-
+                        <strong>Quantity:</strong>
                         ${quantityText}
                     </p>
 
 
                     <p>
-                        <strong>
-                            Price:
-                        </strong>
-
+                        <strong>Price:</strong>
                         ₹${Number(
                             item.pricePerKg
                         ).toFixed(2)} / kg
@@ -621,10 +611,7 @@ function displayCart() {
 
 
                     <p>
-                        <strong>
-                            Subtotal:
-                        </strong>
-
+                        <strong>Subtotal:</strong>
                         ₹${subtotal.toFixed(2)}
                     </p>
 
@@ -643,7 +630,7 @@ function displayCart() {
             🧾 GRAND TOTAL:
             ₹${grandTotal.toFixed(2)}
 
-            <br><br>
+            <br>
 
             <span style="
                 font-size:14px;
@@ -660,13 +647,14 @@ function displayCart() {
     `;
 
 
-    // Show Place Order
+    // Show Place Order button
     orderButton.style.display = "block";
-
 }
 
 
-// REMOVE VEGETABLE
+// ===============================
+// REMOVE FROM CART
+// ===============================
 function removeFromCart(index) {
 
     customerCart.splice(index, 1);
@@ -678,7 +666,9 @@ function removeFromCart(index) {
 }
 
 
+// ===============================
 // PLACE ORDER
+// ===============================
 function placeOrder() {
 
     if (customerCart.length === 0) {
@@ -715,14 +705,22 @@ function placeOrder() {
         grandTotal.toFixed(2)
     );
 
+
+    // Clear cart after order
+    customerCart = [];
+
+    saveCart();
+
+    displayCart();
 }
 
 
-// Display cart when page opens
+// ===============================
+// DISPLAY CART WHEN PAGE OPENS
+// ===============================
 displayCart();
 
 </script>
 
 </body>
 </html>
-```
