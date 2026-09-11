@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -91,9 +92,6 @@
             border-left: 4px solid #ff9800;
             border-radius: 4px;
             margin-top: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
 
         .quantity-input {
@@ -105,23 +103,18 @@
         }
 
         .buy-btn,
-        .order-btn,
-        .checkout-btn {
+        .order-btn {
             background-color: #2e7d32;
             color: white;
             border: none;
-            padding: 10px 18px;
+            padding: 8px 15px;
             border-radius: 4px;
             font-weight: bold;
             cursor: pointer;
-            width: 100%;
-            margin-top: 15px;
-            font-size: 16px;
         }
 
         .buy-btn:hover,
-        .order-btn:hover,
-        .checkout-btn:hover {
+        .order-btn:hover {
             background-color: #1b5e20;
         }
 
@@ -134,6 +127,12 @@
             cursor: pointer;
         }
 
+        .cart-summary {
+            margin-top: 15px;
+            padding-top: 12px;
+            border-top: 1px solid #ddd;
+        }
+
         .bill-box {
             background: #e8f5e9;
             padding: 20px;
@@ -141,7 +140,6 @@
             border-radius: 8px;
             margin-top: 20px;
             font-family: monospace;
-            line-height: 1.5;
         }
 
         @media (max-width: 700px) {
@@ -173,23 +171,7 @@
     <!-- AVAILABLE VEGETABLES -->
     <div class="card">
         <h3>🥦 Available Market Vegetables</h3>
-        <!-- Fallback mock display wrapper if app.js state isn't loaded -->
-        <div id="availableVegetablesSection">
-            <div class="market-item">
-                <span><strong>Fresh Tomatoes</strong> - ₹40/KG</span>
-                <div>
-                    <input type="number" id="qty-1" class="quantity-input" value="1" min="1">
-                    <button class="buy-btn" style="width:auto; margin:0;" onclick="addToCart(1)">Add To Cart</button>
-                </div>
-            </div>
-            <div class="market-item">
-                <span><strong>Onions</strong> - ₹35/KG</span>
-                <div>
-                    <input type="number" id="qty-2" class="quantity-input" value="1" min="1">
-                    <button class="buy-btn" style="width:auto; margin:0;" onclick="addToCart(2)">Add To Cart</button>
-                </div>
-            </div>
-        </div>
+        <div id="availableVegetablesSection"></div>
     </div>
 
     <div class="grid-container">
@@ -198,28 +180,35 @@
         <div class="card">
             <h3>🛒 Vegetables in Your Cart</h3>
             <div id="cartSection">
-                <p style="color:#999;font-style:italic;">Your Cart is Empty.</p>
-            </div>
-            <div id="cartActionWrapper" style="display:none;">
-                <button class="checkout-btn" onclick="checkoutCart()">Place Order & Checkout 🛒</button>
+                <p style="color:#999;font-style:italic;">
+                    Your Cart is Empty.
+                </p>
             </div>
         </div>
 
         <!-- BILL -->
         <div class="card">
             <h3>📄 Live SMS Bill Invoice</h3>
+
             <div id="billSection" style="display:none;"></div>
-            <p id="noBillText" style="color:#999;font-style:italic;">Waiting for confirmation...</p>
+
+            <p
+                id="noBillText"
+                style="color:#999;font-style:italic;"
+            >
+                Waiting for confirmation...
+            </p>
         </div>
 
     </div>
 </div>
 
-<!-- Included code hooks directly to project script architecture -->
 <script src="app.js"></script>
 
 <script>
+
 const CART_KEY_PREFIX = "freshfarm_cart_";
+
 let custUser = getCurrentUser();
 
 if (!custUser) {
@@ -228,119 +217,169 @@ if (!custUser) {
     document.getElementById("custNameDisplay").innerText = custUser.name;
 }
 
+
+/* =========================================================
+   CART FUNCTIONS
+========================================================= */
+
 function getCartKey() {
     return CART_KEY_PREFIX + custUser.mobile;
 }
 
+
 function getCart() {
+
     try {
-        return JSON.parse(localStorage.getItem(getCartKey())) || [];
+        return JSON.parse(
+            localStorage.getItem(getCartKey())
+        ) || [];
+
     } catch (error) {
         return [];
     }
 }
 
+
 function saveCart(cart) {
-    localStorage.setItem(getCartKey(), JSON.stringify(cart));
+
+    localStorage.setItem(
+        getCartKey(),
+        JSON.stringify(cart)
+    );
 }
 
-// Global list mock mapping fallback in case veg_market_vegetables array doesn't exist natively
-if(!localStorage.getItem("veg_market_vegetables")){
-    localStorage.setItem("veg_market_vegetables", JSON.stringify([
-        {id: 1, name: "Fresh Tomatoes", pricePerKg: 40, quantityKg: 50, farmerName: "Raju", farmerMobile: "9988776655"},
-        {id: 2, name: "Onions", pricePerKg: 35, quantityKg: 40, farmerName: "Ramu", farmerMobile: "9944556677"}
-    ]));
-}
+
+/* =========================================================
+   ADD VEGETABLE TO CART
+========================================================= */
 
 function addToCart(vegId) {
-    const vegetables = JSON.parse(localStorage.getItem("veg_market_vegetables")) || [];
-    const vegetable = vegetables.find(v => Number(v.id) === Number(vegId));
+
+    const vegetables =
+        JSON.parse(
+            localStorage.getItem("veg_market_vegetables")
+        ) || [];
+
+    const vegetable =
+        vegetables.find(
+            v => Number(v.id) === Number(vegId)
+        );
 
     if (!vegetable) {
         alert("Vegetable not found.");
         return;
     }
 
-    const quantityInput = document.getElementById("qty-" + vegId);
-    const quantity = parseFloat(quantityInput.value);
+    if (Number(vegetable.quantityKg) <= 0) {
+        alert("This vegetable is out of stock.");
+        displayMarketVegetables();
+        return;
+    }
+
+
+    const quantityInput =
+        document.getElementById("qty-" + vegId);
+
+    const quantity =
+        parseFloat(quantityInput.value);
+
 
     if (isNaN(quantity) || quantity <= 0) {
         alert("Please enter a valid quantity.");
         return;
     }
 
+
+    if (quantity > Number(vegetable.quantityKg)) {
+        alert(
+            "Requested quantity is greater than available stock."
+        );
+        return;
+    }
+
+
     let cart = getCart();
-    const existingItem = cart.find(item => Number(item.vegId) === Number(vegetable.id));
+
+
+    /*
+        IMPORTANT FIX:
+
+        Instead of storing only ONE vegetable,
+        we keep every vegetable inside the cart array.
+    */
+
+    const existingItem =
+        cart.find(
+            item =>
+                Number(item.vegId) === Number(vegetable.id)
+        );
+
 
     if (existingItem) {
-        existingItem.quantity = Number(existingItem.quantity) + quantity;
+
+        const newQuantity =
+            Number(existingItem.quantity) + quantity;
+
+
+        if (
+            newQuantity >
+            Number(vegetable.quantityKg)
+        ) {
+            alert(
+                "Cart quantity cannot exceed available stock."
+            );
+            return;
+        }
+
+
+        existingItem.quantity = newQuantity;
+
     } else {
+
         cart.push({
+
             vegId: vegetable.id,
+
             name: vegetable.name,
-            price: Number(vegetable.pricePerKg),
-            quantity: quantity
+
+            price: Number(
+                vegetable.pricePerKg
+            ),
+
+            quantity: quantity,
+
+            farmerName: vegetable.farmerName,
+
+            farmerMobile: vegetable.farmerMobile
+
         });
+
     }
 
+
     saveCart(cart);
+
     quantityInput.value = 1;
+
     renderCart();
-    alert(vegetable.name + " added to cart.");
+
+    alert(
+        vegetable.name +
+        " added to cart."
+    );
 }
 
-function renderCart() {
-    let cart = getCart();
-    let cartSection = document.getElementById("cartSection");
-    let cartActionWrapper = document.getElementById("cartActionWrapper");
-
-    if (cart.length === 0) {
-        cartSection.innerHTML = '<p style="color:#999;font-style:italic;">Your Cart is Empty.</p>';
-        cartActionWrapper.style.display = "none";
-        return;
-    }
-
-    cartActionWrapper.style.display = "block";
-    cartSection.innerHTML = "";
-    cart.forEach(item => {
-        cartSection.innerHTML += `
-            <div class="cart-item">
-                <span><strong>${item.name}</strong> - ${item.quantity} KG (@ ₹${item.price}/kg)</span>
-                <button class="remove-btn" onclick="removeFromCart(${item.vegId})">Remove</button>
-            </div>
-        `;
-    });
-}
 
 /* =========================================================
-   REMOVE ITEM (COMPLETED FUNCTION)
+   REMOVE ITEM
 ========================================================= */
+
 function removeFromCart(vegId) {
-    let cart = getCart();
-    cart = cart.filter(item => Number(item.vegId) !== Number(vegId));
-    saveCart(cart);
-    renderCart();
-}
 
-/* =========================================================
-   🛒 FIXED CHECKOUT: CREATES A NEW ENTRY INSTEAD OF OVERWRITING
-========================================================= */
-function checkoutCart() {
     let cart = getCart();
-    if (cart.length === 0) {
-        alert("Your cart is empty!");
-        return;
-    }
 
-    // 1. Calculate totals and build string parameters 
-    let totalQty = 0;
-    let totalPrice = 0;
-    let itemsDescriptionArray = [];
-    
-    cart.forEach(item => {
-        totalQty += Number(item.quantity);
-        totalPrice += (Number(item.quantity) * Number(item.price));
-        itemsDescriptionArray.push(`${item.name}`);
-    });
-    
-    // Combine unique names into clean string list
+    cart =
+        cart.filter(
+            item =>
+                Number(item.vegId) !== Number(vegId)
+        );
